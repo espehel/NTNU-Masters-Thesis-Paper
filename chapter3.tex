@@ -16,9 +16,11 @@ looks into the pipeline technique for this process. As explained in section \ref
 
 \section{Pipeline}
 
-Write something about the approach being for data mining. Where to different methods where explored. Focus on how it was done.
+%%Write something about the approach being for data mining. Where to different methods where explored. Focus on how it was done.
 
 \subsection{Existing pipeline} \label{smila}
+
+
 
 In the early stages of the project, an existing project called SMILA was explored. SMILA crawls the web to extract information and then stores the information in an index. It has a REST API to control the system and for searching the index. The SMILA architecture is also based on the pipeline architecture containing the following processes jobs, crawling, storage, indexing and querying. With SMILA being very complex, it gains asynchronicity as its biggest benefit from the pipeline architecture. The SMILA pipeline also allows custom made pipelets to be inserted into the pipeline. A pipelet is a sub process inside a pipeline. By creating pipelets, the behaviour of SMILA could be tailored into extracting the relevant information from Wikipedia.
 
@@ -29,9 +31,17 @@ By only writing pipelets and then make SMILA use them when crawling Wikipedia, t
 \includegraphics[width=\textwidth]{SMILA_Architecture}
 \end{figure}
 
-\subsection{Creating myself}
+\subsection{Creating pipeline from scratch} \label{custom-pipeline}
 
-As described in section \ref{smila}, SMILA did not end up being a helpful tool for this project.
+
+
+As described in section \ref{smila}, SMILA did not end up being a helpful tool for this project. Therefor other methods were considered, which mainly consisted of building the pipeline from scratch. Tailoring the different sub-processes for this project and organizing them in a pipeline, was decided to be the best course of action. The first issue to be settled regarded the format of the source data. SMILA was supposed to crawl www.wikipedia.org, but using a web-crawler is a very general method. Since this project were going to use wikipedia, it could be more specific. An XML-dump from a snapshot of wikipedia was considered the best solution. This dump contains all the articles of wikipedia in their newest version.
+
+A parsing process was created in JavaScript running locally on a node.js server. This process iterates through every article and identifies sections with examples in them. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a sql database with its new structure and relations. 
+
+To allow an effortless fetching of data from the database a view was created. This view contains the fields that later in the pipeline will be used to build the index. Elasticsearch was chosen as tool for building the index. A simple java program fetches the view, containing the examples, from the database and builds an index. Elasticsearch serves a http API for querying of the index.
+
+All the sub-processes in the pipeline are loosely coupled. This means that they are fully independent given the correct input. This also allows the pipeline to easily swap out sub-processes without affecting the rest of the system. The SMILA pipeline also delivered a high degree of parallelity. This is a property the current version of the pipeline created from scratch does not have. This is because functionality was prioritized above efficiency during development. 
 
 \begin{figure}[h]
 \caption{A conceptual overview of the pipeline used to extract and index examples}
@@ -39,9 +49,10 @@ As described in section \ref{smila}, SMILA did not end up being a helpful tool f
 \end{figure}
 
 
-XML Parsing
 
 \section{Database}
+
+Section \ref{custom-pipeline} explains that the source data is fed into the pipeline as a snapshot of Wikipedia at a particular time. The size of the source data is an approximately 50 GB XML-document. Most of this data is not interesting in this project. So the parser excludes most of it before it is structured in the SQL database. 
 
 \section{Analysis of examples}
 strucutre/characteristics of an example\\
