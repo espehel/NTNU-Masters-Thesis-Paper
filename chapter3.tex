@@ -25,6 +25,8 @@ looks into the pipeline technique for this process. As explained in section \ref
 \includegraphics[width=\textwidth]{SMILA_Architecture}
 \end{figure}
 
+%%fix sånn abbrevation for SMILA
+
 In the early stages of the project, an existing project called SMILA was explored. SMILA crawls the web to extract information and then stores the information in an index. It has a REST API to control the system and for searching the index. The SMILA architecture is also based on the pipeline architecture containing the following processes jobs, crawling, storage, indexing and querying. With SMILA being very complex, it gains asynchronicity as its biggest benefit from the pipeline architecture. The SMILA pipeline also allows custom made pipelets to be inserted into the pipeline. A pipelet is a sub process inside a pipeline. By creating pipelets, the behaviour of SMILA could be tailored into extracting the relevant information from Wikipedia.
 
 By only writing pipelets and then make SMILA use them when crawling Wikipedia, the project could concentrate the effort on identifying and indexing the examples. Unfortunately SMILA is an old and complex system, and is rarely updated anymore. When problems running SMILA appeared, it was quite troublesome to understand why and fix the issue. This ironically lead to all the effort in the starting phase being used on making SMILA run properly, instead of looking into the characteristics of examples. 
@@ -76,14 +78,23 @@ An example is used as a tool to better understand a topic. It is usually used to
 %%Finn et annet ord for persons?
 Persons who want to learn about a certain topic, but already knows the basic context may prefer to skip the explanatory text and only look at the examples. This projects tries to exploit the fact that examples acts as an appendix to a subject and index them based on that. This attempts to give persons, trying to expand their knowledge within a topic, a more preferable way of doing so.
 
-\subsection{Comparing examples}
+\subsection{Comparing examples} \label{comparing_examples}
 
 To find common properties of examples is very difficult. Nearly impossible if you compare across different domains. When comparing two examples within the same domain and topic, there will still be different approaches and techniques of explaining, which still makes it hard to directly compare them. As a consequence of this, a highly qualitative and subjective analysis has been made for examples within the Game Theory domain. 
 
-Different key properties have been identified and examined across different topics. Some properties are connected to the structure and presentation of the example, while others are based on the contents. 
+Different key properties have been identified and examined across different topics. Some properties are connected to the structure and presentation of the example, while others are based on the contents. From examining topics within Game Theory, a list of properties of an example were designed: Figures; Length; Domain; Source-code; Equations; Analogies; Subcategories under an example that explains the subject in different ways; Has a walkthrough or a step by step guide; Several iterations of the explanation, while gradually increase the complexity; References figures actively during the example.
+
+%%Maybe the list above should be an appendix or table?
 
 
-\subsection{Characteristics of a good example}
+\subsection{Characteristics of a good example} \label{good_example}
 
+When trying to identify the characteristics of a good example, there have been selected a few topics within the Game Theory domain. Then for a certain topic, two or three examples have been compared to each other.  
+
+For the topic \textit{Pareto efficiency} the first example examined is\\ https://www.economics.utoronto.ca/osborne/2x3/tutorial/PEDEX.HTM. This example builds up its explanation step by step with several iterations. Each iteration is a bit more complex than the previous. This enables the example to cover the topic with a certain depth. The second example is https://www.tau.ac.il/~spiegel/teaching/inter-micro/Crueso.pdf. This example is very long and detailed. In addition to a large amount of text, it also uses equations to a substantial degree. Initially the first example feels better, it is definitely easier to grasp the concept of \textit{Pareto efficiency}. The second example focuses more on the mathematical part, and there will most likely exist some persons who prefer this. 
+
+\subsection{Using the results}
+
+As explained in section \ref{good_example}, the characteristics of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in section \ref{comparing_examples} and the characteristics of good examples, a smarter index can be created. Hopefully this will help the user search for examples for the relevant topic, and find related examples to improve the learning.
 
 \cleardoublepage
