@@ -17,11 +17,6 @@ looks into the pipeline technique for this process. As explained in section \ref
 \section{Pipeline}
 
 %%Write something about the approach being for data mining. Where to different methods where explored. Focus on how it was done.
-
-
-
-
-
 \subsection{Creating the pipeline} \label{custom-pipeline}
 
 %%del opp deler av pipelinenen i subsectioen under denne sectionenen, del opp i SQL og elastic search. Ta med prosessen som fører til det
@@ -33,36 +28,21 @@ looks into the pipeline technique for this process. As explained in section \ref
 
 
 
-As described in section \ref{smila}, SMILA did not end up being a helpful tool for this project. Therefor other methods were considered, which mainly consisted of building the pipeline from scratch. Tailoring the different sub-processes for this project and organizing them in a pipeline, was decided to be the best course of action. The first issue to be settled regarded the format of the source data. SMILA was supposed to crawl www.wikipedia.org, but using a web-crawler is a very general method. Since this project were going to use wikipedia, it could be more specific. An XML-dump from a snapshot of wikipedia was considered the best solution. This dump contains all the articles of wikipedia in their newest version.
-
-\subsection{Parsing the Wikipedia dump}
-A parsing process was created in JavaScript running locally on a node.js server. This process iterates through every article and identifies sections with examples in them. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a sql database with its new structure and relations. 
-
-%%kanskje flytte til database
-To allow an effortless fetching of data from the database a view was created. This view contains the fields that later in the pipeline will be used to build the index. Elasticsearch was chosen as tool for building the index. A simple java program fetches the view, containing the examples, from the database and builds an index. Elasticsearch serves a http API for querying of the index.
+As described in section \ref{smila}, SMILA did not end up being a helpful tool for this project. Therefor other methods were considered, which mainly consisted of building the pipeline from scratch. Tailoring the different sub-processes for this project and organizing them in a pipeline, was decided to be the best course of action. The first issue to be settled regarded the format of the source data. SMILA was supposed to crawl www.wikipedia.org, but using a web-crawler is a very general method. Since this project were going to use wikipedia, it could be more specific. An XML-dump from a snapshot of wikipedias database was decided to be the best solution. This dump contains all the articles of wikipedia in their newest version.
 
 All the sub-processes in the pipeline are loosely coupled. This means that they are fully independent given the correct input. This also allows the pipeline to easily swap out sub-processes without affecting the rest of the system. The SMILA pipeline also delivered a high degree of parallelity. This is a property the current version of the pipeline created from scratch does not have. This is because functionality was prioritized above efficiency during development. 
 
+\subsection{Extracting data from XML-dump to SQL}
+A parsing process was created in JavaScript running locally on a node.js server. This process iterates through every article and identifies sections with examples in them. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a sql database with its new structure and relations. 
 
-
-\subsection{Database}
-
-\begin{figure}[h] 
-\caption{A simple overview of the database tables and their attributes}
-\includegraphics[width=\textwidth]{db_diagram}
-\label{fig:db_diagram}
-\end{figure}
-
-%% TODO forklare tabellene bedre. Hva de forskjellige termene er i den faktiske wikipedia
-
-Section \ref{custom-pipeline} explains that the source data is fed into the pipeline as a snapshot of Wikipedia at a particular time. The size of the source data is an approximately 50 GB XML-document. Most of this data is not interesting in this project. Therefor the parser excludes most of it before it is structured in the SQL database. 
-
-Figure \ref{fig:db_diagram} displays the tables of the database and the relations between them. If a relevant article is discovered, it is inserted into the \textit{pages} table. The article is found relevant because it contains one or more sections with an example. These sections are then stored in the database with their relation to the article. The categories of the article is also kept, because it will be helpful regarding searching among examples in the finished index.  
-
-The database acts a temporary buffer for the data going into the index. This is helpful because it separates the parsing from the building of the index. This is preferred since the parsing is a very time consuming process, and having it structured in SQL with its meta data helps with showing how successful the parsing was. Most of the meta data is also irrelevant for the index, so only keeping it in the database is beneficial for complexity of the end result.
-
-\subsection{Indexing}
+\subsection{Building an index of examples from SQL}
 %write about elastic search
+
+
+
+To allow an effortless fetching of data from the database a view was created. This view contains the fields that later in the pipeline will be used to build the index. Elasticsearch was chosen as tool for building the index. A simple java program fetches the view, containing the examples, from the database and builds an index. Elasticsearch serves a http API for querying of the index.
+
+
 
 \section{Analysis of examples} %% må skrives om til hvordan vi faktisk drar nytte av det, når det blir implementert
 %strucutre/characteristics of an example\\

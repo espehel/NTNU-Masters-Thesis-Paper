@@ -31,7 +31,7 @@ By only writing pipelets and then make SMILA use them when crawling Wikipedia, t
 
 \subsection{ElasticSearch} \label{elasticsearch}
 %%JSON abbrevation
-ElasticSearch is a tool used in this project for indexing the examples. ElasticSearch is built on top of Apache Lucene(https://lucene.apache.org), which is a information retrieval library, written in Java. Internally in ElasticSearch, data is stored as structured JSON documents. The API for communicating with ElasticSearch is a RESTful API using JSON over HTTP. The API can be used for configuring ElasticSearch, building the index and querying it. 
+ElasticSearch is a tool used in this project for indexing the examples. ElasticSearch is built on top of Apache Lucene(https://lucene.apache.org), which is a information retrieval library, written in Java. Internally in ElasticSearch, data is stored as structured JSON\footnote{JSON - JavaScript Object Notation} documents. The API for communicating with ElasticSearch is a RESTful\footnote{REST - representational state transfer} API using JSON over HTTP. The API can be used for configuring ElasticSearch, building the index and querying it. 
 %%Ta med i erfaring seksjon om dette at siden alt dette bruker json og webserveren bruker javascript via node, er alt veldig enkelt og konsistent.
 
 ElasticSearch is built for scalability. This means that it can handle the dataset and interactions growing. This is because it acts as a cluster of many nodes. If the system needs to scale, new nodes can easily be added, and ElasticSearch will distribute resources to the newly added ndoes. However this projects does not need or take advantage of this scaling, and will only be using one node.
