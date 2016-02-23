@@ -30,18 +30,35 @@ looks into the pipeline technique for this process. As explained in section \ref
 
 As described in section \ref{smila}, SMILA did not end up being a helpful tool for this project. Therefor other methods were considered, which mainly consisted of building the pipeline from scratch. Tailoring the different sub-processes for this project and organizing them in a pipeline, was decided to be the best course of action. The first issue to be settled regarded the format of the source data. SMILA was supposed to crawl www.wikipedia.org, but using a web-crawler is a very general method. Since this project were going to use wikipedia, it could be more specific. An XML-dump from a snapshot of wikipedias database was decided to be the best solution. This dump contains all the articles of wikipedia in their newest version.
 
+%%better transitioning between these two sections
+
 All the sub-processes in the pipeline are loosely coupled. This means that they are fully independent given the correct input. This also allows the pipeline to easily swap out sub-processes without affecting the rest of the system. The SMILA pipeline also delivered a high degree of parallelity. This is a property the current version of the pipeline created from scratch does not have. This is because functionality was prioritized above efficiency during development. 
 
 \subsection{Extracting data from XML-dump to SQL}
-A parsing process was created in JavaScript running locally on a node.js server. This process iterates through every article and identifies sections with examples in them. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a sql database with its new structure and relations. 
+
+A parsing process was created in JavaScript running locally on a node.js server. This process reads the XML-document, line by line, and identifies \textit{article} tags and the data within them. Then for each article, the process looks at the sections and filters on the ones who contains an example. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a relational database. The database stores data about whole articles, specific sections and references in the sections. Relations between these are also stored, and are used in the next step of the pipeline, when this data will be used to form examples. 
 
 \subsection{Building an index of examples from SQL}
 %write about elastic search
+The first step in building the index is fetching data from the database to form examples. Virtual tables called \textit{views}%%referanse her
+, are used in the database to normalize%%referanse her
+the data on a format which the index will be using.
+
+Elasticsearch was chosen as the tool for building the index. Section \ref{elasticsearch} explains why it is a good choice for this project. A simple Java process fetches the views from the database and creates objects based on models representing examples. References to other examples and which categories the examples are also added here. The example model has a one-to-one relationship to the examples represented in the Elasticsearch index, so the objects are directly converted to JSON and inserted into the index. To configure and query the index, Elasticsearch servers a HTTP API. This API is used before building of the index to specify behaviour of different fields, and after for searching the complete index.
 
 
+\section{Querying examples}
 
-To allow an effortless fetching of data from the database a view was created. This view contains the fields that later in the pipeline will be used to build the index. Elasticsearch was chosen as tool for building the index. A simple java program fetches the view, containing the examples, from the database and builds an index. Elasticsearch serves a http API for querying of the index.
+\begin{figure}[h]
+\caption{A simple overview of the users interaction with the examples}
+\includegraphics[width=\textwidth]{UserInteraction}
+\end{figure}
 
+\subsection{General idea}
+
+\subsection{Querying by keywords}
+
+\subsection{Querying by examples}
 
 
 \section{Analysis of examples} %% må skrives om til hvordan vi faktisk drar nytte av det, når det blir implementert
