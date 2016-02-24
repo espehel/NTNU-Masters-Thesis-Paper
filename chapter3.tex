@@ -14,7 +14,7 @@ looks into the pipeline technique for this process. As explained in section \ref
 
 %\section{Prerequisite knowledge}
 
-\section{Pipeline}
+\section{Pipeline} \label{cd_pipeline}
 
 %%Write something about the approach being for data mining. Where to different methods where explored. Focus on how it was done.
 \subsection{Creating the pipeline} \label{custom-pipeline}
@@ -55,10 +55,17 @@ Elasticsearch was chosen as the tool for building the index. Section \ref{elasti
 \end{figure}
 
 \subsection{General idea}
+When the source data, consisting of wikipedia pages, has been processed through the pipeline described in section \ref{cd_pipeline}, the final result is an index built up of examples. Having just an index is not very useful without an easy way of interacting with it though. Therefor a user friendly search interface has been created. 
+
+The interfaces main objective is to assist the user in finding relevant examples and to present these examples to the user in a helpful manner. To present the examples the interface uses the HTML and CSS from the live version of Wikipedia on its webserver. To find relevant examples, the interface helps the user in two ways. The first one is simply using keywords entered in a search field by the user. The second way is when the user has already selected an example he finds relevant, the search interface will then use this example to find similar examples.
 
 \subsection{Querying by keywords}
 
+The users first interaction with the interface is by using the search field. In this field the user will type in keywords which will be used in a query sent to Elasticsearch. Elasticsearch will then use the tf-idf algorithm to match the search phrase to fields contained in the example. The fields that will be used for the matching are introduction, content, title and categories. By boosting the importance of some fields the query is fine tuned to deliver a relevant collection of examples, based on the keywords in the search phrase.
+
+
 \subsection{Querying by examples}
+The collection of examples returned by the users first query is presented in a list. This list allows the user to browser through the returned examples and select an example. When this example is selected a new query is automatically performed to Elasticsearch. This query is based on the selected example and is an compound query, which means its a query that wraps around sub queries. One of the sub queries is a filter. This sub query filters results based on common categories. It also filters on section id, to exclude the same example. The second part of the query is another sub query that performs a match between references and page titles. This match uses an analyzer to make the query act like a \textit{full text search}. %ta med referanse her
 
 
 \section{Analysis of examples} %% må skrives om til hvordan vi faktisk drar nytte av det, når det blir implementert
