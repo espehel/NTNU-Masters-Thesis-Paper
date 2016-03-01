@@ -8,7 +8,7 @@
 
 %%forklare hva jeg prøver å gjøre på en generell måte. introdusere pipelinen
 Wikipedia is a web page presenting articles for the user. This leads to high focus on the usability related to users searching and reading articles. Because of this one can say that their articles are stored as an atomic entity in their database. An articles has no internal structure, except for the markup used to present it. That means that a process is needed to identify and extract examples from Wikipedia articles. This 
-project%%Hva burde jeg kalle dette?
+project %%Hva burde jeg kalle dette?
 looks into the pipeline technique for this process. As explained in section \ref{pipeline}, a pipeline consist of multiple independent processes loosely coupled.\\
 
 
@@ -36,13 +36,13 @@ All the sub-processes in the pipeline are loosely coupled. This means that they 
 
 \subsection{Extracting data from XML-dump to SQL}
 
-A parsing process was created in JavaScript running locally on a node.js server. This process reads the XML-document, line by line, and identifies \textit{article} tags and the data within them. Then for each article, the process looks at the sections and filters on the ones who contains an example. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a relational database. The database stores data about whole articles, specific sections and references in the sections. Relations between these are also stored, and are used in the next step of the pipeline, when this data will be used to form examples. 
+A parsing process was created in JavaScript running locally on a node.js server. This process reads the XML-document, line by line, and identifies article tags and the data within them. Then for each article, the process looks at the sections and filters on the ones who contains an example. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a relational database. The database stores data about whole articles, specific sections and references in the sections. Relations between these are also stored, and are used in the next step of the pipeline, when this data will be used to form example entities. 
 
 \subsection{Building an index of examples from SQL}
 %write about elastic search
 The first step in building the index is fetching data from the database to form examples. Virtual tables called \textit{views}%%referanse her
 , are used in the database to normalize%%referanse her
-the data on a format which the index will be using.
+ the data on a format which the index will be using.
 
 Elasticsearch was chosen as the tool for building the index. Section \ref{elasticsearch} explains why it is a good choice for this project. A simple Java process fetches the views from the database and creates objects based on models representing examples. References to other examples and which categories the examples are also added here. The example model has a one-to-one relationship to the examples represented in the Elasticsearch index, so the objects are directly converted to JSON and inserted into the index. To configure and query the index, Elasticsearch servers a HTTP API. This API is used before building of the index to specify behaviour of different fields, and after for searching the complete index.
 
@@ -55,18 +55,18 @@ Elasticsearch was chosen as the tool for building the index. Section \ref{elasti
 \end{figure}
 
 \subsection{General idea}
-When the source data, consisting of wikipedia pages, has been processed through the pipeline described in section \ref{cd_pipeline}, the final result is an index built up of examples. Having just an index is not very useful without an easy way of interacting with it though. Therefor a user friendly search interface has been created. 
+When the source data, consisting of wikipedia pages, has been processed through the pipeline described in section \ref{cd_pipeline}, the final result is an index built up of examples. Having just an index is not very useful without an easy way of interacting with it though. Therefor a user friendly, web based search interface has been created. 
 
-The interfaces main objective is to assist the user in finding relevant examples and to present these examples to the user in a helpful manner. To present the examples the interface uses the HTML and CSS from the live version of Wikipedia on its webserver. To find relevant examples, the interface helps the user in two ways. The first one is simply using keywords entered in a search field by the user. The second way is when the user has already selected an example he finds relevant, the search interface will then use this example to find similar examples.
+The interfaces main objective is to assist the user in finding relevant examples and to present these examples to the user in a helpful manner. To present the examples, the interface use HTML and CSS from the live version of Wikipedia from its web server. To find relevant examples, the interface helps the user in two ways. The first one is simply using keywords entered in a search field by the user. The second way is when the user has already selected an example he finds relevant, the search interface will then use this example to find similar examples.
 
 \subsection{Querying by keywords}
 
-The users first interaction with the interface is by using the search field. In this field the user will type in keywords which will be used in a query sent to Elasticsearch. Elasticsearch will then use the tf-idf algorithm to match the search phrase to fields contained in the example. The fields that will be used for the matching are introduction, content, title and categories. By boosting the importance of some fields the query is fine tuned to deliver a relevant collection of examples, based on the keywords in the search phrase.
+The users first interaction with the interface is by using the search field. In this field the user will type in keywords which will be used in a query sent to Elasticsearch. Elasticsearch will then use the tf-idf algorithm to match the search phrase to fields contained in the example. The fields that will be used for the matching are introduction, content, title and categories. By boosting the importance of some fields, the query is fine tuned to deliver a relevant collection of examples based on the keywords in the search phrase.
 
 
 \subsection{Querying by examples}
-The collection of examples returned by the users first query is presented in a list. This list allows the user to browser through the returned examples and select an example. When this example is selected a new query is automatically performed to Elasticsearch. This query is based on the selected example and is an compound query, which means its a query that wraps around sub queries. One of the sub queries is a filter. This sub query filters results based on common categories. It also filters on section id, to exclude the same example. The second part of the query is another sub query that performs a match between references and page titles. This match uses an analyzer to make the query act like a \textit{full text search}. %ta med referanse her
-
+The collection of examples returned by the users first query is presented in a list. This list allows the user to browse through the returned examples and select an example. When this example is selected a new query is automatically performed to Elasticsearch. This query is based on the selected example and is an \textit{compound query}, which means it is a query that wraps around sub queries. One of those sub queries used by this query is a filter. This sub query filters results based on common categories. It also filters on section id, to exclude the same example. The second part of the query is another sub query that performs a match between references and page titles. This match uses an analyzer to make the query act like a \textit{full text search}. %ta med referanse her
+By combining these sub queries the interface presents two lists of related examples to the user, one based on references into the current example, and a second one based on references from the current example. 
 
 \section{Analysis of examples} %% må skrives om til hvordan vi faktisk drar nytte av det, når det blir implementert
 %strucutre/characteristics of an example\\
@@ -84,9 +84,29 @@ Persons who want to learn about a certain topic, but already knows the basic con
 
 To find common properties of examples is very difficult. Nearly impossible if you compare across different domains. When comparing two examples within the same domain and topic, there will still be different approaches and techniques of explaining, which still makes it hard to directly compare them. As a consequence of this, a highly qualitative and subjective analysis has been made for examples within the Game Theory domain. 
 
-Different key properties have been identified and examined across different topics. Some properties are connected to the structure and presentation of the example, while others are based on the contents. From examining topics within Game Theory, a list of properties of an example were designed: Figures; Length; Domain; Source-code; Equations; Analogies; Subcategories under an example that explains the subject in different ways; Has a walkthrough or a step by step guide; Several iterations of the explanation, while gradually increase the complexity; References figures actively during the example.
+Different key properties have been identified and examined across different topics. Some properties are connected to the structure and presentation of the example, while others are based on the contents. From examining topics within Game Theory, a list of properties of an example were designed. Figure \ref{table:1} displays these properties with a brief explanation.
 
-%%Maybe the list above should be an appendix or table?
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{5em} | p{23em} ||} 
+ \hline
+ Name & Description \\ [0.5ex] 
+ \hline\hline
+ Figures & Graphics and drawings contained in the example. \\ 
+ Length & The length of the example, can be both words and characters. \\
+ Domain & Which domain the example belongs to. \\
+ Source code & If source code is used for explaining principles. \\
+ Equations & If equations is used to explain the example \\
+ Analogies & When an real world example is used to explain a theoretical one. \\
+ Sub sections & An example that is divided up in smaller parts or sections that offer different angles of explanations for the example. \\
+ Walkthrough & A step by step guide that solves a problem. \\
+ Iterations & Several iterations that gradually increase the complexity of the explanation \\
+ References & How often the example refers to figures or other examples and articles \\ [1ex] 
+ \hline
+\end{tabular}
+\caption{Properties of an example and a description of them.}
+\label{table:1}
+\end{table}
 
 
 \subsection{Characteristics of a good example} \label{good_example}
@@ -98,5 +118,7 @@ For the topic \textit{Pareto efficiency} the first example examined is\\ https:/
 \subsection{Using the results}
 
 As explained in section \ref{good_example}, the characteristics of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in section \ref{comparing_examples} and the characteristics of good examples, a smarter index can be created. Hopefully this will help the user search for examples for the relevant topic, and find related examples to improve the learning.
+
+
 
 \cleardoublepage
