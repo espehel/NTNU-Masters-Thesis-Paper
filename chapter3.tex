@@ -68,7 +68,7 @@ The users first interaction with the interface is by using the search field. In 
 The collection of examples returned by the users first query is presented in a list. This list allows the user to browse through the returned examples and select an example. When this example is selected a new query is automatically performed to Elasticsearch. This query is based on the selected example and is an \textit{compound query}, which means it is a query that wraps around sub queries. One of those sub queries used by this query is a filter. This sub query filters results based on common categories. It also filters on section id, to exclude the same example. The second part of the query is another sub query that performs a match between references and page titles. This match uses an analyzer to make the query act like a \textit{full text search}. %ta med referanse her
 By combining these sub queries the interface presents two lists of related examples to the user, one based on references into the current example, and a second one based on references from the current example. 
 
-\section{Analysis of examples} %% må skrives om til hvordan vi faktisk drar nytte av det, når det blir implementert
+\section{Analysis of examples} \label{examples-section} %% må skrives om til hvordan vi faktisk drar nytte av det, når det blir implementert
 %strucutre/characteristics of an example\\
 %what is good and bad example
 
@@ -84,7 +84,7 @@ Persons who want to learn about a certain topic, but already knows the basic con
 
 To find common properties of examples is very difficult. Nearly impossible if you compare across different domains. When comparing two examples within the same domain and topic, there will still be different approaches and techniques of explaining, which still makes it hard to directly compare them. As a consequence of this, a highly qualitative and subjective analysis has been made for examples within the Game Theory domain. 
 
-Different key properties have been identified and examined across different topics. Some properties are connected to the structure and presentation of the example, while others are based on the contents. From examining topics within Game Theory, a list of properties of an example were designed. Figure \ref{table:1} displays these properties with a brief explanation.
+Different key properties have been identified and examined across different topics. Some properties are connected to the structure and presentation of the example, while others are based on the contents. From examining topics within Game Theory, a list of properties of an example were designed. Table \ref{table:1} displays these properties with a brief explanation.
 
 \begin{table}[h!]
 \centering
@@ -109,15 +109,18 @@ Different key properties have been identified and examined across different topi
 \end{table}
 
 
-\subsection{Characteristics of a good example} \label{good_example}
+\subsection{Structure of a good example} \label{good_example}
 
-When trying to identify the characteristics of a good example, there have been selected a few topics within the Game Theory domain. Then for a certain topic, two or three examples have been compared to each other.  
+The structure of an example is mostly defined by how it utilizes the properties mentioned in table \ref{table:1}. It is important to establish that whether the example uses a property or not, is an all to easy approach. The combination of the values these properties contains is significant, especially the property describing the domain. This has lead to a narrow approach domain-wise when looking into different examples.
+When trying to identify the structure of a good example, there have been selected a few topics within the Game Theory domain. Then for a certain topic, two or three examples have been compared to each other.  
 
 For the topic \textit{Pareto efficiency} the first example examined is\\ https://www.economics.utoronto.ca/osborne/2x3/tutorial/PEDEX.HTM. This example builds up its explanation step by step with several iterations. Each iteration is a bit more complex than the previous. This enables the example to cover the topic with a certain depth. The second example is https://www.tau.ac.il/~spiegel/teaching/inter-micro/Crueso.pdf. This example is very long and detailed. In addition to a large amount of text, it also uses equations to a substantial degree. Initially the first example feels better, it is definitely easier to grasp the concept of \textit{Pareto efficiency}. The second example focuses more on the mathematical part, and there will most likely exist some persons who prefer this. 
 
 \subsection{Using the results}
 
-As explained in section \ref{good_example}, the characteristics of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in section \ref{comparing_examples} and the characteristics of good examples, a smarter index can be created. Hopefully this will help the user search for examples for the relevant topic, and find related examples to improve the learning.
+As explained in section \ref{good_example}, the properties of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in table \ref{table:1} and the structure of good examples, a smarter search can be formed. When the user is browsing through examples, the list of related examples can then be arranged in fashion that is for instance based on difficulty of the example. This can give the user a natural feeling of progress when learning about a subject.
+
+By using knowledge from section \ref{examples-sections} and input from the user, our search interface can compile two lists of related examples. These are the lists will be presented to the user, to make him able to explore further examples. 
 
 
 
