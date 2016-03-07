@@ -23,10 +23,13 @@ Discuss other articles that touch on the same subject
 %%når jeg snakker om mine erfaringer med smila gjør jeg det i implementation.
 
 %%Skriv om dette til å passe til sin nye kontekst
-In the early stages of the project, an existing project called SMILA was explored. SMILA crawls the web to extract information and then stores the information in an index. It has a REST API to control the system and for searching the index. The SMILA architecture is also based on the pipeline architecture containing the following processes; jobs, crawling, storage, indexing and querying. With SMILA being very complex, it gains asynchronicity as its biggest benefit from the pipeline architecture. The SMILA pipeline also allows custom made pipelets to be inserted into the pipeline. A pipelet is a sub process inside a pipeline. By creating pipelets, the behaviour of SMILA could be tailored into extracting the relevant information from Wikipedia. Therefor the utility that the SMILA system offers could be taken advantage of in this project. Either by utilizing SMILA itself, or look at how SMILA retreives data from the web, procesess it and produces a data set as a result.
+In the early stages of the project, an existing project called SMILA was explored. SMILA is a system with its first release in 2010, used to search and access unstructured information. SMILA crawls the web to extract information and then stores the information in an index. It has a REST API to control the system and for searching the index. The SMILA architecture is also based on the pipeline architecture containing the following processes; jobs, crawling, storage, indexing and querying. Since 2010, 6 new versions has been released adding more features to SMILA. With SMILA being very complex, it gains asynchronicity as its biggest benefit from the pipeline architecture. The SMILA pipeline also allows custom made pipelets to be inserted into the pipeline. A pipelet is a sub process inside a pipeline. By creating pipelets, the behaviour of SMILA could be tailored into extracting the relevant information from Wikipedia.
+
+The releases for SMILA has been dwindling the last three years with only 1 release in 2015. If you add that to the fact that all the different features of SMILA makes it very complex, the usability and stability suffers. This was experienced during testing of the program during this project.
+Nevertheless the utility that the SMILA system offers could be taken advantage of in this project. Either by utilizing SMILA itself, or look at how SMILA retrieves data from the web, processes it and produces a data set as a result.
 
 
-\section{Tools}
+\section{Tools / Methodology}
 
 \subsection{ElasticSearch} \label{elasticsearch}
 %%JSON abbrevation
@@ -49,7 +52,7 @@ Describe a software pipeline. Advantages and stuff.\\
 How should i use references for this?
 
 \subsection{TF/IDF} \label{tf/idf}
-TF/IDF is an algorithm which calculates how important an word is to a document based on the document itself and the collection it is part of. Based on this it is possible to decide how likely it is for the document to be relevant. TF/IDF is used as the standard similarity algorithm in ElasticSearch, \ref{elasticsearch}.
+TF/IDF is an algorithm which calculates how important an word is to a document based on the document itself and the collection it is part of. Based on this it is possible to decide how likely it is for the document to be relevant. TF/IDF is used as the standard similarity algorithm in ElasticSearch, see section \ref{elasticsearch}.
 
 TF/IDF is can be divided into two parts, \textit{term frequency} and \textit{inverse document frequency}. \textit{Term frequency} is how often a term appears in a document. The more instances the document has of the word, the higher is the chance of the document being relevant. \texit{Inverse document frequency} looks at how often a term appears in the whole collection of documents. The more often a term appears, the less relevant is the term. This means the common terms will have less weight than rare ones, when calculating the likelihood of the documents relevance. 
 

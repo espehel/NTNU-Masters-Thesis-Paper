@@ -7,7 +7,7 @@
 \section{Overall Approach}
 
 %%forklare hva jeg prøver å gjøre på en generell måte. introdusere pipelinen
-Wikipedia is a web page presenting articles for the user. This leads to high focus on the usability related to users searching and reading articles. Because of this one can say that their articles are stored as an atomic entity in their database. An articles has no internal structure, except for the markup used to present it. That means that a process is needed to identify and extract examples from Wikipedia articles. This 
+Wikipedia is a web page presenting articles for the user. This leads to high focus on the usability related to users searching and reading articles. Because of this one can say that their articles are stored as an atomic entity in their database. An article has no internal structure, except for the markup used to present it. That means that a process is needed to identify and extract examples from Wikipedia articles. This 
 project %%Hva burde jeg kalle dette?
 looks into the pipeline technique for this process. As explained in section \ref{pipeline}, a pipeline consist of multiple independent processes loosely coupled.\\
 
@@ -28,7 +28,7 @@ looks into the pipeline technique for this process. As explained in section \ref
 
 
 
-As described in section \ref{smila}, SMILA did not end up being a helpful tool for this project. Therefor other methods were considered, which mainly consisted of building the pipeline from scratch. Tailoring the different sub-processes for this project and organizing them in a pipeline, was decided to be the best course of action. The first issue to be settled regarded the format of the source data. SMILA was supposed to crawl www.wikipedia.org, but using a web-crawler is a very general method. Since this project were going to use wikipedia, it could be more specific. An XML-dump from a snapshot of wikipedias database was decided to be the best solution. This dump contains all the articles of wikipedia in their newest version.
+Based on what was discussed in section \ref{smila}, it was decided to not use the SMILA system and its utilities itself, but instead look at how SMILA approaches the problem and take inspiration from that. Therefor other methods were considered, which mainly consisted of building the pipeline from scratch. Tailoring the different sub-processes for this project and organizing them in a pipeline, was decided to be the best course of action. The first issue to be settled regarded the format of the source data. SMILA fetches information by crawling the web, in our case Wikipedia\footnote{www.wikipedia.org}, but using a web-crawler is a very general method. Since this project were only going to use Wikipedia, the extraction method could be more specific. An XML-dump from a snapshot of Wikipedias database fits perfectly in terms of simplicity and stability for this project. This dump contains all the articles of Wikipedia in their newest version.
 
 %%better transitioning between these two sections
 
