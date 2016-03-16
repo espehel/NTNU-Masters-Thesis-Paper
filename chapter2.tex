@@ -8,8 +8,15 @@
 \section{Related work}
 Discuss other articles that touch on the same subject
 
-\subsection{Wikimedia}
+\subsection{Text data mining}
+This projects aims at extracting specific sections from articles on Wikipedia and then find relations among them. This puts this project in between two fields. On one side there is information retrieval(IR), which is mainly is about helping users finding documents of their needs\cite{irbook}. On the other side is text data mining(TDM), where the goal is to discover useful information from textual data. Methods for accomplishing this could for instance be finding patterns across data sets, or finding relevant information among a collection of mostly irrelevant data\cite{untanglingTDM}.
 
+To be able to discover relevant data from the Wikipedia articles, Wikimedia's markup language has to be interpreted. Section \ref{wikimedia} explains further about Wikimedia and the syntax of its markup, this section will focus on the structure we can derive from the markup. This structure mainly consists of section headers and the content of an section below, although there is also other information that can be extracted. To find relations between articles we would also need to look at the semantics from this information, were the most important is lists, categories and references, amongst others. YAWN\footnote{Yet Another Wikipedia Annotation project}, is a project that created an XML version of Wikipedia with focus on semantic information\cite{yawn}. The XML corpus produced by YAWN is general for the whole Wikipedia and the entire articles. This project only focuses on the articles relevant for educational purposes and possessing examples to explain its content. Although YAWN overreaches our purpose, key concepts and techniques for exploiting the Wiki markup, can be derived and used for classifying examples in this project. The most interesting for this project is how they find semantic annotations for Wikipedia pages. For that, they use a combination of exploiting information from categories assigned to articles and deriving information from the structure of an article.
+
+\subsection{Wikimedia} \label{wikimedia}
+Wikimedia is an organization responsible for many different Wiki sites, among them the well known Wikipedia. More about them and about the Wiki syntax
+
+As already mentioned to extract information from Wikipedia based on the given XML-dump, the syntax of the markup used for writing articles has to be interpreted. 
 
 \subsection{SMILA} \label{smila}
 
