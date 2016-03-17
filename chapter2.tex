@@ -1,6 +1,6 @@
 %===================================== CHAP 2 =================================
 
-\chapter{Literature Review/Background}
+\chapter{Literature Review and Background}
 
 %Web and experience, enric pliaza, ralph bergmann, CBR stuff cooking recepies
 
@@ -14,9 +14,14 @@ This projects aims at extracting specific sections from articles on Wikipedia an
 To be able to discover relevant data from the Wikipedia articles, Wikimedia's markup language has to be interpreted. Section \ref{wikimedia} explains further about Wikimedia and the syntax of its markup, this section will focus on the structure we can derive from the markup. This structure mainly consists of section headers and the content of an section below, although there is also other information that can be extracted. To find relations between articles we would also need to look at the semantics from this information, were the most important is lists, categories and references, amongst others. YAWN\footnote{Yet Another Wikipedia Annotation project}, is a project that created an XML version of Wikipedia with focus on semantic information\cite{yawn}. The XML corpus produced by YAWN is general for the whole Wikipedia and the entire articles. This project only focuses on the articles relevant for educational purposes and possessing examples to explain its content. Although YAWN overreaches our purpose, key concepts and techniques for exploiting the Wiki markup, can be derived and used for classifying examples in this project. The most interesting for this project is how they find semantic annotations for Wikipedia pages. For that, they use a combination of exploiting information from categories assigned to articles and deriving information from the structure of an article.
 
 \subsection{Wikimedia} \label{wikimedia}
-Wikimedia is an organization responsible for many different Wiki sites, among them the well known Wikipedia. More about them and about the Wiki syntax
+Wikimedia\cite{wikimedia} is an organization that supports and operates many different knowledge projects. Their goal is to make free knowledge accessible anywhere and on any platform. Their income comes primarily from donations, they do not make us of ads, because they believe it could jeopardize their reliability as a neutral source of information.
 
-As already mentioned to extract information from Wikipedia based on the given XML-dump, the syntax of the markup used for writing articles has to be interpreted. 
+The project Wikimedia is mostly known for is Wikipedia\cite{wikipedia}. Wikipedia is the largest collection collection of free, collaborative knowledge that exists. Wikipedia exists in over 290 languages and across those contains more than 35 million articles. This project will make use of the English Wikipedia, which contains more than 5 million articles. Wikipedia uses a  software called MediaWiki\cite{mediawiki}. It is a server side software used for hosting wiki sites. Many of the wiki sites under the Wikimedia umbrella makes use of MediaWiki. A part of the MediaWiki software is the markup language used for writing articles. This markup, written by contributors, will then later be translated into HTML when displayed for users in their web browser. This markup is used to create elements such as tables, equations, lists and links. Wikimedia regularly backs up Wikipedia and makes it publicly available by dumping it to a large XML file. This gives access to the raw data that makes an article, this is meta data in XML format and the content of the article using the syntax of the MediaWiki markup. 
+
+Public access to this information gives a lot of opportunities. Alberto Montero-Asenjo and Carlos A. Iglesias used a XML dump from the Spanish Wikipedia for language research\cite{lr-wiki}. They created a piece of software that processes the raw source data from the XML dump. It starts by converting the Wiki markup into plain text and then use further operations on the plain text to make the end result of useful data. While they use the raw data for language research, this projects needs to extract more information from the source data beyond what is contained in a plain text version. This means that this project has to interpret the syntax and the semantics behind it, instead of filtering it away.
+%%ta med noen som interpreter syntaxen her
+%%Overcoming the Brittleness Bottleneck using Wikipedia: Enhancing Text Categorization with Encyclopedic Knowledge - snakker om å bruke referanser
+
 
 \subsection{SMILA} \label{smila}
 
