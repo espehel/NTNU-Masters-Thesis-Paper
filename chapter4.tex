@@ -17,10 +17,11 @@ If a \textit{match} is used instead, an analysis will be performed, creating a l
 
 
 \subsection{NPM and Node.js}
-Two of the processes used by this project are written in JavaScript. JavaScript are normally run inside browsers, but by using Node.js\cite{node} the can be executed by a server. Node is an asynchronous event driven framework. By embracing to event loop in this manner, Node avoids thread management and blocking of those. Instead callbacks are pushed on too the event loop and Node runs until there are no more callbacks to perform. This makes Node ideal for simpler and less complex systems, and is why it is chosen for this projet.
+Two of the processes used by this project are written in JavaScript. JavaScript are normally run inside browsers, but by using Node.js\cite{node} the can be executed by a server. Node is an asynchronous event driven framework. By embracing to event loop in this manner, Node avoids thread management and blocking of those. Instead callbacks are pushed on too the event loop and Node runs until there are no more callbacks to perform. This makes Node ideal for simpler and less complex systems, and is why it is chosen for this project.
 
-Node also comes with a packet manager called Node Packet Manager(NPM). NPM allows any Node project, to include libraries and other JavaScript projects published to their open source registry. This is done simply by a simple API call to the NPM executable in the terminal. % skriv om hvordan jeg bruker pakkene som tilbys.
+Node also comes with a packet manager called Node Packet Manager(NPM). NPM allows any Node project, to include libraries and other JavaScript projects published to their \textit{Open Source Registry} \footnote{\url{https://www.npmjs.com/npm/open-source}}. This is done simply by a simple API call to the NPM executable in the terminal. % skriv om hvordan jeg bruker pakkene som tilbys.
 
+Using code from open source libraries saves a lot of time during development while still having full control and overview of the code executed. Because of this a lot of libraries has been used for this project. Examples of libraries used are \textit{sax} for reading the XML file line by line as a stream.  \textit{wtf\_wikipedia} to help out with parsing some of the Wikipedia markup;  \textit{request} to fetch a HTML file from a server with a GET call;  \textit{cheerio} for iterating through an HTML structure while supporting filtering, reading and editing of the HTML. Using libraries results in the system being more modular, which makes it easier to alter during development. This has been highly advantageous for this project, since requirements has been continually changed. 
 
 \section{Pipeline}
 
