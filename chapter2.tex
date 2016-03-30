@@ -44,13 +44,15 @@ In the early stages of the project, an existing project called SMILA\cite{smila}
 The releases for SMILA has been dwindling the last three years with only 1 release in 2015. If you add that to the fact that all the different features of SMILA makes it very complex, the usability and stability suffers. This was experienced during testing of the program during this project.
 Nevertheless the utility that the SMILA system offers could be taken advantage of in this project. Either by utilizing SMILA itself, or look at how SMILA retrieves data from the web, processes it and produces a data set as a result.
 
-\section{Methodology}
 
-\section{Techniques}
+\section{Techniques / Methodology}
 
 \subsection{Pipeline} \label{pipeline}
-Describe a software pipeline. Advantages and stuff.\\
-How should i use references for this?
+
+A software pipeline is a chain of processes where the output of one process is fed as input into another. Arrange these processes correctly and the result is a pipeline. A software pipeline is in the concrete actually a design pattern, where it is better known as \textit{pipes and filters}\cite{pipes-and-filters}. The two big advantages of a software pipeline is parallelity and modularity. The reason for parallelity is that the data can be spread across several processes. This means that the data can be processed in different instances of the program. Another case is more like a conveyor belt, where data is propagated through the pipeline. So while some of the data are in being inputted into the first stages, another part of the data is finalized at the end. The other advantage, modularity, simply means that it is easy to replace a part of the pipeline. The reason for this is that the sub processes are \textit{loosely coupled}, so changing on part of the system will not affect the rest in any way.
+
+The first mentioned advantage, parallelity, is not used to a significant extent in this project. This is mostly because performance has not been an important quality attribute. Instead the focus has been more on functionality. For this reason the modularity part has been very helpful. It has allowed different parts of the system to be easily replaced or altered in conjunction with the changes of the requirements.
+
 
 \subsection{TF/IDF} \label{tf/idf}
 TF/IDF is an algorithm which calculates how important an word is to a document based on the document itself and the collection it is part of. Based on this it is possible to decide how likely it is for the document to be relevant. TF/IDF is used as the standard similarity algorithm in ElasticSearch, see section \ref{elasticsearch}.
