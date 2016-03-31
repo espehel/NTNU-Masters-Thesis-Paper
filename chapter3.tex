@@ -4,15 +4,13 @@
 \chapter{Conceptual design}\label{cap_3}
 %\chapter{Approach and methodology}
 
+
+%Bruker ordet index istedet for ElasticSearch for å holde det et abstraksjonsnivå høyere
+
 \section{Overall Approach}
 
-%%forklare hva jeg prøver å gjøre på en generell måte. introdusere pipelinen
-Wikipedia is a web page presenting articles for the user. This leads to high focus on the usability related to users searching and reading articles. Because of this one can say that their articles are stored as an atomic entity in their database. An article has no internal structure, except for the markup used to present it. That means that a process is needed to identify and extract examples from Wikipedia articles. This 
-project %%Hva burde jeg kalle dette?
-looks into the pipeline technique for this process. As explained in section \ref{pipeline}, a pipeline consist of multiple independent processes loosely coupled.\\
+The goal of the approach is to create a searchable index for a collection of examples. The first step is then to find the examples and put them into the index. For this Wikipedia was chosen. The articles presented for the user has a reliable and consistent format. It is also the largest collection of open information, which gives us a good deal of source data to work with. The source data is acquired from a XML dump that Wikimedia publishes regularly. Except for the markup itself, the articles contain no structure. From the dump we simply get the article's markup and some meta data. Therefor a considerable amount of processing is needed to locate and extract relevant examples that can be inserted into the index. To achieve this we create a software pipeline where several independent processes work together by using the output from one process as input. We start by feeding the pipeline the raw XML file and at the end example objects, which are fed to index, are outputted. Section \ref{pipeline} explains more about the software pipeline technique. 
 
-
-%\section{Prerequisite knowledge}
 
 \section{Pipeline} \label{cd_pipeline}
 
@@ -62,7 +60,7 @@ The interfaces main objective is to assist the user in finding relevant examples
 
 \subsection{Querying by keywords}
 
-The users first interaction with the interface is by using the search field. In this field the user will type in keywords which will be used in a query sent to Elasticsearch. Elasticsearch will then use the tf-idf algorithm to match the search phrase to fields contained in the example. The fields that will be used for the matching are introduction, content, title and categories. By boosting the importance of some fields, the query is fine tuned to deliver a relevant collection of examples based on the keywords in the search phrase.
+The users first interaction with the interface is by using the search field. In this field the user will type in keywords which will be used in a query sent to Elasticsearch. Elasticsearch will then use the TF-IDF algorithm to match the search phrase to fields contained in the example. The fields that will be used for the matching are introduction, content, title and categories. By boosting the importance of some fields, the query is fine tuned to deliver a relevant collection of examples based on the keywords in the search phrase.
 
 
 \subsection{Querying by examples}
