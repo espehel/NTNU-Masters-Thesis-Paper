@@ -33,7 +33,7 @@ Based on what was discussed in section \ref{smila}, it was decided to not use th
 All the sub-processes in the pipeline are loosely coupled. This means that they are fully independent given the correct input. This also allows the pipeline to easily swap out sub-processes without affecting the rest of the system. The SMILA pipeline also delivered a high degree of parallelity. This is a property the current version of the pipeline created from scratch does not have. This is because functionality was prioritized above efficiency during development. 
 
 \subsection{Extracting data from XML-dump to SQL}
-
+%bruk itealics for article tag
 The source data used for input to the pipeline uses the XML format. On the top level of the XML douments there exists article elements marked with an article tag. Each article element represents a page on Wikipedia and thus contains metadata about the page as well as the content itself. All this data forms a XML document with a size of 50GB.
 A parsing process was created in JavaScript running locally on a node.js server to handle a document of that size. This process reads the XML-document as a stream, buffering line by line, and then identifies article elements and saves the relevant data from it to an object in memory. Then for each article, the process looks at the sections and selects the ones that contains an example. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a relational database. The database stores data about whole articles, specific sections and references in the sections. Relations between these are also stored, and are used in the next step of the pipeline, when this data will be used to form example entities. 
 
@@ -111,8 +111,9 @@ Different key properties have been identified and examined across different topi
 \subsection{Structure of a good example} \label{good_example}
 
 The structure of an example is mostly defined by how it utilizes the properties mentioned in table \ref{table:1}. It is important to establish that whether the example uses a property or not, is an all to easy approach. The combination of the values these properties contains is significant, especially the property describing the domain. This has lead to a narrow approach domain-wise when looking into different examples.
-When trying to identify the structure of a good example, there have been selected a few topics within the Game Theory domain. Then for a certain topic, two or three examples have been compared to each other.  
+When trying to identify the structure of a good example, there have been selected a few topics within the Game Theory domain. Then for a certain topic, two or three examples have been compared to each other.  %uklart hva jeg mener med certein topic
 
+%legg eksemplene til appendix
 For the topic \textit{Pareto efficiency} the first example examined is\\ https://www.economics.utoronto.ca/osborne/2x3/tutorial/PEDEX.HTM. This example builds up its explanation step by step with several iterations. Each iteration is a bit more complex than the previous. This enables the example to cover the topic with a certain depth. The second example is https://www.tau.ac.il/~spiegel/teaching/inter-micro/Crueso.pdf. This example is very long and detailed. In addition to a large amount of text, it also uses equations to a substantial degree. Initially the first example feels better, it is definitely easier to grasp the concept of \textit{Pareto efficiency}. The second example focuses more on the mathematical part, and there will most likely exist some persons who prefer this. 
 
 \subsection{Using the results}
