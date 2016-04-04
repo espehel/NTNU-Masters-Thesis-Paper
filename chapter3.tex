@@ -46,7 +46,7 @@ The first step in building the index is fetching data from the database to form 
 Elasticsearch was chosen as the tool for building the index. Section \ref{elasticsearch} explains why it is a good choice for this project. A simple Java process fetches the views from the database and creates objects based on models representing examples. References to other examples and which categories the examples are also added here. The example model has a one-to-one relationship to the examples represented in the Elasticsearch index, so the objects are directly converted to JSON and inserted into the index. To configure and query the index, Elasticsearch servers a HTTP API. This API is used before building of the index to specify behaviour of different fields, and after for searching the complete index.
 
 
-\section{Querying examples}
+\section{Search examples}
 
 \begin{figure}[h]
 \caption{A simple overview of the users interaction with the examples}
