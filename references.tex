@@ -7,9 +7,13 @@
 \fancyfoot[LE,RO]{\thepage}
 \fancypagestyle{plain}{\fancyhf{}\fancyfoot[LE,RO]{\thepage}\renewcommand{\headrulewidth}{0ex}}
 
-\addcontentsline{toc}{chapter}{Bibliography}
+%\addcontentsline{toc}{chapter}{Bibliography}
 
-\bibliographystyle{plain}
-\bibliography{mylib}
+%\bibliographystyle{plain}
+%\bibliography{mylib}
+
+\printbibliography[
+    heading=bibintoc
+]
 
 \cleardoublepage
