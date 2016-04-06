@@ -37,6 +37,7 @@ All the sub-processes in the pipeline are loosely coupled. This means that they 
 The source data used for input to the pipeline uses the XML format. On the top level of the XML douments there exists article elements marked with an article tag. Each article element represents a page on Wikipedia and thus contains metadata about the page as well as the content itself. All this data forms a XML document with a size of 50GB.
 A parsing process was created in JavaScript running locally on a node.js server to handle a document of that size. This process reads the XML-document as a stream, buffering line by line, and then identifies article elements and saves the relevant data from it to an object in memory. Then for each article, the process looks at the sections and selects the ones that contains an example. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a relational database. The database stores data about whole articles, specific sections and references in the sections. Relations between these are also stored, and are used in the next step of the pipeline, when this data will be used to form example entities. 
 
+%write about why to use an index instead of a databse
 \subsection{Building an index of examples from SQL}
 %write about elastic search
 The first step in building the index is fetching data from the database to form examples. Virtual tables called \textit{views}%%referanse her
