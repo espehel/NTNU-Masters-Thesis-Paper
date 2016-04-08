@@ -9,8 +9,7 @@
 
 \section{Overall Approach}
 
-The goal of the approach is to create a searchable index for a collection of examples. The first step is then to find the examples and put them into the index. For this Wikipedia was chosen. The articles presented for the user has a reliable and consistent format. It is also the largest collection of open information, which gives us a good deal of source data to work with. The source data is acquired from a XML dump that Wikimedia publishes regularly. Except for the markup itself, the articles contain no structure. From the dump we simply get the article's markup and some meta data. Therefor a considerable amount of processing is needed to locate and extract relevant examples that can be inserted into the index. To achieve this we create a software pipeline where several independent processes work together by using the output from one process as input. We start by feeding the pipeline the raw XML file and at the end example objects, which are fed to index, are outputted. Section \ref{pipeline} explains more about the software pipeline technique. 
-
+The goal of our approach is to create a searchable index for a collection of examples. The first step is to find examples and put them into an index. Wikipedia was chosen as a resource for extraction of examples. Wikipedia´s articles have a reliable and consistent format. It is also the largest collection of open information, which gives us a sufficient amount of source data to work with. The source data is acquired from a XML dump that Wikimedia publishes regularly. Except for the markup itself, the articles contain no structure. From the dump we obtain the article´s markup and additional meta data. Therefor a considerable amount of processing is needed to locate and extract relevant examples that can be inserted into the index. To achieve this we create a software pipeline where several independent processes work together by using the output from one process as input. We start by feeding the pipeline the raw XML file. The pipeline parses the XML and markup of each article. The relevant are stored in an relation database. A new process creates examples based on the data in the database. Last an index is built from these examples.
 
 \section{Pipeline} \label{cd_pipeline}
 
@@ -26,29 +25,24 @@ The goal of the approach is to create a searchable index for a collection of exa
 
 
 
-Based on what was discussed in section \ref{smila}, it was decided to not use the SMILA system and its utilities itself, but instead look at how SMILA approaches the problem and take inspiration from that. Therefor other methods were considered, which mainly consisted of building the pipeline from scratch. Tailoring the different sub-processes for this project and organizing them in a pipeline, was decided to be the best course of action. The first issue to be settled regarded the format of the source data. SMILA fetches information by crawling the web, in our case Wikipedia\footnote{www.wikipedia.org}, but using a web-crawler is a very general method. Since this project were only going to use Wikipedia, the extraction method could be more specific. An XML-dump from a snapshot of Wikipedias database fits perfectly in terms of simplicity and stability for this project. This dump contains all the articles of Wikipedia in their newest version.
+Based on what was discussed in section \ref{smila}, it was decided to not use the SMILA system and its utilities itself, but instead look at how SMILA approaches the problem and take inspiration from that. Therefor other methods were considered, which mainly consisted of building the pipeline from scratch. Tailoring the different sub-processes for this project and organizing them in a pipeline, was decided to be the best course of action. The first issue to be settled regarded the format of the source data. SMILA fetches information by crawling the web, in our case Wikipedia\footnote{www.wikipedia.org}, but using a web-crawler is a very general method. Since this project were only going to use Wikipedia, the extraction method could be more specific. An XML-dump from a snapshot of Wikipedia's database fits perfectly in terms of simplicity and stability for this project. This dump contains all the articles of Wikipedia in their newest version.
 
 %%better transitioning between these two sections
 
 All the sub-processes in the pipeline are loosely coupled. This means that they are fully independent given the correct input. This also allows the pipeline to easily swap out sub-processes without affecting the rest of the system. The SMILA pipeline also delivered a high degree of parallelity. This is a property the current version of the pipeline created from scratch does not have. This is because functionality was prioritized above efficiency during development. 
 
-\subsection{Extracting data from XML-dump to SQL}
-%bruk itealics for article tag
-The source data used for input to the pipeline uses the XML format. On the top level of the XML douments there exists article elements marked with an article tag. Each article element represents a page on Wikipedia and thus contains metadata about the page as well as the content itself. All this data forms a XML document with a size of 50GB.
-A parsing process was created in JavaScript running locally on a node.js server to handle a document of that size. This process reads the XML-document as a stream, buffering line by line, and then identifies article elements and saves the relevant data from it to an object in memory. Then for each article, the process looks at the sections and selects the ones that contains an example. It then parses that article into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a relational database. The database stores data about whole articles, specific sections and references in the sections. Relations between these are also stored, and are used in the next step of the pipeline, when this data will be used to form example entities. 
+\subsection{Extracting data from XML-dump}
+The source data used for input to the pipeline uses the XML format. On the top level of the XML douments there exists article elements marked with an \textit{article tag}. Each article element represents a page on Wikipedia and thus contains metadata about the page as well as the content itself. All this data forms a XML document with a size of 50 gigabyte. A parsing process runs locally in JavaScript on a node.js server to handle a document of that size. The process reads the XML-document as a stream, buffering line by line, and then identifies article elements and saves the relevant data from it to an object in memory. For each article, the process looks at the sections and selects the ones that contains an example. It parses those articles into a JavaScript object with the relevant data. As it iterates over the articles, the process stores the data in a relational database. The database stores data about whole articles, specific sections and references in the sections. Relations between these are also stored, and are used in the next step of the pipeline, when this data will be used to form example entities. 
 
 %write about why to use an index instead of a databse
 \subsection{Building an index of examples from SQL}
-%write about elastic search
-The first step in building the index is fetching data from the database to form examples. Virtual tables called \textit{views}%%referanse her
-, are used in the database to normalize%%referanse her
- the data on a format which the index will be using.
+The first step in building the index is fetching data from the database to form examples. Virtual tables called \textit{views}, are used in the database to normalize the data on a format which the index will be using.
 
 Elasticsearch was chosen as the tool for building the index. Section \ref{elasticsearch} explains why it is a good choice for this project. A simple Java process fetches the views from the database and creates objects based on models representing examples. References to other examples and which categories the examples are also added here. The example model has a one-to-one relationship to the examples represented in the Elasticsearch index, so the objects are directly converted to JSON and inserted into the index. To configure and query the index, Elasticsearch servers a HTTP API. This API is used before building of the index to specify behaviour of different fields, and after for searching the complete index.
 
 
 \section{Search examples}
-
+%describe this somewhere
 \begin{figure}[h]
 \caption{A simple overview of the users interaction with the examples}
 \includegraphics[width=\textwidth]{UserInteraction}
