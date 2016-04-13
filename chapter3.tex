@@ -9,7 +9,7 @@
 
 \section{Overall Approach}
 
-The goal of our approach is to create a searchable index for a collection of examples. The first step is to find examples and put them into an index. Wikipedia was chosen as a resource for extraction of examples. Wikipedia´s articles have a reliable and consistent format. It is also the largest collection of open information, which gives us a sufficient amount of source data to work with. The source data is acquired from a XML dump that Wikimedia publishes regularly. Except for the markup itself, the articles contain no structure. From the dump we obtain the article´s markup and additional meta data. Therefor a considerable amount of processing is needed to locate and extract relevant examples that can be inserted into the index. To achieve this we create a software pipeline where several independent processes work together by using the output from one process as input. We start by feeding the pipeline the raw XML file. The pipeline parses the XML and markup of each article. The relevant are stored in an relation database. A new process creates examples based on the data in the database. Last an index is built from these examples.
+The goal of our approach is to create a searchable index for a collection of examples. The first step is to find examples and put them into an index. Wikipedia was chosen as a resource for extraction of examples. Wikipedia´s articles have a reliable and consistent format. It is also the largest collection of open information, which gives us a sufficient amount of source data to work with. The source data is acquired from a XML dump that Wikimedia publishes regularly. Except for the markup itself, the articles contain no structure. From the dump we obtain the article´s markup and additional meta data. Therefor a considerable amount of processing is required to locate and extract relevant examples that can be inserted into the index. To achieve this we create a software pipeline where several independent processes work together by using the output from one process as input. We start by feeding the pipeline the raw XML file. The pipeline parses the XML and markup of each article. The relevant are stored in an relation database. A new process creates examples based on the data in the database. Last an index is built from these examples.
 
 \section{Pipeline} \label{cd_pipeline}
 
@@ -115,7 +115,7 @@ For the topic \textit{Pareto efficiency} the first example examined is named \te
 
 As explained in section \ref{good_example}, the properties of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in table \ref{table:1} and the structure of good examples, a smarter search can be formed. When the user is browsing through examples, the list of related examples can then be arranged in fashion that is for instance based on difficulty of the example. This can give the user a natural feeling of progress when learning about a subject.
 
-By using knowledge from section \ref{examples-sections} and input from the user, our search interface can compile two lists of related examples. These are the lists will be presented to the user, to make him able to explore further examples. 
+By using knowledge discussed in section \ref{good_example} and input from the user, our search interface can compile two lists of related examples. These are the lists will be presented to the user, to make him able to explore further examples. 
 
 
 
