@@ -28,7 +28,8 @@ Using code from open source libraries saves a lot of time during development whi
 
 \subsection{Wikidump parser}
 
-Wikidump parser is the part of the project that transforms the XML dump of the whole Wikipedia, into a database with relevant data from articles. It does this by parsing the XML, then parsing the Wiki markup and lastly inserting relevant articles into a database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
+Wikidump parser is the part of the project that transforms the XML dump of the whole Wikipedia, into a database with relevant data from articles. The Wikidump parser is written in JavaScript and executed by a Node.js process. To insert the relevant data from the XML into the database, it parses the XML, then parsing the Wiki markup and lastly inserting relevant articles into a database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
+
 
 \subsection{Source data}
 
@@ -49,11 +50,17 @@ In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of
 
 \subsection{Data retrieval}
 
+
 %%Parsing XML into relevant data in JSON
-\subsubsection{Wikimedia's markup syntax}
+\subsubsection{Wiki markup}
 %%set inn et bilde av markup der alt er grået over men det er lyst over viktig markup ting, kan bruke photoshop
+Show a picture of markup with higlighted/marked markup syntax. Talk about the most important aspects.
 
 \subsubsection{Markup parsing}
+Each article sent to \texttt{index.js} from \texttt{XMLParser.js} is assessed on whether it contains examples or not. Articles who does not contain any examples, are discarded completely from the final collection. In order to assess the articles, the markup is parsed into objects. This is the task of \texttt{MarkupParser.js}. The parser uses several steps to extract the desired information from the markup. The first steps parses the entire article's markup. The result of the first step is objects for each section, including the introduction. The sections contain a header, what level they belong to in the section hierarchy and the content of the section. 
+
+The next step iterates through the list of sections to determine if some of them is an example. Sections which are not an example is discarded. If no examples are found, the whole article is discarded at this point. References to other articles and categories are then extracted from the markup. The data is finally inserted into the database pictured in figure \ref{fig:db_diagram}.
+
 
 
 \subsection{Data structuring}
@@ -73,16 +80,26 @@ Section \ref{custom-pipeline} explains that the source data is fed into the pipe
 
 Figure \ref{fig:db_diagram} displays the tables of the database and the relations between them. If a relevant article is discovered, it is inserted into the \textit{pages} table. The article is found relevant because it contains one or more sections with an example. These sections are then stored in the database with their relation to the article. The categories of the article is also kept, because it will be helpful regarding searching among examples in the finished index.  
 
-The database acts a temporary buffer for the data going into the index. This is helpful because it separates the parsing from the building of the index. This is preferred since the parsing is a very time consuming process, and having it structured in SQL with its meta data helps with showing how successful the parsing was. Most of the meta data is also irrelevant for the index, so only keeping it in the database is beneficial for complexity of the end result.
+The database acts a temporary buffer for the data going into the index. Having a buffer separates the parsing, from the building of the index. Therewith changes made in the parsing, will not affect the rest, so the database acts as a interface between the parser and the indexer. The data is stored on disk, so also the point in time when the programs are executed can happen independently.
+
+This is preferred since the parsing is a very time consuming process, and having it structured in SQL with its meta data helps with showing how successful the parsing was. Some of the meta data is also irrelevant for the index, so only keeping it in the database is makes the end result less complex.
 
 
 \subsection{Indexing data}
+A java program queries the database for all the sections. The relations and data from the other tables are incorporated into the section. Now the section is an object with all the data needed to independently represent an example.
 
-Retreviing data fraom the sql database and indexing it.
+Before the examples are inserted into the index, the index is created with the Elasticsearch java API\footnote{\url{https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html}}. Our project uses the default settings, so only the cluster named is needed to be defined beforehand, the rest happens automatically by Elasticsearch. Lastly a mapping for the example object is passed to Elasticsearch. Figure \ref{fig:es_mapping} shows the mapping passed. It defines all the fields with its types. The mapping sets \textit{categories} to \texttt{not\_analyzed}, so it will match the exact category names.
+
+\begin{figure}[h] 
+\caption{Mapping used to define an example in Elasticsearch}
+\centering
+\includegraphics[scale=0.5]{es_mapping}
+\label{fig:es_mapping}
+\end{figure}
+
+To put each example into the index, they first have to be converted to JSON. A simple methods maps all fields over to an equivalent attributes. Attributes in JSON is key-value pairs, so a key name and the field's value is used. The Java API sends each example to Elasticsearch as a document on the JSON format, which then indexes it.
 
 \subsection{Searching the data}
-
-Has not been implemented but should maybe be mentioned anyway? Maybe not here?
 
 
 \cleardoublepage
