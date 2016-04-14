@@ -26,16 +26,14 @@ Using code from open source libraries saves a lot of time during development whi
 
 \section{Pipeline}
 
-Write about the system acting as a pipeline.
-Still focus on how this was done.
+\subsection{Wikidump parser}
 
-Should following sections in this capter be sections or subsections?
+Wikidump parser is the part of the project that transforms the XML dump of the whole Wikipedia, into a database with relevant data from articles. It does this by parsing the XML, then parsing the Wiki markup and lastly inserting relevant articles into a database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
 
-\section{Source data}
+\subsection{Source data}
 
 
-%%vise til XML utsnitt, og skrive litt om det. Skrive på en måte så noen kan dra nytte av det senere
-\subsection{XML format}
+\subsubsection{XML format}
 \begin{figure}[h]
 \caption{The XML structure used in the XML dump of Wikipedias database}
 \includegraphics[width=\textwidth]{XMLPage}
@@ -45,22 +43,23 @@ Should following sections in this capter be sections or subsections?
 The source data that is fed into the beginning of the pipeline is on the XML format. \ref{fig:xml} shows how the XML is structured. The file is composed of page elements at the top level with the page tag. Each page element represents an article in Wikipedia. the page has several sub elements, but the most interesting element, is the one with the revision tag. Wikipedia saves several revisions of a page, but in the XML dump used only the newest one is included. It is inside this element that we find the article's content in the form of Wiki markup.
 
 
-\subsection{XML parsing}
+\subsubsection{XML parsing}
+In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of XML. It detects where an article in the XML document starts and where it ends, then proceeds to send the content to \texttt{index.js}. The document is read as a stream, which gives the advantage of only keeping a small bit of the document in memory. The library \textit{sax}\footnote{\url{https://www.npmjs.com/package/sax}} is used to read the document as a stream. Sax then uses events for indicating what in the document it is currently reading. Our project listens to the events for a open tag, close tag and content. By saving the state of which element Sax currently is inside we extract text, title, id and timestamp from an articles contents. When we detect the end of an article element, the data extracted is passed to \texttt{index.js}.
 
 
-\section{Data retrieval}
+\subsection{Data retrieval}
 
 %%Parsing XML into relevant data in JSON
-\subsection{Wikimedia's markup syntax}
+\subsubsection{Wikimedia's markup syntax}
+%%set inn et bilde av markup der alt er grået over men det er lyst over viktig markup ting, kan bruke photoshop
+
+\subsubsection{Markup parsing}
 
 
-\subsection{Markup parsing}
-
-
-\section{Data structuring}
+\subsection{Data structuring}
 
 %%Inserting the JSON into an sql database
-\subsection{Database}
+\subsubsection{Database}
 
 \begin{figure}[h] 
 \caption{A simple overview of the database tables and their attributes}
@@ -77,11 +76,11 @@ Figure \ref{fig:db_diagram} displays the tables of the database and the relation
 The database acts a temporary buffer for the data going into the index. This is helpful because it separates the parsing from the building of the index. This is preferred since the parsing is a very time consuming process, and having it structured in SQL with its meta data helps with showing how successful the parsing was. Most of the meta data is also irrelevant for the index, so only keeping it in the database is beneficial for complexity of the end result.
 
 
-\section{Indexing data}
+\subsection{Indexing data}
 
 Retreviing data fraom the sql database and indexing it.
 
-\section{Searching the data}
+\subsection{Searching the data}
 
 Has not been implemented but should maybe be mentioned anyway? Maybe not here?
 
