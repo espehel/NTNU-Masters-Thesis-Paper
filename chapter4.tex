@@ -53,8 +53,18 @@ In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of
 
 %%Parsing XML into relevant data in JSON
 \subsubsection{Wiki markup}
-%%set inn et bilde av markup der alt er grået over men det er lyst over viktig markup ting, kan bruke photoshop
-Show a picture of markup with higlighted/marked markup syntax. Talk about the most important aspects.
+\begin{figure}[h]
+\caption{A short outline from an article's wiki markup, with important aspects highlighted and marked. }
+\includegraphics[width=\textwidth]{wiki_markup_marked}
+\label{fig:wiki_markup}
+\end{figure}
+
+When extracting data from the Wikipedia articles, the articles markup is processed. The markup is called \textit{wiki markup}. Figure \ref{fig:wiki_markup} points out some important aspects of the markup language, for a complete guide, Wikipedia has its own help page\footnote{Help:wiki markup - \url{https://en.wikipedia.org/wiki/Help:Wiki_markup}}. Mark \texttt{A} shows how to refer to an image or other graphic. The first piece of information is about where to find it in Wikipedia's database, while the rest is visual. Mark \texttt{B} is the most important markup when dividing the article into sections. The equal signs at each side indicates that it is a header for a section. The number of equal signs range from one to six. One is the Article title, two is section, three is subsection and so on. By using the hierarchy we can both separate out sections from each other and find each sections parent section.
+
+The markup by Mark \texttt{C} is used for special formatting between the tags. In the case of figure \ref{fig:wiki_markup} mathematical expressions are shown. Syntax for code is another tag that is often included in examples, it is marked like this, \texttt{<source lang="java">}, where the value of \texttt{lang} is the programming language. Mark \texttt{D} shows how one Wikipedia article refers to another. When parsing the sections, all these references are stored. These references are later used for finding relations and relevance between two articles. The words right of the pipe is the reference name, while the ones on the left is the name of the article that are linked to. 
+
+
+
 
 \subsubsection{Markup parsing}
 Each article sent to \texttt{index.js} from \texttt{XMLParser.js} is assessed on whether it contains examples or not. Articles who does not contain any examples, are discarded completely from the final collection. In order to assess the articles, the markup is parsed into objects. This is the task of \texttt{MarkupParser.js}. The parser uses several steps to extract the desired information from the markup. The first steps parses the entire article's markup. The result of the first step is objects for each section, including the introduction. The sections contain a header, what level they belong to in the section hierarchy and the content of the section. 
@@ -99,7 +109,7 @@ Before the examples are inserted into the index, the index is created with the E
 
 To put each example into the index, they first have to be converted to JSON. A simple methods maps all fields over to an equivalent attributes. Attributes in JSON is key-value pairs, so a key name and the field's value is used. The Java API sends each example to Elasticsearch as a document on the JSON format, which then indexes it.
 
-\subsection{Searching the data}
+\subsection{Search interface}
 
 
 \cleardoublepage
