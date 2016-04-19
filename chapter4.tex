@@ -26,9 +26,13 @@ Using code from open source libraries saves a lot of time during development whi
 
 \section{Pipeline}
 
-\subsection{Wikidump parser}
+\subsection{Overview}
 
-Wikidump parser is the part of the project that transforms the XML dump of the whole Wikipedia, into a database with relevant data from articles. The Wikidump parser is written in JavaScript and executed by a Node.js process. To insert the relevant data from the XML into the database, it parses the XML, then parsing the Wiki markup and lastly inserting relevant articles into a database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
+\textit{Wikidump parser} is the first part of the project that transforms the XML dump of the whole Wikipedia, into a database with relevant data from articles. The Wikidump parser is written in JavaScript and executed by a Node.js process. To insert the relevant data from the XML into the database, it parses the XML, then parsing the Wiki markup and lastly inserting relevant articles into a database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
+
+The second part of the project is called \textit{Example indexer}. Example indexer fetces data from the SQL database and combine the data into examples, then it builds an index in Elasticsearch with these examples.
+
+\textit{Web query} is the last part of the project. Web query is a web based search interface. It queries Elasticsearch and displays the results. 
 
 
 \subsection{Source data}
@@ -61,7 +65,7 @@ In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of
 
 When extracting data from the Wikipedia articles, the articles markup is processed. The markup is called \textit{wiki markup}. Figure \ref{fig:wiki_markup} points out some important aspects of the markup language, for a complete guide, Wikipedia has its own help page\footnote{Help:wiki markup - \url{https://en.wikipedia.org/wiki/Help:Wiki_markup}}. Mark \texttt{A} shows how to refer to an image or other graphic. The first piece of information is about where to find it in Wikipedia's database, while the rest is visual. Mark \texttt{B} is the most important markup when dividing the article into sections. The equal signs at each side indicates that it is a header for a section. The number of equal signs range from one to six. One is the Article title, two is section, three is subsection and so on. By using the hierarchy we can both separate out sections from each other and find each sections parent section.
 
-The markup by Mark \texttt{C} is used for special formatting between the tags. In the case of figure \ref{fig:wiki_markup} mathematical expressions are shown. Syntax for code is another tag that is often included in examples, it is marked like this, \texttt{<source lang="java">}, where the value of \texttt{lang} is the programming language. Mark \texttt{D} shows how one Wikipedia article refers to another. When parsing the sections, all these references are stored. These references are later used for finding relations and relevance between two articles. The words right of the pipe is the reference name, while the ones on the left is the name of the article that are linked to. 
+The markup by Mark \texttt{C} is used for special formatting between the tags. In the case of figure \ref{fig:wiki_markup} mathematical expressions are shown. Code is another format that is often included in examples, it is tagged in the following way; \texttt{<source lang="java">}, where the value of \texttt{lang} is the programming language. Mark \texttt{D} shows how one Wikipedia article refers to another. When parsing the sections, all these references are stored. These references are later used for finding relations and relevance between two articles. The words right of the pipe is the reference name, while the ones on the left is the name of the article that are linked to. 
 
 
 
@@ -110,6 +114,16 @@ Before the examples are inserted into the index, the index is created with the E
 To put each example into the index, they first have to be converted to JSON. A simple methods maps all fields over to an equivalent attributes. Attributes in JSON is key-value pairs, so a key name and the field's value is used. The Java API sends each example to Elasticsearch as a document on the JSON format, which then indexes it.
 
 \subsection{Search interface}
+The search interface is responsible for managing queries passed from the user. It serves a web page that allows the user to enter queries for examples. Express\footnote{\url{http://expressjs.com/}} is used as a framework to effortless set up a web application with a HTTP API.
 
+For the web page, \textit{Jade}\footnote{\url{http://jade-lang.com/}} is used as a template engine to build the HTML structure. Using a template engine allows easy reusing of markup code. Also control structures and programming statements can be used directly in the file. Jade offers its own syntax that is faster to write than the standard HTML syntax. For simplicity the web page is mainly styled by Wikipedia's style sheets, with a few adjustments. When the user want to query for examples, the web page offers search box. The search box sends a HTTP request to the web server with the query.
+
+When the server receives the HTTP request, Express routes the request to the right function. The routing functions can be found in \texttt{routes/index.js}. 
+When the request is received, a new function in \texttt{elasticsearch/api.js} is called. \texttt{api.js} queries Elasticsearch directly by using the official Elasticsearch JavaScript  library\footnote{\url{https://www.npmjs.com/package/elasticsearch}}. The response is sent directly back to the routing function.
+
+To display the page in the same way that Wikipedia does, the article's link is used to scrape the page. By scraping the page, we get access to the complete HTML structure of the actual page. From the HTML structure the examples section is extracted. A list of all the relevant examples with their corresponding HTML is sent back to the web page in JSON format. 
+
+The web page uses AJAX\footnote{AJAX - Asynchronous JavaScript and XML} to handle the response from the server and displaying the results in a table. In the table a link for each example is created. This links leads to a view where only that example is displayed. In addition related examples are shown. The related examples are found by sending a new request to the web server. The web server forms a new query to Elasticsearch. By using the selected example and results from the previous search, the web server tries to return the most related results. The formula used to sort the relatedness of examples based on categories are: \(\frac{|M|}{|C|}\) where M is matching categories one document has with the selected example and C is all the categories in that document.
+With the selected example and its related examples returned to the web page, the user can browse between examples by using the links created for each example.
 
 \cleardoublepage
