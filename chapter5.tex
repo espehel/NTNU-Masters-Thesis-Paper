@@ -2,6 +2,24 @@
 
 \chapter{Experiment and Results}
 
-What was done? Analysis of the findings.
+\section{Pipeline}
+We tested the final pipeline by using the English Wikipedia's database dump from February the fourth 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database, lasted nine hours. After the last section was added, the database contained 28 110 sections deemed as relevant sections.
+
+Altough all the sections extracted is an example, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains the white lists used for filtering examples.
+%%legg til alle whitelists i appendixet
+%%forklare litt om whitelistene
+Using only whitelist 2 and 4 gave the best results, leaving 6 593 examples left in the collection. By using the Java API for Elasticsearch, the final index is built with the remaining examples.
+
+\section{Finding a good example}
+
+
+
+\section{Database of examples}
+
+
+
+\section{Search examples}
+
+perform some searches look at results returned?
 
 \cleardoublepage
