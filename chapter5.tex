@@ -1,25 +1,39 @@
 %===================================== CHAP 5 =================================
 
 \chapter{Experiment and Results}
+creae table with statistics
 
 \section{Pipeline}
 We tested the final pipeline by using the English Wikipedia's database dump from February the fourth 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database, lasted nine hours. After the last section was added, the database contained 28 110 sections deemed as relevant sections.
 
-Altough all the sections extracted is an example, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains the white lists used for filtering examples.
-%%legg til alle whitelists i appendixet
-%%forklare litt om whitelistene
-Using only whitelist 2 and 4 gave the best results, leaving 6 593 examples left in the collection. By using the Java API for Elasticsearch, the final index is built with the remaining examples.
+%%fortsett
 
 \section{Finding a good example}
+Finding examples is the first thing that has to be done, in order to use the system we have created. Without useful data, the system is worthless. Therefor we want to fill our database with good examples. This project uses Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one in section \ref{examples-section}.
+
+The analysis was performed based on examples from Wikipedia, but to compare examples for the same subject, examples from other sources were also used. Game Theory is used as an overall domain for the analysis. The following subjects were chosen to find examples about, Prisoners Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondos Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
+
+Based on these subjects a list of properties was compiled, table \ref{table:1} contains these properties with a short description of each. The properties listed in table \ref{table:1} are all favourable, but we experience that when an example contains to many of them, it becomes very complex. The extent of use for each property is also a considerable factor for determining complexity. Although more properties often add more complexity, some are always needed. A simple example will have a hard time explaining the more complicated aspects of a subject. Often pictures or equations that is methodically referenced to from a descriptive text, is enough to be a good example. Also the combination of the properties analogies, walk-through and iterations improve examples without making them more complex. 
+
+The analysis gave a better understanding of examples. Consequently rating and ordering of examples can be improved based on the analysis. 
+The improvement can result in the collection of examples having a higher quality and also lead to a better user experience. 
 
 
+\section{Collection of examples}
+By completing Reaserch Goal 3, we want to obtain a collection of examples that we can populate a database with. The database accepts all kinds of examples, consequently the examples are represented in a generic way. We are using Wikipedia as source for all the examples, therefor we have to strip away a large amount of the information from the article used. 
 
-\section{Database of examples}
+After the article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection.
 
+Although all the sections extracted is an example, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains an example of a white list used to remove undesirable examples. A total of 4 white lists was produced, so they could be used in different combinations. The white lists can be found in the Example Indexer program in the \texttt{src/main/resources} folder.
+Using only white list 2 and 4 gave the best results, leaving 6 593 examples left in the collection.
 
+Elasticsearch was chosen as the best way to store the collection. Since it supports indexing of the example's properties, search queries can be easily defined. The examples are stored as flat objects and has no specified relations among each other. Only references to other examples and common categories relates one example to another.
+
+%generelt om hele prossessen fra en full artikkel til et eksempel repretesntert i indexen. Si at denne prossessen gjør eksemplene generelle som betyr at man kan legge til eksempler fra andre kilder enn wikipedia
 
 \section{Search examples}
 
-perform some searches look at results returned?
+perform some searches, look at results returned?
+mål precisison, finn noen terms, avgjør hvor mange av top 10 som er relevante
 
 \cleardoublepage
