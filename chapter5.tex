@@ -1,12 +1,31 @@
 %===================================== CHAP 5 =================================
 
 \chapter{Experiment and Results}
-creae table with statistics
 
 \section{Pipeline}
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{20em} | p{5em} ||} 
+ \hline
+  & Value \\ [0.5ex] 
+ \hline
+XML file size & 56.3 GB \\
+Number of articles & ~5 000 000 \\
+Extraction duration & ~9 hours \\
+Number of section after extraction & 28110 \\
+Number of examples after filtering & 6593 \\
+
+ \hline
+\end{tabular}
+\caption{Statistics from a run through the pipeline}
+\label{table:run_statistics}
+\end{table}
+
+
 We tested the final pipeline by using the English Wikipedia's database dump from February the fourth 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database, lasted nine hours. After the last section was added, the database contained 28 110 sections deemed as relevant sections.
 
-%%fortsett
+When the process that extract examples were finished, a new fully independent process is started for the next step. To begin with the process queries the SQL database for sections. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a white list is used to filter the examples based on their categories. By filtering the examples we can avoid uninteresting categories, for instance examples concerning history. Finally the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers a HTTP API that other processes can use to query for examples.
+
 
 \section{Finding a good example}
 Finding examples is the first thing that has to be done, in order to use the system we have created. Without useful data, the system is worthless. Therefor we want to fill our database with good examples. This project uses Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one in section \ref{examples-section}.
@@ -32,8 +51,42 @@ Elasticsearch was chosen as the best way to store the collection. Since it suppo
 %generelt om hele prossessen fra en full artikkel til et eksempel repretesntert i indexen. Si at denne prossessen gjør eksemplene generelle som betyr at man kan legge til eksempler fra andre kilder enn wikipedia
 
 \section{Search examples}
+In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of our queries by measuring the precision of the keywords. Table \ref{table:precision_test} contains the keywords and the results of the test.
 
-perform some searches, look at results returned?
-mål precisison, finn noen terms, avgjør hvor mange av top 10 som er relevante
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{15em} | p{5em} | p{5em} ||} 
+ \hline
+ Keyword & Top 5 & Top 10 \\ [0.5ex] 
+ \hline
+
+Logic & 1 & 0.9 \\
+Programming & 1 & 0.9 \\
+Heuristic & 0.8 & 0.7 \\
+Algebra & 0.8 & 0.7 \\
+Game Theory & 1 & 0.9 \\
+
+Fuzzy Logic & 1 & 0.7 \\
+Java & 1 & 0.9 \\
+Bayes Network & 1 & 0.9 \\
+
+Prisoners Dilemma & 1 & 0.6 \\
+Nash Equilibrium & 1 & 0.8 \\
+Cartesian Product & 0.8 & 0.6 \\
+Parrondos Paradox & 0.6 & 0.4 \\
+Zero Sum & 0 & 0 \\
+
+ \hline
+\end{tabular}
+\caption{The precision of the queries tested by a set of keywords and the top ten and top five results}
+\label{table:precision_test}
+\end{table}
+
+The keywords in table \ref{table:precision_test} were chosen from the domains mathematics, artificial intelligence and programming. The list is sorted descending based on the degree of how general the subject is.
+
+At the top of the list the score for five and ten terms are very similar, while towards the bottom where the subjects are more specific, the score for top ten results suffers. Having a rather small database of examples for specific subjects is assumed to be the explanation.
+
+Another interesting to note is that the keyword \textit{Zero Sum} achieved a score of zero on both measures, meaning all the results returned was deemed irrelevant. None relevant results indicates that the queries do not handle the keyword very well. Similar searches suggests that combinations of common words will favour results where only one word is included, when it instead should favour results where all words are a part of the example.
+
 
 \cleardoublepage
