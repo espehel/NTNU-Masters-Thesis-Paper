@@ -24,15 +24,15 @@ Number of examples after filtering & 6593 \\
 
 We tested the final pipeline by using the English Wikipedia's database dump from February the fourth 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database, lasted nine hours. After the last section was added, the database contained 28 110 sections deemed as relevant sections.
 
-When the process that extract examples were finished, a new fully independent process is started for the next step. To begin with the process queries the SQL database for sections. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a white list is used to filter the examples based on their categories. By filtering the examples we can avoid uninteresting categories, for instance examples concerning history. Finally the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers a HTTP API that other processes can use to query for examples.
+When the process that extract relevant sections were finished, a new fully independent process was started for the next step. To begin with, the process queries the SQL database for sections. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a white list is used to filter the examples based on their categories. By filtering the examples we can avoid uninteresting categories, for instance examples concerning history. Finally, the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers a HTTP API that other processes can use to query for examples.
 
 
 \section{Finding a good example}
-Finding examples is the first thing that has to be done, in order to use the system we have created. Without useful data, the system is worthless. Therefor we want to fill our database with good examples. This project uses Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one in section \ref{examples-section}.
+Finding examples is the first thing that has to be done, in order to use the system we have created. Without useful data, the system is worthless. Therefor we want to fill our database with good examples. This project use Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}, at present section, we will use the main points from section \ref{examples-section} to draw a conclusion.
 
 The analysis was performed based on examples from Wikipedia, but to compare examples for the same subject, examples from other sources were also used. Game Theory is used as an overall domain for the analysis. The following subjects were chosen to find examples about, Prisoners Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondos Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
 
-Based on these subjects a list of properties was compiled, table \ref{table:1} contains these properties with a short description of each. The properties listed in table \ref{table:1} are all favourable, but we experience that when an example contains to many of them, it becomes very complex. The extent of use for each property is also a considerable factor for determining complexity. Although more properties often add more complexity, some are always needed. A simple example will have a hard time explaining the more complicated aspects of a subject. Often pictures or equations that is methodically referenced to from a descriptive text, is enough to be a good example. Also the combination of the properties analogies, walk-through and iterations improve examples without making them more complex. 
+Based on these subjects a list of properties was compiled, table \ref{table:1} contains these properties with a short description of each. The properties listed in table \ref{table:1} are all favourable, but we experienced that when an example contains to many of them, it becomes very complex. The extent of use for each property is also a considerable factor for determining complexity. Although more properties often add more complexity, some are always needed. A simple example will have a hard time explaining the more complicated aspects of a subject. Often pictures or equations that is methodically referenced to from a descriptive text, is enough to be a good example. Also the combination of the properties analogies, walk-through and iterations improve examples without making them more complex. 
 
 The analysis gave a better understanding of examples. Consequently rating and ordering of examples can be improved based on the analysis. 
 The improvement can result in the collection of examples having a higher quality and also lead to a better user experience. 
@@ -43,7 +43,7 @@ By completing Reaserch Goal 3, we want to obtain a collection of examples that w
 
 After the article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection.
 
-Although all the sections extracted is an example, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains an example of a white list used to remove undesirable examples. A total of 4 white lists was produced, so they could be used in different combinations. The white lists can be found in the Example Indexer program in the \texttt{src/main/resources} folder.
+Although all the sections extracted is an example, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains an example of a white list used to remove undesirable examples. A total of 4 white lists was produced, to be used in different combinations. The white lists can be found in the Example Indexer program in the \texttt{src/main/resources} folder.
 Using only white list 2 and 4 gave the best results, leaving 6 593 examples left in the collection.
 
 Elasticsearch was chosen as the best way to store the collection. Since it supports indexing of the example's properties, search queries can be easily defined. The examples are stored as flat objects and has no specified relations among each other. Only references to other examples and common categories relates one example to another.
@@ -51,7 +51,7 @@ Elasticsearch was chosen as the best way to store the collection. Since it suppo
 %generelt om hele prossessen fra en full artikkel til et eksempel repretesntert i indexen. Si at denne prossessen gjør eksemplene generelle som betyr at man kan legge til eksempler fra andre kilder enn wikipedia
 
 \section{Search examples}
-In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of our queries by measuring the precision of the keywords. Table \ref{table:precision_test} contains the keywords and the results of the test.
+In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of the queries by measuring the precision of the results returned from a search with the selected  keywords. Table \ref{table:precision_test} contains the keywords and the results of the test.
 
 \begin{table}[h!]
 \centering
@@ -69,7 +69,9 @@ Game Theory & 1 & 0.9 \\
 Fuzzy Logic & 1 & 0.7 \\
 Java & 1 & 0.9 \\
 Bayes Network & 1 & 0.9 \\
+Derivation & 1 & 0.8 \\
 
+Chain Rule & 1 & 0.6 \\
 Prisoners Dilemma & 1 & 0.6 \\
 Nash Equilibrium & 1 & 0.8 \\
 Cartesian Product & 0.8 & 0.6 \\
@@ -82,11 +84,12 @@ Zero Sum & 0 & 0 \\
 \label{table:precision_test}
 \end{table}
 
-The keywords in table \ref{table:precision_test} were chosen from the domains mathematics, artificial intelligence and programming. The list is sorted descending based on the degree of how general the subject is.
+The keywords in table \ref{table:precision_test} were chosen from the domains mathematics, artificial intelligence and programming. The list is sorted in a descending manner based on the degree of how general the subject is.
+Results returned that simply is not a working example or is an example for another subject is judged as an irrelevant result.
 
-At the top of the list the score for five and ten terms are very similar, while towards the bottom where the subjects are more specific, the score for top ten results suffers. Having a rather small database of examples for specific subjects is assumed to be the explanation.
+At the top of the list the score for five and ten terms are very similar, while towards the bottom where the subjects are more specific, the score for top ten results suffers. Having a relatively small database of examples for specific subjects is assumed to be the explanation.
 
-Another interesting to note is that the keyword \textit{Zero Sum} achieved a score of zero on both measures, meaning all the results returned was deemed irrelevant. None relevant results indicates that the queries do not handle the keyword very well. Similar searches suggests that combinations of common words will favour results where only one word is included, when it instead should favour results where all words are a part of the example.
+Another interesting remark to note is that the keyword \textit{Zero Sum} achieved a score of zero on both measures, meaning all the results returned was deemed irrelevant. No relevant results indicates that the queries do not handle the keyword very well. Similar searches suggests that combinations of common words will favour results where only one word is included, when it instead should favour results where all words are a part of the example.
 
 
 \cleardoublepage
