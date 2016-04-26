@@ -44,21 +44,26 @@ The second part of the project is called \textit{Example indexer}. Example index
 
 \subsection{Wikidump parser}
 
+\begin{figure}[h]
+\caption{Architectural overview of Wikidump parser}
+\includegraphics[width=\textwidth]{WikidumpParser}
+\label{fig:wikidump_parser}
+\end{figure}
 
 \subsubsection{XML parser}
+
+The source data that is fed into the beginning of the pipeline is on the XML format. \ref{fig:xml} shows how the XML is structured. The file is composed of page elements at the top level with the page tag. Each page element represents an article in Wikipedia. The page has several sub elements, but the most interesting element, is the one with the revision tag. Wikipedia saves several revisions of a page, but in the XML dump used, only the newest revision is included. It is inside this element that we find the article's content in the form of Wiki markup.
+
 \begin{figure}[h]
 \caption{The XML structure used in the XML dump of Wikipedias database}
 \includegraphics[width=\textwidth]{XMLPage}
 \label{fig:xml}
 \end{figure}
 
-The source data that is fed into the beginning of the pipeline is on the XML format. \ref{fig:xml} shows how the XML is structured. The file is composed of page elements at the top level with the page tag. Each page element represents an article in Wikipedia. The page has several sub elements, but the most interesting element, is the one with the revision tag. Wikipedia saves several revisions of a page, but in the XML dump used, only the newest revision is included. It is inside this element that we find the article's content in the form of Wiki markup.
-
-
 In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of XML. It detects where an article in the XML document starts and where it ends, then proceeds to send the content to \texttt{index.js}. The document is read as a stream, which gives the advantage of only keeping a small bit of the document in memory. The library \textit{sax}\footnote{\url{https://www.npmjs.com/package/sax}} is used to read the document as a stream. Sax then uses events for indicating what in the document it is currently reading. Our project listens to the events for a open tag, close tag and content. By saving the state of which element Sax currently is inside we extract text, title, id and timestamp from the content of an article. When we detect the end of an article element, the data extracted is passed to \texttt{index.js}.
 
-%%Parsing XML into relevant data in JSON
 \subsubsection{Markup parser}
+
 \begin{figure}[h]
 \caption{A short outline from an article's wiki markup, with important aspects highlighted and marked. }
 \includegraphics[width=\textwidth]{wiki_markup_marked}
@@ -99,14 +104,15 @@ This is preferred since the parsing is a very time consuming process, and having
 \subsection{Example indexer}
 A java program queries the database for all the sections. The relations and data from the other tables are incorporated into the section. Now the section is an object with all the data needed to independently represent an example.
 
-Before the examples are inserted into the index, the index is created with the Elasticsearch java API\footnote{\url{https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html}}. Our project uses the default settings, so only the cluster named is needed to be defined beforehand, the rest happens automatically by Elasticsearch. Lastly a mapping for the example object is passed to Elasticsearch. Figure \ref{fig:es_mapping} shows the mapping passed. It defines all the fields with its types. The mapping sets \textit{categories} to \texttt{not\_analyzed}, so it will match the exact category names.
-
-\begin{figure}[h] 
+\begin{figure}[H] 
 \caption{Mapping used to define an example in Elasticsearch}
 \centering
 \includegraphics[scale=0.5]{es_mapping}
 \label{fig:es_mapping}
 \end{figure}
+
+Before the examples are inserted into the index, the index is created with the Elasticsearch java API\footnote{\url{https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html}}. Our project uses the default settings, so only the cluster named is needed to be defined beforehand, the rest happens automatically by Elasticsearch. Lastly a mapping for the example object is passed to Elasticsearch. Figure \ref{fig:es_mapping} shows the mapping passed. It defines all the fields with its types. The mapping sets \textit{categories} to \texttt{not\_analyzed}, so it will match the exact category names.
+
 
 To put each example into the index, they first have to be converted to JSON. A simple methods maps all fields over to their equivalent attributes. Attributes in JSON is key-value pairs, so a key name and the field's value is used. The Java API sends each example to Elasticsearch as a document on the JSON format, which then indexes it.
 
@@ -115,7 +121,17 @@ As already mentioned, Elasticsearch is the chosen tool for indexing the examples
 
 During this project, Elasticsearch was run on the same computer as both Example indexer and Web query. Therefor the communication between these programs happens with HTTP request over localhost. Localhost is used when communicating between different processes on same computer. By resolving to the IP address 127.0.0.1, which is a loopback address, only the right port is needed. Consequently, Elasticsearch, Web query and Example indexer, which all are web applications, communicates with each other without an internet connection. During the project, having them all on same computer was the easiest option. For possible future use, hosting the index on a separate server, only the ip address would have to be changed.
 
+%write about structre: shard/node/index/document -> wikipedia/example
+%queries by using that adress and having the query in the body
+
 \section{Search interface}
+
+\begin{figure}[H] 
+\caption{A sequence diagram showing the interactions between the actors when searching for examples}
+\includegraphics[width=\textwidth]{WebQuery}
+\label{fig:web_query}
+\end{figure}
+
 The search interface is responsible for managing queries passed from the user. It serves a web page that allows the user to enter queries for examples. Express\footnote{\url{http://expressjs.com/}} is used as a framework to effortless set up a web application with a HTTP API.
 
 For the web page, \textit{Jade}\footnote{\url{http://jade-lang.com/}} is used as a template engine to build the HTML structure. Using a template engine allows easy reusing of markup code. Also control structures and programming statements can be used directly in the file. Jade offers its own syntax that is faster to write than the standard HTML syntax. For simplicity, the web page is mainly styled by Wikipedia's style sheets, with a few adjustments. When the user wants to query for examples, the web page offers a search box. The search box sends a HTTP request to the web server with the query.
