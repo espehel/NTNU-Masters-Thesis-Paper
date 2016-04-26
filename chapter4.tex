@@ -110,6 +110,11 @@ Before the examples are inserted into the index, the index is created with the E
 
 To put each example into the index, they first have to be converted to JSON. A simple methods maps all fields over to their equivalent attributes. Attributes in JSON is key-value pairs, so a key name and the field's value is used. The Java API sends each example to Elasticsearch as a document on the JSON format, which then indexes it.
 
+\subsection{Index}
+As already mentioned, Elasticsearch is the chosen tool for indexing the examples. By using its simple RESTful API, examples can be stored as JSON documents, which Elasticsearch then indexes automatically by detecting the examples data structure and type. Hence, we can focus more on the queries used to retrieve examples, instead of building the index. Elasticsearch manages the whole index, and leaves a simply web based interface for communication.
+
+During this project, Elasticsearch was run on the same computer as both Example indexer and Web query. Therefor the communication between these programs happens with HTTP request over localhost. Localhost is used when communicating between different processes on same computer. By resolving to the IP address 127.0.0.1, which is a loopback address, only the right port is needed. Consequently, Elasticsearch, Web query and Example indexer, which all are web applications, communicates with each other without an internet connection. During the project, having them all on same computer was the easiest option. For possible future use, hosting the index on a separate server, only the ip address would have to be changed.
+
 \section{Search interface}
 The search interface is responsible for managing queries passed from the user. It serves a web page that allows the user to enter queries for examples. Express\footnote{\url{http://expressjs.com/}} is used as a framework to effortless set up a web application with a HTTP API.
 
