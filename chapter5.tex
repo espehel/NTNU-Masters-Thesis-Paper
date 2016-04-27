@@ -1,6 +1,6 @@
 %===================================== CHAP 5 =================================
 
-\chapter{Experiment and Results}
+\chapter{Experiments and Results}
 
 \section{Pipeline}
 \begin{table}[h!]
@@ -28,22 +28,22 @@ When the process that extract relevant sections were finished, a new fully indep
 
 
 \section{Finding a good example}
-Finding examples is the first thing that has to be done, in order to use the system we have created. Without useful data, the system is worthless. Therefor we want to fill our database with good examples. This project use Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}, at present section, we will use the main points from section \ref{examples-section} to draw a conclusion.
+Finding examples is the first thing that has to be done, in order to use the system we have created. Without useful data, the system is worthless. Therefor we want to fill our database with good examples. This project use Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}. This section will use the main points from section \ref{examples-section} to draw a conclusion.
 
 The analysis was performed based on examples from Wikipedia, but to compare examples for the same subject, examples from other sources were also used. Game Theory is used as an overall domain for the analysis. The following subjects were chosen to find examples about, Prisoners Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondos Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
 
-Based on these subjects a list of properties was compiled, table \ref{table:1} contains these properties with a short description of each. The properties listed in table \ref{table:1} are all favourable, but we experienced that when an example contains to many of them, it becomes very complex. The extent of use for each property is also a considerable factor for determining complexity. Although more properties often add more complexity, some are always needed. A simple example will have a hard time explaining the more complicated aspects of a subject. Often pictures or equations that is methodically referenced to from a descriptive text, is enough to be a good example. Also the combination of the properties analogies, walk-through and iterations improve examples without making them more complex. 
+Based on these samples, a list of properties that examples might possess was compiled, table \ref{table:1} contains these properties with a short description of each. The properties listed in table \ref{table:1} are all favourable, but we experienced that when an example contains to many of them, it becomes very complex. A complex example is not necessarily a bad thing. Although a more complex example requires more prerequisite knowledge from the reader, which may exclude some readers. The extent of use for each property is also a considerable factor for determining complexity. Although more properties often add more complexity, some are always needed. A simple example will have a hard time explaining the more complicated aspects of a subject. Therefor an example should fall in between a golden mean of complexity. This golden mean is hard to define, but ought to be quite large. There is some techniques though, that lets an example explain more complicated subjects, without increasing complexity. Pictures or equations that is methodically referenced to from a descriptive text, is one way. Also the combination of the properties analogies, walk-through and iterations improve examples without making them more complex. 
 
-The analysis gave a better understanding of examples. Consequently rating and ordering of examples can be improved based on the analysis. 
+The analysis in section \ref{examples-section} gave a better understanding of examples. Consequently rating and ordering of examples can be improved based on the analysis. 
 The improvement can result in the collection of examples having a higher quality and also lead to a better user experience. 
 
 
 \section{Collection of examples}
-By completing Reaserch Goal 3, we want to obtain a collection of examples that we can populate a database with. The database accepts all kinds of examples, consequently the examples are represented in a generic way. We are using Wikipedia as source for all the examples, therefor we have to strip away a large amount of the information from the article used. 
+Reaserch Goal 3 aims to obtain a collection of examples that we can populate a database with. The database accepts all kinds of examples, consequently the examples are represented in a generic way. We are using Wikipedia as source for all the examples, therefor we have to strip away a large amount of the information from the article used. 
 
 After the article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection.
 
-Although all the sections extracted is an example, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains an example of a white list used to remove undesirable examples. A total of 4 white lists was produced, to be used in different combinations. The white lists can be found in the Example Indexer program in the \texttt{src/main/resources} folder.
+Although all the sections extracted from Wikipedia articles are examples, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains an example of a white list used to remove undesirable examples. A total of 4 white lists was produced, to be used in different combinations. The white lists can be found in the Example Indexer program's resource folder, at \texttt{src/main/resources}. White list 1 and 2 contains the most popular categories, which also are educational. White list 3 narrows the selection further by only including categories related to mathematics and technology. The last list, number 4, is based on the main categories from Wikipedia's main category overview\footnote{\url{https://en.wikipedia.org/wiki/Portal:Contents/Categories} (7. Mars 2016)}. From the overview Mathemathics, Logic, Mathematical Sciences, Computing and all of their main sub-categories was used.
 Using only white list 2 and 4 gave the best results, leaving 6 593 examples left in the collection.
 
 Elasticsearch was chosen as the best way to store the collection. Since it supports indexing of the example's properties, search queries can be easily defined. The examples are stored as flat objects and has no specified relations among each other. Only references to other examples and common categories relates one example to another.
@@ -52,6 +52,8 @@ Elasticsearch was chosen as the best way to store the collection. Since it suppo
 
 \section{Search examples}
 In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of the queries by measuring the precision of the results returned from a search with the selected  keywords. Table \ref{table:precision_test} contains the keywords and the results of the test.
+
+%%skriv om hvordan precision beregnes
 
 \begin{table}[h!]
 \centering
