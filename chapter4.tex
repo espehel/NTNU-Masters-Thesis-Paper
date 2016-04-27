@@ -2,28 +2,6 @@
 
 \chapter{Implementation}\label{cap_4}
 
-\section{Tools used}
-
-\subsection{Elasticsearch} \label{elasticsearch}
-%%JSON abbrevation
-Elasticsearch is a tool used in this project for indexing the examples. Elasticsearch is built on top of Apache Lucene\footnote{\url{https://lucene.apache.org}}, which is a information retrieval library, written in Java. Internally in Elasticsearch, data is stored as structured JSON\footnote{JSON - JavaScript Object Notation} documents. The API\footnote{API - Application Programming Interface} for communicating with Elasticsearch is a RESTful\footnote{REST - Representational State Transfer} API using JSON over HTTP. The API can be used for configuring Elasticsearch, building the index and querying it. 
-%%Ta med i erfaring seksjon om dette at siden alt dette bruker json og webserveren bruker javascript via node, er alt veldig enkelt og konsistent.
-
-Elasticsearch is built for scalability. Being scalable lets it handle growth of the dataset and interactions on it. Elasticsearch scales by having a cluster of many nodes. If the system needs to scale, new nodes can easily be added, and Elasticsearch will distribute resources to the newly added nodes. Different nodes can exist on different servers. However this project does not need or take advantage of this scaling, and will only run on one node.
-
-There are two ways of how a search can be implemented in Elasticsearch, \textit{filter} and \textit{query}. The \textit{filter} is utilizing \textit{terms} to decide whether a document should be returned or not. Searching with a \textit{term} is very similar to how one would use SQL. 
-Searches can for instance consist of text strings, numbers, ranges or dates, and Elasticsearch will return everything that matches. It also allows for boolean operators and nesting of these. Using a \textit{filter} is very quick and should be used if the relevance of the documents is not important.
-
-If relevance score is important then the second option, \textit{query}, should be chosen. If a \textit{query} is combined with a \textit{term}, Elasticsearch is looking for the exact value in its index. A score is then returned based on the documents TF-IDF relevance to the term. If a \textit{match} is used instead, an analysis will be performed, creating a list of terms from the query, and then executing low-level queries for each of the terms. The results are combined to produce the final relevance score. These two methods can also be combined or extended with other methods to customize the search further.
-
-
-\subsection{NPM and Node.js}
-Two of the processes used by this project are written in JavaScript. JavaScript is normally executed by browsers. Node.js\cite{node} allows the code to be executed from a terminal instead, which allows JavaScript to be used on servers.  Node.js is an asynchronous event driven framework. By embracing to event loop in this manner, Node.js avoids thread management and blocking of those. Instead callbacks are pushed to the event loop and Node.js runs until there are no more callbacks to perform. This makes Node.js ideal for simpler and less complex systems, and is why it is chosen for this project.
-
-Node.js also comes with a packet manager called Node Packet Manager(NPM). NPM allows any Node.js project, to include libraries and other JavaScript projects published to their \textit{Open Source Registry} \footnote{\url{https://www.npmjs.com/npm/open-source}}. This is done by a simple API call to the NPM executable in the terminal.
-
-Using code from open source libraries saves a lot of time during development while still having full control and overview of the code executed. Hence we decided to include several libraries. Examples of libraries used are \textit{sax} for reading the XML file line by line as a stream.  \textit{wtf\_wikipedia}\footnote{\url{https://www.npmjs.com/package/wtf_wikipedia}} to parse some of the Wikipedia markup;  \textit{request}\footnote{\url{https://www.npmjs.com/package/request}} to fetch a HTML file from a server with a GET call;  \textit{cheerio}\footnote{\url{https://www.npmjs.com/package/cheerio}} for iterating through an HTML structure while supporting filtering, reading and editing of the HTML. Using libraries results in the system being more modular, which makes it easier to alter during development. This has been highly advantageous for this project, since requirements has been continually changed. 
-
 \section{Pipeline}
 
 \subsection{Overview}
@@ -156,5 +134,28 @@ To display the page in the same way that Wikipedia does, the article's link is u
 
 The web page uses AJAX\footnote{AJAX - Asynchronous JavaScript and XML} to handle the response from the server and displaying the results in a table. In the table a link for each example is created. This links leads to a view where only that example is displayed. In addition, related examples are shown. The related examples are found by sending a new request to the web server. The web server forms a new query to Elasticsearch. By using the selected example and results from the previous search, the web server tries to return the most related examples. The formula used to sort the relatedness of examples based on categories are: \(\frac{|M|}{|C|}\) where M is matching categories one document has with the selected example and C is all the categories in that document.
 With the selected example and its related examples returned to the web page, the user can browse between examples by using the links created for each example.
+
+\section{Tools used}
+
+\subsection{Elasticsearch} \label{elasticsearch}
+
+Elasticsearch is a tool used in this project for indexing the examples. Elasticsearch is built on top of Apache Lucene\footnote{\url{https://lucene.apache.org}}, which is a information retrieval library, written in Java. Internally in Elasticsearch, data is stored as structured JSON\footnote{JSON - JavaScript Object Notation} documents. The API\footnote{API - Application Programming Interface} for communicating with Elasticsearch is a RESTful\footnote{REST - Representational State Transfer} API using JSON over HTTP. The API can be used for configuring Elasticsearch, building the index and querying it. 
+%%Ta med i erfaring seksjon om dette at siden alt dette bruker json og webserveren bruker javascript via node, er alt veldig enkelt og konsistent.
+
+Elasticsearch is built for scalability. Being scalable let it handle growth of the dataset and interactions on it. Elasticsearch scales by having a cluster of many nodes. If the system needs to scale, new nodes can easily be added, and Elasticsearch will distribute resources to the newly added nodes. Different nodes can exist on different servers. However this project does not need or take advantage of this scaling, and will only run on one node.
+
+There are two ways how a search can be implemented in Elasticsearch, \textit{filter} and \textit{query}. The \textit{filter} is utilizing \textit{terms} to decide whether a document should be returned or not. Searching with a \textit{term} is very similar to how one would use SQL. 
+Searches can for instance consist of text strings, numbers, ranges or dates, and Elasticsearch will return everything that matches. It also allows for boolean operators and nesting of these. Using a \textit{filter} is very quick and should be used if the relevance of the documents is insignificant.
+
+If relevance score is important then the second option, \textit{query}, should be chosen. If a \textit{query} is combined with a \textit{term}, Elasticsearch is looking for the exact value in its index. A score is then returned based on the documents TF-IDF relevance to the term. If a \textit{match} is used instead, an analysis will be performed, creating a list of terms from the query, and then executing low-level queries for each of the terms. The results are combined to produce the final relevance score. These two methods can also be combined or extended with other methods to customize the search further.
+
+
+\subsection{NPM and Node.js}
+In our project, both the programs Wikidump parser and Web query are written in JavaScript, which is normally executed by browsers. Node.js\cite{node} allows the code to be executed from a terminal instead, which enables JavaScript to be used on servers.  Node.js is an asynchronous event driven framework. By embracing to event loop in this manner, Node.js avoids thread management and blocking of those. Instead callbacks are pushed to the event loop and Node.js runs until there are no more callbacks to perform. This makes Node.js ideal for simpler and less complex systems, and is therefor chosen for this project.
+
+Node.js also comes with a packet manager called Node Packet Manager(NPM). NPM allows any Node.js project, to include libraries and other JavaScript projects published to their \textit{Open Source Registry} \footnote{\url{https://www.npmjs.com/npm/open-source}}. This is done by a simple API call to the NPM executable in the terminal.
+
+Using code from open source libraries saves a lot of time during development while still having full control and overview of the code executed. Hence we decided to include several libraries. Examples of libraries used are \textit{sax} for reading the XML file line by line as a stream.  \textit{wtf\_wikipedia}\footnote{\url{https://www.npmjs.com/package/wtf_wikipedia}} to parse some of the Wikipedia markup;  \textit{request}\footnote{\url{https://www.npmjs.com/package/request}} to fetch a HTML file from a server with a GET call;  \textit{cheerio}\footnote{\url{https://www.npmjs.com/package/cheerio}} for iterating through an HTML structure while supporting filtering, reading and editing of the HTML. Using libraries results in the system being more modular, which makes it easier to alter during development. This has been highly advantageous for this project, since requirements has been continually changed. 
+
 
 \cleardoublepage
