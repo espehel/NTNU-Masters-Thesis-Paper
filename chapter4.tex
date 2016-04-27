@@ -74,7 +74,7 @@ The next step iterates through the list of sections to determine if some of them
 
 %% TODO forklare tabellene bedre. Hva de forskjellige termene er i den faktiske wikipedia
 
-Section \ref{custom-pipeline} explains that the source data is fed into the pipeline as a snapshot of Wikipedia at a particular time. The size of the source data is an approximately 50 GB XML-document. Most of this data is not interesting in this project. Therefor the parser excludes most of it before it is structured in the SQL database. 
+Section \ref{custom-pipeline} explains that the source data is fed into the pipeline as a snapshot of Wikipedia at a particular time. The size of the source data is an approximately 50 GB XML-document. Most of the data has no link or relation to examples, making it not interesting for this project. Therefor Markup parser excludes most of it before it is organized in the SQL database. 
 
 Figure \ref{fig:db_diagram} displays the tables of the database and the relations between them. If a relevant article is discovered, it is inserted into the \textit{pages} table. These sections are then stored in the database with their relation to the article. The categories of the article is also kept, because it will be helpful regarding searching among examples in the finished index.  
 
