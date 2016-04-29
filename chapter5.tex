@@ -91,9 +91,11 @@ Results returned that simply is not a working example or is an example for anoth
 
 At the top of the list the score for five and ten terms are very similar, while towards the bottom where the subjects are more specific, the score for top ten results suffers. Having a relatively small database of examples for specific subjects is assumed to be the explanation.
 
-Another interesting remark to note is that the keyword \textit{Zero Sum} achieved a score of zero on both measures, meaning all the results returned was deemed irrelevant. No relevant results indicates that the queries do not handle the keyword very well. Similar searches suggests that combinations of common words will favour results where only one word is included, when it instead should favour results where all words are a part of the example.
+Another interesting remark to note is that the top 5 results are consistently better than the top 10 results. Top 5 being better than top 10, is caused by at least half of the relevant examples which is returned, are found among the first five results. Therefor we can conclude that the ranking of the examples functions as intended. 
 
-\section{Error analysis}
+There exist one substantial irregularity in table \ref{table:precision_test} though, the keyword \textit{Zero Sum} achieves a score of zero on both measures, meaning all of the ten first results returned is deemed irrelevant. When looking at all results returned, there is still no relevant examples. No relevant results indicates an error in the system, either in the search itself, or that there is no example to find at all. Section \ref{err_analysis} elaborates on the process to discover the errors cause.
+
+\section{Error analysis} \label{err_analysis}
 
 The experiment performed in section \ref{search_experiment} revealed an error in the system, which occurred when searching with the keyword \textit{zero sum}. The system should have returned the example section from Wikipedia's article, \textit{Zero-sum game} \footnote{\url{https://en.wikipedia.org/wiki/Zero-sum\_game\#Example}(28. April 2016)}. This error analysis is performed to determine where in the system the error originated. 
 
