@@ -3,15 +3,22 @@
 \chapter{Experiments and Results}
 
 \section{Pipeline}
+
+
+
+We tested the final pipeline by using the English Wikipedia's database dump from February 4. 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database, lasted nine hours. After the last section was added, the database contained 28 110 sections deemed as relevant sections.
+
+When the process that extract relevant sections were finished, a new fully independent process was started for the next step. To begin with, the process queries the SQL database for sections. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a white list is used to filter the examples based on their categories. By filtering the examples we can avoid uninteresting categories, for instance examples concerning history. Finally, the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers a HTTP API that other processes can use to query for examples.
+
 \begin{table}[h!]
 \centering
-\begin{tabular} {|| p{20em} | p{5em} ||} 
+\begin{tabular} {|| p{15em} | r ||} 
  \hline
   & Value \\ [0.5ex] 
  \hline
-XML file size & 56.3 GB \\
-Number of articles & ~5 000 000 \\
-Extraction duration & ~9 hours \\
+XML file size in Gigabytes & 56.3 \\
+Number of articles & ~5 100 000 \\
+Extraction duration in hours & ~9 \\
 Number of section after extraction & 28110 \\
 Number of examples after filtering & 6593 \\
 
@@ -22,13 +29,8 @@ Number of examples after filtering & 6593 \\
 \end{table}
 
 
-We tested the final pipeline by using the English Wikipedia's database dump from February the fourth 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database, lasted nine hours. After the last section was added, the database contained 28 110 sections deemed as relevant sections.
-
-When the process that extract relevant sections were finished, a new fully independent process was started for the next step. To begin with, the process queries the SQL database for sections. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a white list is used to filter the examples based on their categories. By filtering the examples we can avoid uninteresting categories, for instance examples concerning history. Finally, the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers a HTTP API that other processes can use to query for examples.
-
-
 \section{Finding a good example}
-Finding examples is the first thing that has to be done, in order to use the system we have created. Without useful data, the system is worthless. Therefor we want to fill our database with good examples. This project use Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}. This section will use the main points from section \ref{examples-section} to draw a conclusion.
+Finding examples is the overall goal of this work, in order to use the system we have created. Without useful data, the system is worthless. Therefore we want to fill our database with good examples. This project use Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}. This section will use the main points from section \ref{examples-section} to draw a conclusion.
 
 The analysis was performed based on examples from Wikipedia, but to compare examples for the same subject, examples from other sources were also used. Game Theory is used as an overall domain for the analysis. The following subjects were chosen to find examples about, Prisoners Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondos Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
 
@@ -43,7 +45,7 @@ Reaserch Goal 3 aims to obtain a collection of examples that we can populate a d
 
 After the article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection.
 
-Although all the sections extracted from Wikipedia articles are examples, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains an example of a white list used to remove undesirable examples. A total of 4 white lists was produced, to be used in different combinations. The white lists can be found in the Example Indexer program's resource folder, at \texttt{src/main/resources}. White list 1 and 2 contains the most popular categories, which also are educational. White list 3 narrows the selection further by only including categories related to mathematics and technology. The last list, number 4, is based on the main categories from Wikipedia's main category overview\footnote{\url{https://en.wikipedia.org/wiki/Portal:Contents/Categories} (7. Mars 2016)}. From the overview Mathemathics, Logic, Mathematical Sciences, Computing and all of their main sub-categories was used.
+Although all the sections extracted from Wikipedia articles are examples, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted in the index. Appendix \ref{app_whitelist} contains an example of a white list used to remove undesirable examples. A total of 4 white lists was produced, to be used in different combinations. The white lists can be found in the Example Indexer program's resource folder, at \texttt{src/main/resources}. White list 1 and 2 contains the most popular categories, which also are educational. White list 3 narrows the selection further by only including categories related to mathematics and technology. The last list, number 4, is based on the main categories from Wikipedia's main category overview\footnote{\url{https://en.wikipedia.org/wiki/Portal:Contents/Categories} (Last visited 7. Mars 2016)}. From the overview Mathemathics, Logic, Mathematical Sciences, Computing and all of their main sub-categories was used.
 Using only white list 2 and 4 gave the best results, leaving 6 593 examples left in the collection.
 
 Elasticsearch was chosen as the best way to store the collection. Since it supports indexing of the example's properties, search queries can be easily defined. The examples are stored as flat objects and has no specified relations among each other. Only references to other examples and common categories relates one example to another.
@@ -97,7 +99,7 @@ There exist one substantial irregularity in table \ref{table:precision_test} tho
 
 \section{Error analysis} \label{err_analysis}
 
-The experiment performed in section \ref{search_experiment} revealed an error in the system, which occurred when searching with the keyword \textit{zero sum}. The system should have returned the example section from Wikipedia's article, \textit{Zero-sum game} \footnote{\url{https://en.wikipedia.org/wiki/Zero-sum\_game\#Example}(28. April 2016)}. This error analysis is performed to determine where in the system the error originated. 
+The experiment performed in section \ref{search_experiment} revealed an error in the system, which occurred when searching with the keyword \textit{zero sum}. The system should have returned the example section from Wikipedia's article, \textit{Zero-sum game} \footnote{\url{https://en.wikipedia.org/wiki/Zero-sum\_game\#Example}(Last visited 28. April 2016)}. This error analysis is performed to determine where in the system the error originated. 
 
 To find the error we start at the beginning of the pipeline, to explore whether the example is retrieved from the XML dump. We find the answer in the SQL database. First we find a row in the \texttt{pages} table with the name \textit{zero sum game}. Next, using the primary key of this row, we can find all related rows in the table \texttt{page\_sections}. A query on the column \texttt{page\_id} in \texttt{page\_sections} returns one result. This result is the same section found in Wikipedia's article, thus we can conclude that Wikidump parser successfully inserts the section into the SQL database.
 
