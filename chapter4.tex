@@ -2,6 +2,12 @@
 
 \chapter{Implementation}\label{cap_4}
 
+\section{Introduction}
+
+As explained in section \ref{good_example}, the properties of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in table \ref{table:1} and the structure of good examples, a smarter search can be formed. When the user is browsing through examples, the list of related examples can then be arranged in fashion that is for instance based on difficulty of the example. This can give the user a natural feeling of progress when learning about a subject.
+
+By using knowledge discussed in section \ref{good_example} and input from the user, our search interface can compile two lists of related examples. These are the lists will be presented to the user, to make him able to explore further examples. Based on the concept described in section \ref{cd_pipeline}, a pipeline will transform Wikipedia's source data into structured example objects. This chapter will explain in detail how the system starts with unstructured source data from Wikipedia articles, and turn the data into searchable examples.
+
 \section{Pipeline}
 
 \subsection{Overview}
@@ -85,15 +91,41 @@ This is preferred since the parsing is a very time consuming process, and having
 \subsection{Example indexer}
 A java program queries the database for all the sections. The relations and data from the other tables are incorporated into the section. Now the section is an object with all the data needed to independently represent an example.
 
+Although all the sections extracted from Wikipedia articles are examples, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted into the index. Appendix \ref{app_whitelist} contains an example of a white list used to keep desired examples. A total of 4 white lists have been created, to be used in different combinations. The white lists can be found in the Example Indexer resource folder, at \texttt{src/main/resources}. The white lists were created by extracting the complete list of all categories from the SQL database. Next, the categories were sorted by how many articles that had a relation to them. Finally, the list was manually altered into three different versions. A last version was created based on Wikipedia's category hierarchy.
+
+White list 1 and 2 contains the categories which are most popular and also educational, although white list 2 only contains the 200 most popular categories. White list 3 narrows the selection further by only including categories related to mathematics and technology. The last list, number 4, is based on the main categories from Wikipedia's main category overview\footnote{\url{https://en.wikipedia.org/wiki/Portal:Contents/Categories} (Last visited 7. Mars 2016)}. From the overview Mathemathics, Logic, Mathematical Sciences, Computing and all of their main sub-categories was used.
+
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{10em} | r | r||} 
+ \hline
+  White list & Length & Filtered \\ [0.5ex] 
+ \hline
+All categories & 17170 & 0 \\
+White list 1 & 17132 & 38 \\
+White list 2 & 200 & 16970 \\
+White list 3 & 157 & 16927 \\
+White list 4 & 64 & 17106 \\
+
+ \hline
+\end{tabular}
+\caption{Statistics for examples filtered by different whitelists}
+\label{table:whitelist_stats}
+\end{table}
+
+Table \ref{table:whitelist_stats} display the statistics after each white list has been used on its own to filter examples. Table \ref{table:whitelist_stats} shows total number of categories in each list and how many categories that has been excluded from the complete category list.
+When building our index, white list 2 and 4 are being used, which keeps examples related to the most popular and important categories. Examples only related to less popular categories or irrelevant ones, are as a result discarded.
+
+
+
+Before the examples are inserted into the index, the index is created with the Elasticsearch java API\footnote{\url{https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html}}. Our project uses the default settings, so only the cluster named is needed to be defined beforehand, the rest happens automatically by Elasticsearch. Lastly a mapping for the example object is passed to Elasticsearch. Figure \ref{fig:es_mapping} shows the mapping passed. It defines all the fields with its types. The mapping sets \textit{categories} to \texttt{not\_analyzed}, so it will match the exact category names.
+
 \begin{figure}[H] 
 \caption{Mapping used to define an example in Elasticsearch}
 \centering
 \includegraphics[scale=0.5]{es_mapping}
 \label{fig:es_mapping}
 \end{figure}
-
-Before the examples are inserted into the index, the index is created with the Elasticsearch java API\footnote{\url{https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html}}. Our project uses the default settings, so only the cluster named is needed to be defined beforehand, the rest happens automatically by Elasticsearch. Lastly a mapping for the example object is passed to Elasticsearch. Figure \ref{fig:es_mapping} shows the mapping passed. It defines all the fields with its types. The mapping sets \textit{categories} to \texttt{not\_analyzed}, so it will match the exact category names.
-
 
 To put each example into the index, they first have to be converted to JSON. A simple methods maps all fields over to their equivalent attributes. Attributes in JSON is key-value pairs, so a key name and the field's value is used. The Java API sends each example to Elasticsearch as a document on the JSON format, which then indexes it.
 
