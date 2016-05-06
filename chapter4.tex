@@ -88,7 +88,7 @@ The database acts a temporary buffer for the data going into the index. Having a
 This is preferred since the parsing is a very time consuming process, and having it structured in SQL with its meta data helps with showing how successful the parsing was. Some of the meta data is also irrelevant for the index, so only keeping it in the database is makes the end result less complex.
 
 
-\subsection{Example indexer}
+\subsection{Example indexer} \label{imp_indexer}
 A java program queries the database for all the sections. The relations and data from the other tables are incorporated into the section. Now the section is an object with all the data needed to independently represent an example.
 
 Although all the sections extracted from Wikipedia articles are examples, not all are interesting for our project. Therefor the examples are filtered through a \textit{white list} before they are inserted into the index. Appendix \ref{app_whitelist} contains an example of a white list used to keep desired examples. A total of 4 white lists have been created, to be used in different combinations. The white lists can be found in the Example Indexer resource folder, at \texttt{src/main/resources}. The white lists were created by extracting the complete list of all categories from the SQL database. Next, the categories were sorted by how many articles that had a relation to them. Finally, the list was manually altered into three different versions. A last version was created based on Wikipedia's category hierarchy.

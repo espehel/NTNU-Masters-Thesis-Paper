@@ -95,7 +95,7 @@ While performing the experiment, the error occurred when searching with the keyw
 
 To find the error we start at the beginning of the pipeline, to explore whether the example is retrieved from the XML dump. We find the answer in the SQL database. First we find a row in the \texttt{pages} table with the name \textit{zero sum game}. Next, using the primary key of this row, we can find all related rows in the table \texttt{page\_sections}. A query on the column \texttt{page\_id} in \texttt{page\_sections} returns one result. This result is the same section found in Wikipedia's article, thus we can conclude that Wikidump parser successfully inserts the section into the SQL database.
 
-The next step is to verify that the section is transformed to an example and indexed by Elasticsearch. The examples in Elasticsearch shares the same id as the sections primary key in the SQL database. Querying Elasticsearch by id returns no results, therefor we know that the zero sum example never reaches Elasticsearch. Between the SQL database and Elasticsearch a white list filters the examples. If the zero-sum game article does not contain a category that exists in the white list, the example will be discarded. The article contains the categories \textit{Non-cooperative games} and \textit{International relations theory}. Matching the article's categories with the complete category list reveals that there exist only 4 occurrences of articles with Non-cooperative games as category and 7 with International relations theory, which is a low number. White list 2 and 4 were used for the filtering. White list 2 includes only the top 200 relevant articles and white list 4 use only the top level categories in the hierarchy. In conclusion, the article's categories is not included in any of the white lists, and therefor the example is not indexed.
+The next step is to verify that the section is transformed to an example and indexed by Elasticsearch. The examples in Elasticsearch shares the same id as the sections primary key in the SQL database. Querying Elasticsearch by id returns no results, therefor we know that the zero sum example never reaches Elasticsearch. Between the SQL database and Elasticsearch a white list filters the examples. If the zero-sum game article does not contain a category that exists in the white list, the example will be discarded. The article contains the categories \textit{Non-cooperative games} and \textit{International relations theory}. Matching the article's categories with the complete category list reveals that there exist only 4 occurrences of articles with Non-cooperative games as category and 7 with International relations theory, which is a low number. White list 2 and 4 were used for the filtering, section \ref{imp_indexer} explains white list's implementation and their function in our project. White list 2 includes only the top 200 relevant articles and white list 4 use only the top level categories in the hierarchy. In conclusion, the article's categories is not included in any of the white lists, and therefor the example is not indexed.
 
 If the article's list of categories had been richer, the example would have been included more likely. Although richer category lists for Wikipedia's articles would have solved the problem, it is not something our project can affect. Instead a white list that accommodates the less popular categories is a better solution. The problem is that all the categories have to be manually added to white lists. White list 1 deals with the problem by including all categories, but also examining the most popular and removing the irrelevant categories from the white list. The disadvantage attained by using white list 1 is that irrelevant categories will be included, but on the other hand, they are not connected to many articles. 
 
@@ -103,7 +103,7 @@ If the article's list of categories had been richer, the example would have been
 
 The result of the error analysis in section \ref{search_experiment} points out the significance of the white lists used for the end result. Based on that, Experiment II will be conducted to explore to what the degree the white lists affect the results returned, and which of them is best to use. The tables used to display the result, will be identical to table \ref{table:precision_test} used in section \ref{search_experiment}. 
 
-The first step in the experiment is to check what the system returns when there is no white lists used. When no white lists are used, there exists 28 110 examples in the index. Table \ref{table:p_Test_no-list} shows the results.
+The first step in the experiment is to check what the system returns when there is no white lists used. When no white lists are used, there exists 28 110 examples in the index. Table \ref{table:p_test_no-list} shows the results.
 
 \begin{table}[H]
 \centering
@@ -136,7 +136,7 @@ Zero Sum & 2330 & 0.2 & 0.2 \\
 \label{table:p_test_no-list}
 \end{table}
 
-In the next step white list 1 will be tested. White list 1 contains most of the categories from the orignal category list, but the categories which are popular, but not educational, are removed. A category's popularity is measured in how many examples links to the category. When the examples are filtered through white list 1, 5 133 examples are discarded. The results of the test can be found in table \ref{table:p_test_list1}.
+In the next step white list 1 will be tested. White list 1 contains most of the categories from the orignal category list, with the exception of categories that are popular, but not educational, being removed. A category's popularity is measured in how many examples links to the category. When the examples are filtered through white list 1, 5 133 examples are discarded from the original 28 110. The results of the test can be found in table \ref{table:p_test_list1}.
 
 %%whitelist 1 : filtrert 5133 av 28110
 \begin{table}[H]
@@ -204,7 +204,7 @@ Zero Sum & 1842 & 0.2 & 0.1 \\
 \label{table:p_test_list2}
 \end{table}
 
-In the fourth step, we test white list 3. White list 3 is based on white list 2, but it narrows the domains of the categories deemed relevant to only concern Technology and Mathematics. White list 3 is a bit smaller than white list 2, with 157 different categories. 23 073 examples are filtered away, when white list 3 is used. Table \ref{table:p_test_list3} reflects the results of the test.
+In the fourth step, we test white list 3. White list 3 is based on white list 2, but it narrows the domains of the categories deemed relevant to only concern Technology and Mathematics. White list 3 is a bit smaller than white list 2, with 157 different categories. 23 073 examples are filtered out, when white list 3 is used. Table \ref{table:p_test_list3} reflects the results of the test.
 
 %%whitelist 3: filtrert 23073 av 28110
 \begin{table}[H]
