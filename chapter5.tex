@@ -101,9 +101,11 @@ If the article's list of categories had been richer, the example would have been
 
 \section{Experiment II: White list}
 
-The result of the error analysis in section \ref{search_experiment} points out the significance of the white lists used for the end result. Based on that, Experiment II will be conducted to explore to what the degree the white lists affect the results returned, and which of them is best to use.
+The result of the error analysis in section \ref{search_experiment} points out the significance of the white lists used for the end result. Based on that, Experiment II will be conducted to explore to what the degree the white lists affect the results returned, and which of them is best to use. The tables used to display the result, will be identical to table \ref{table:precision_test} used in section \ref{search_experiment}. 
 
-\begin{table}[h!]
+The first step in the experiment is to check what the system returns when there is no white lists used. When no white lists are used, there exists 28 110 examples in the index. Table \ref{table:p_Test_no-list} shows the results.
+
+\begin{table}[H]
 \centering
 \begin{tabular} {|| p{15em} | r | r | r ||} 
  \hline
@@ -134,10 +136,10 @@ Zero Sum & 2330 & 0.2 & 0.2 \\
 \label{table:p_test_no-list}
 \end{table}
 
-
+In the next step white list 1 will be tested. White list 1 contains most of the categories from the orignal category list, but the categories which are popular, but not educational, are removed. A category's popularity is measured in how many examples links to the category. When the examples are filtered through white list 1, 5 133 examples are discarded. The results of the test can be found in table \ref{table:p_test_list1}.
 
 %%whitelist 1 : filtrert 5133 av 28110
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular} {|| p{15em} | r | r | r ||} 
  \hline
@@ -168,8 +170,10 @@ Zero Sum & 1842 & 0.2 & 0.2 \\
 \label{table:p_test_list1}
 \end{table}
 
+The third test is conducted on white list 2. White list to is similar to white list 1 in terms of what type of categories are removed from the original list, with one big difference. White list 2 only keeps the 200 most popular categories, which means the educational categories which are not popular enough, are not included. Using white list 2 results in 21 746 examples being excluded from the index. Table \ref{table:p_test_list2} displays the results.
+
 %%whitelist 2 : filtrert 21746 av 28110
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular} {|| p{15em} | r | r | r ||} 
  \hline
@@ -200,8 +204,10 @@ Zero Sum & 1842 & 0.2 & 0.1 \\
 \label{table:p_test_list2}
 \end{table}
 
+In the fourth step, we test white list 3. White list 3 is based on white list 2, but it narrows the domains of the categories deemed relevant to only concern Technology and Mathematics. White list 3 is a bit smaller than white list 2, with 157 different categories. 23 073 examples are filtered away, when white list 3 is used. Table \ref{table:p_test_list3} reflects the results of the test.
+
 %%whitelist 3: filtrert 23073 av 28110
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular} {|| p{15em} | r | r | r ||} 
  \hline
@@ -232,8 +238,10 @@ Zero Sum & 917 & 0.2 & 0.1 \\
 \label{table:p_test_list3}
 \end{table}
 
+In the final step we test the most conservative white list, white list 4. White list 4 is based on Wikipedia's category hierarchy, were Mathemathics, Logic, Mathematical Sciences, Computing and their sub categories have been included. White list 4 leads to the removal of 27 107 examples. Table \ref{table:p_test_list4} contains the results of the final test. 
+
 %%whitelist 4: filtrert 27107 av 28110
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular} {|| p{15em} | r | r | r ||} 
  \hline
@@ -263,5 +271,7 @@ Zero Sum & 169 & 0.2 & 0.1 \\
 \caption{The precision of the queries tested when white list 4 is used to filter the collection beforehand}
 \label{table:p_test_list4}
 \end{table}
+
+
 
 \cleardoublepage
