@@ -103,6 +103,165 @@ If the article's list of categories had been richer, the example would have been
 
 The result of the error analysis in section \ref{search_experiment} points out the significance of the white lists used for the end result. Based on that, Experiment II will be conducted to explore to what the degree the white lists affect the results returned, and which of them is best to use.
 
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{15em} | r | r | r ||} 
+ \hline
+ Keyword & Total hits & Top 5 & Top 10 \\ [0.5ex] 
+ \hline
 
+Logic & 898 & 1 & 1 \\
+Programming & 2135 & 0.8 & 0.9 \\
+Heuristic & 81 & 1 & 0.8 \\
+Algebra & 1629 & 1 & 0.9 \\
+Game Theory & 6301 & 0.8 & 0.9 \\
+\hline
+Fuzzy Logic & 913 & 1 & 0.7 \\
+Java & 523 & 0.8 & 0.9 \\
+Bayes Network & 1370 & 0.8 & 0.9 \\
+Derivation & 178 & 0.6 & 0.5 \\
+\hline
+Chain Rule & 1760 & 0.8 & 0.6 \\
+Prisoners Dilemma & 141 & 0.8 & 0.5 \\
+Nash Equilibrium & 350 & 1 & 1 \\
+Cartesian Product & 2119 & 0.6 & 0.7 \\
+Parrondos Paradox & 159 & 0.2 & 0.2 \\
+Zero Sum & 2330 & 0.2 & 0.2 \\
+
+ \hline
+\end{tabular}
+\caption{The precision of the queries tested when no white lists are used to filter the collection beforehand}
+\label{table:p_test_no-list}
+\end{table}
+
+
+
+%%whitelist 1 : filtrert 5133 av 28110
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{15em} | r | r | r ||} 
+ \hline
+ Keyword & Total hits & Top 5 & Top 10 \\ [0.5ex] 
+ \hline
+
+Logic & 737 & 1 & 1 \\
+Programming & 1783 & 0.8 & 0.9 \\
+Heuristic & 72 & 1 & 0.8 \\
+Algebra & 1337 & 1 & 0.8 \\
+Game Theory & 5230 & 0.8 & 0.9 \\
+\hline
+Fuzzy Logic & 750 & 1 & 0.8 \\
+Java & 442 & 0.8 & 0.9 \\
+Bayes Network & 1171 & 0.8 & 0.9 \\
+Derivation & 145 & 0.4 & 0.5 \\
+\hline
+Chain Rule & 1374 & 0.8 & 0.6 \\
+Prisoners Dilemma & 115 & 0.8 & 0.5 \\
+Nash Equilibrium & 60 & 1 & 1 \\
+Cartesian Product & 1739 & 0.6 & 0.6 \\
+Parrondos Paradox & 128 & 0.2 & 0.2 \\
+Zero Sum & 1842 & 0.2 & 0.2 \\
+
+ \hline
+\end{tabular}
+\caption{The precision of the queries tested when white list 1 is used to filter the collection beforehand}
+\label{table:p_test_list1}
+\end{table}
+
+%%whitelist 2 : filtrert 21746 av 28110
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{15em} | r | r | r ||} 
+ \hline
+ Keyword & Total hits & Top 5 & Top 10 \\ [0.5ex] 
+ \hline
+
+Logic & 338 & 1 & 0.9 \\
+Programming & 864 & 0.8 & 0.9 \\
+Heuristic & 31 & 1 & 0.5 \\
+Algebra & 1034 & 1 & 1 \\
+Game Theory & 2701 & 0.8 & 0.8 \\
+\hline
+Fuzzy Logic & 341 & 0.8 & 0.5 \\
+Java & 267 & 1 & 1 \\
+Bayes Network & 315 & 1 & 0.9 \\
+Derivation & 62 & 1 & 0.9 \\
+\hline
+Chain Rule & 515 & 1 & 0.6 \\
+Prisoners Dilemma & 38 & 0.8 & 0.5 \\
+Nash Equilibrium & 100 & 1 & 1 \\
+Cartesian Product & 748 & 0.6 & 0.6 \\
+Parrondos Paradox & 46 & 0.4 & 0.4 \\
+Zero Sum & 1842 & 0.2 & 0.1 \\
+
+ \hline
+\end{tabular}
+\caption{The precision of the queries tested when white list 2 is used to filter the collection beforehand}
+\label{table:p_test_list2}
+\end{table}
+
+%%whitelist 3: filtrert 23073 av 28110
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{15em} | r | r | r ||} 
+ \hline
+ Keyword & Total hits & Top 5 & Top 10 \\ [0.5ex] 
+ \hline
+
+Logic & 326 & 1 & 0.9 \\
+Programming & 852 & 0.8 & 0.9 \\
+Heuristic & 19 & 0.8 & 0.6 \\
+Algebra & 991 & 1 & 1 \\
+Game Theory & 2386 & 0.8 & 0.9 \\
+\hline
+Fuzzy Logic & 329 & 0.8 & 0.5 \\
+Java & 265 & 1 & 1 \\
+Bayes Network & 262 & 1 & 0.9 \\
+Derivation & 56 & 1 & 1 \\
+\hline
+Chain Rule & 402 & 1 & 0.6 \\
+Prisoners Dilemma & 33 & 0.8 & 0.5 \\
+Nash Equilibrium & 87 & 1 & 1 \\
+Cartesian Product & 606 & 0.6 & 0.6 \\
+Parrondos Paradox & 37 & 0.4 & 0.4 \\
+Zero Sum & 917 & 0.2 & 0.1 \\
+
+ \hline
+\end{tabular}
+\caption{The precision of the queries tested when white list 3 is used to filter the collection beforehand}
+\label{table:p_test_list3}
+\end{table}
+
+%%whitelist 4: filtrert 27107 av 28110
+\begin{table}[h!]
+\centering
+\begin{tabular} {|| p{15em} | r | r | r ||} 
+ \hline
+ Keyword & Total hits & Top 5 & Top 10 \\ [0.5ex] 
+ \hline
+
+Logic & 100 & 1 & 1 \\
+Programming & 107 & 0.2 & 0.3 \\
+Heuristic & 20 & 0.6 & 0.4 \\
+Algebra & 165 & 0.8 & 0.6 \\
+Game Theory & 476 & 0.8 & 0.8 \\
+\hline
+Fuzzy Logic & 101 & 1 & 0.6 \\
+Java & 9 & 0.4 & 3/9 \\
+Bayes Network & 102 & 0.8 & 0.6 \\
+Derivation & 22 & 0.6 & 0.4 \\
+\hline
+Chain Rule & 120 & 0.2 & 0.1 \\
+Prisoners Dilemma & 8 & 0.4 & 2/8 \\
+Nash Equilibrium & 17 & 1 & 0.9 \\
+Cartesian Product & 126 & 0 & 0.1 \\
+Parrondos Paradox & 18 & 0 & 0 \\
+Zero Sum & 169 & 0.2 & 0.1 \\
+
+ \hline
+\end{tabular}
+\caption{The precision of the queries tested when white list 4 is used to filter the collection beforehand}
+\label{table:p_test_list4}
+\end{table}
 
 \cleardoublepage
