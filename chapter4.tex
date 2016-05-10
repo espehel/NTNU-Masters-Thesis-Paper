@@ -95,31 +95,37 @@ This is preferred since the parsing is a very time consuming process, using abou
 \subsection{Example indexer and White list} \label{imp_indexer}
 A Java program queries the database for all the sections. The relations and data from the other tables are incorporated into the section. Now the section is an object with all the data needed to independently represent an example.
 
-Although all the sections extracted from Wikipedia articles are examples, not all are relevant for a search purpose. Therefor the examples can be filtered through a \textit{white list} before they are inserted into the index. Appendix \ref{app_whitelist} contains an example of a white list used to keep desired examples. A total of 4 white lists have been created, to be used in different combinations. The white lists can be found in the Example Indexer resource folder, at \texttt{src/main/resources}. The white lists were created by extracting the complete list of all categories from the SQL database. Next, the categories were sorted by how many articles that had a relation to them. Finally, the list was manually altered into three different versions. A last version was created based on Wikipedia's category hierarchy.
+Although all the sections extracted from Wikipedia articles are examples, not all are relevant for a search purpose. Therefor the examples can be filtered through a \textit{white list} before they are inserted into the index. Appendix \ref{app_whitelist} contains an example of a white list used to keep desired examples. A total of 4 white lists have been created, to be used in different combinations. The white lists can be found in the Example Indexer resource folder, at \texttt{src/main/resources}. The white lists were created by extracting the complete list of all categories from the SQL database. Next, the categories were sorted by how many articles that had a relation to them. Finally, the list was manually altered into three different versions. A last version was created based on Wikipedia's category hierarchy. If one of the categories linked to a specific example also exists in the applied white list, that example will be included in the index's corpus.
 
-White list 1 and 2 contains the categories which are most popular and also educational, although white list 2 only contains the 200 most popular categories. White list 3 narrows the selection further by only including categories related to mathematics and technology. The last list, number 4, is based on the main categories from Wikipedia's main category overview\footnote{\url{https://en.wikipedia.org/wiki/Portal:Contents/Categories} (Last visited 7. Mars 2016)}. From the overview Mathemathics, Logic, Mathematical Sciences, Computing and all of their main sub-categories was used.
+The purpose of using white lists was to reduce the amount of examples in the index's corpus. The white list can then reflect a chosen domain and include only relevant examples, consequently giving the corpus a specific scope. A more specific scope for the corpus, should improve the quality of the results returned. 
+
+\begin{figure}[h] 
+\caption{A venn diagram showing how white lists act as sub sets of all categories}
+\includegraphics[width=\textwidth]{whiteListVenn}
+\label{fig:whiteListVenn}
+\end{figure}
+The four different white lists were given the names Edu, Top200Edu, MathTech and MathTechWiki. The names reflects the set categories included for each white list. Edu and Top200Edu contains the categories which are most popular and also educational, although Top200Edu only contains the 200 most popular categories. MathTech narrows the selection further by only including categories related to mathematics and technology. The last list, MathTechWiki, is based on the main categories from Wikipedia's main category overview\footnote{\url{https://en.wikipedia.org/wiki/Portal:Contents/Categories} (Last visited 7. Mars 2016)}. From the overview Mathemathics, Logic, Mathematical Sciences, Computing and all of their main sub-categories was used. Figure \ref{fig:whiteListVenn} demonstrates how one white list are a sub set of another category list. 
 
 \begin{table}[h!]
 \centering
 \begin{tabular} {|| p{10em} | r | r||} 
  \hline
-  White list & Length & Filtered \\ [0.5ex] 
+  White list & Categories & Examples \\ [0.5ex] 
  \hline
-All categories & 17170 & 0 \\
-White list 1 & 17132 & 38 \\
-White list 2 & 200 & 16970 \\
-White list 3 & 157 & 16927 \\
-White list 4 & 64 & 17106 \\
+No white list & 17 170 & 28 110 \\
+Edu & 17 132 & 22 977 \\
+Top200Edu & 200 & 6 364 \\
+MathTech & 157 & 5 037 \\
+MathTechWiki & 64 & 1 003 \\
 
  \hline
 \end{tabular}
-\caption{Statistics for examples filtered by different whitelists}
+\caption{Statistics for examples and categories included when applying different white lists for filtering of the example collection.}
 \label{table:whitelist_stats}
 \end{table}
 
-Table \ref{table:whitelist_stats} display the statistics after each white list has been used on its own to filter examples. Table \ref{table:whitelist_stats} shows total number of categories in each list and how many categories that has been excluded from the complete category list.
-When building our index, white list 2 and 4 are being used, which keeps examples related to the most popular and important categories. Examples only related to less popular categories or irrelevant ones, are as a result discarded.
-
+Table \ref{table:whitelist_stats} display the statistics after each white list has been used on its own to filter examples. Table \ref{table:whitelist_stats} shows total number of categories included in each list and how many examples included in the final corpus.
+When building our index, Top200Edu and MathTechWiki are being used, which keeps examples related to the most popular and important categories. Examples only related to less popular categories or irrelevant ones, are as a result discarded.
 
 
 Before the examples are inserted into the index, the index is created with the Elasticsearch java API\footnote{\url{https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html}}. Our project uses the default settings, so only the cluster named is needed to be defined beforehand, the rest happens automatically by Elasticsearch. Lastly a mapping for the example object is passed to Elasticsearch. Figure \ref{fig:es_mapping} shows the mapping passed. It defines all the fields with its types. The mapping sets \textit{categories} to \texttt{not\_analyzed}, so it will match the exact category names.
