@@ -91,11 +91,11 @@ At the top of the list the score for five and ten terms are very similar, while 
 
 Another interesting remark to note is that the top 5 results are consistently better than the top 10 results. Top 5 being better than top 10, is caused by at least half of the relevant examples which is returned, are found among the first five results. Therefor we can conclude that the ranking of the examples functions as intended. 
 
-There exist one substantial irregularity in table \ref{table:precision_test} though, the keyword \textit{Zero Sum} achieves a score of zero on both measures, meaning all of the ten first results returned is deemed irrelevant. When looking at all results returned, there is still no relevant examples. No relevant results indicates an error in the system, either in the search itself, or that there is no example to find at all.
+There exist one substantial irregularity in table \ref{table:precision_test} though, the keyword \textit{Zero Sum} achieves a score of zero on both measures, meaning all of the ten first results returned is deemed irrelevant. No relevant results among the first ten could indicate an error in the system, either in the search itself, or that there is no example to find at all. Whether the case is an error in the system or that the keyword is an search term the system handles poorly will be investigated.
 
-While performing the experiment, the error occurred when searching with the keyword \textit{zero sum}. The system should have returned the example section from Wikipedia's article, \textit{Zero-sum game} \footnote{\url{https://en.wikipedia.org/wiki/Zero-sum\_game\#Example}(Last visited 28. April 2016)}. An error analysis will help determine where in the system the error originated. 
+While performing the experiment, the error occurred when searching with the keyword \textit{zero sum}. The system should have returned the example section from Wikipedia's article, \textit{Zero-sum game} \footnote{\url{https://en.wikipedia.org/wiki/Zero-sum\_game\#Example}(Last visited 28. April 2016)}. An error analysis will help determine where in the system an error could have originated. 
 
-To find the error we start at the beginning of the pipeline, to explore whether the example is retrieved from the XML dump. We find the answer in the SQL database. First we find a row in the \texttt{pages} table with the name \textit{zero sum game}. Next, using the primary key of this row, we can find all related rows in the table \texttt{page\_sections}. A query on the column \texttt{page\_id} in \texttt{page\_sections} returns one result. This result is the same section found in Wikipedia's article, thus we can conclude that Wikidump parser successfully inserts the section into the SQL database.
+To find the potential error we start at the beginning of the pipeline, to explore whether the example is retrieved from the XML dump. We find the answer in the SQL database. First we find a row in the \texttt{pages} table with the name \textit{zero sum game}. Next, using the primary key of this row, we can find all related rows in the table \texttt{page\_sections}. A query on the column \texttt{page\_id} in \texttt{page\_sections} returns one result. This result is the same section found in Wikipedia's article, thus we can conclude that Wikidump parser successfully inserts the section into the SQL database.
 
 The next step is to verify that the section is transformed to an example and indexed by Elasticsearch. The examples in Elasticsearch shares the same id as the sections primary key in the SQL database. Querying Elasticsearch by id returns no results, therefor we know that the zero sum example never reaches Elasticsearch. Between the SQL database and Elasticsearch a white list filters the examples. If the zero-sum game article does not contain a category that exists in the white list, the example will be discarded. The article contains the categories \textit{Non-cooperative games} and \textit{International relations theory}. Matching the article's categories with the complete category list reveals that there exist only 4 occurrences of articles with Non-cooperative games as category and 7 with International relations theory, which is a low number. White list Top200Edu and MathTechWiki were used for the filtering, section \ref{imp_indexer} explains white list's implementation and their function in our project. Top200Edu includes only the top 200 relevant articles and MathTechWiki use only the top level categories in the Wikipedia's category hierarchy. In conclusion, the article's categories is not included in any of the white lists, and therefor the example is not indexed.
 
@@ -130,7 +130,7 @@ Prisoners Dilemma & 141 & 0.50 & 0.8 & 0.5 \\
 Nash Equilibrium & 350 & 1.25 & 1 & 1 \\
 Cartesian Product & 2119 & 7.54 & 0.6 & 0.7 \\
 Parrondos Paradox & 159 & 0.57 &  0.2 & 0.2 \\
-Zero Sum & 2330 & 8.29 & 0.2 & 0.2 \\
+Zero Sum & 2330 & 8.29 & 0 & 0.1 \\
 
  \hline
 \end{tabular}
@@ -150,7 +150,7 @@ In the next step white list Edu will be tested. Edu contains most of the categor
 
 Logic & 737 & 3.21 & 1 & 1 \\
 Programming & 1783 & 7.76 & 0.8 & 0.9 \\
-Heuristic & 72 & 1 & 0.31 & 0.8 \\
+Heuristic & 72 & 0.31 & 1 & 0.8 \\
 Algebra & 1337 & 5.82 & 1 & 0.8 \\
 Game Theory & 5230 & 22.76 & 0.8 & 0.9 \\
 \hline
@@ -164,7 +164,7 @@ Prisoners Dilemma & 115 & 0.50 & 0.8 & 0.5 \\
 Nash Equilibrium & 60 & 0.26 & 1 & 1 \\
 Cartesian Product & 1739 & 7.57 & 0.6 & 0.6 \\
 Parrondos Paradox & 128 & 0.56 & 0.2 & 0.2 \\
-Zero Sum & 1842 & 8.02 & 0.2 & 0.2 \\
+Zero Sum & 1842 & 8.02 & 0 & 0.1 \\
 
  \hline
 \end{tabular}
@@ -198,7 +198,7 @@ Prisoners Dilemma & 38 & 0.60 & 0.8 & 0.5 \\
 Nash Equilibrium & 100 & 1.57 & 1 & 1 \\
 Cartesian Product & 748 & 11.75 & 0.6 & 0.6 \\
 Parrondos Paradox & 46 & 0.72 & 0.4 & 0.4 \\
-Zero Sum & 1842 & 28.94 & 0.2 & 0.1 \\
+Zero Sum & 1842 & 28.94 & 0 & 0 \\
 
  \hline
 \end{tabular}
@@ -232,7 +232,7 @@ Prisoners Dilemma & 33 & 0.66 & 0.8 & 0.5 \\
 Nash Equilibrium & 87 & 1.73 & 1 & 1 \\
 Cartesian Product & 606 & 12.03 & 0.6 & 0.6 \\
 Parrondos Paradox & 37 & .73 & 0.4 & 0.4 \\
-Zero Sum & 917 & 18.21 & 0.2 & 0.1 \\
+Zero Sum & 917 & 18.21 & 0 & 0 \\
 
  \hline
 \end{tabular}
