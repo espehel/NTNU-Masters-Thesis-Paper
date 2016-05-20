@@ -66,7 +66,7 @@ Figure \ref{fig:wq_empty} shows the home page of Web query, before a search is p
 \label{fig:wq_results}
 \end{figure}
 
-When a search has been entered, the table expands and displays the examples returned. Figure \ref{fig:wq_results} demonstrates how the interface looks after the search term \textit{sigmoid} has been used. Every examples has a link as its first line, which leads to a page specific for that example. This page can been seen in figure \ref{fig:wq_example}. The page has the main example displayed in the middle, while the columns at each side of it contains a list of related examples. The list contains the name of the example and a link to its own page. A search based on the main example's content, categories and references is used to find the relevant examples. 
+When a search has been entered, the table expands and displays the examples returned. Figure \ref{fig:wq_results} demonstrates how the interface looks after the search term \textit{sigmoid} has been used. Every examples has a link as its first line, which leads to a page specific for that example. This page can been seen in figure \ref{fig:wq_example}. The page has the main example displayed in the middle, while the columns at each side of it contains a list of related examples. The list contains the name of the example and a link to its own page. A search based on the category sets from the original search and the main example is used to find and order the relevant examples. At the left side, other examples with perfect matching categories are placed, while the rights side contains the ten best results that does not have a perfect match.
 
 \begin{figure}[H] 
 \caption{A screenshot of the search interface when a specific example has been chosen.}
@@ -74,8 +74,13 @@ When a search has been entered, the table expands and displays the examples retu
 \label{fig:wq_example}
 \end{figure}
 
-\section{Experiment I: Search examples} \label{search_experiment}
-In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of the queries by measuring the precision of the results returned from a search with the selected  keywords. Precision is the fraction of returned examples, which is relevant. It is calculated in this way, \(\frac{|R \cap E |}{|E|}\), where \(R\) is all relevant examples and \(E\) is all the retrieved examples. Precision is often used in combination with Recall, which is the fraction of relevant examples retrieved. Since we do not know how many relevant examples exist in total for each keyword, we can not measure recall. 
+\section{Querying by keywords}
+
+\subsection{Experiment I: Search examples} \label{search_experiment}
+In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of the queries by measuring the precision of the results returned from a search with the selected  keywords. Precision is the fraction of returned examples, which is relevant. It is calculated in this way, \(\frac{|R \cap E |}{|E|}\), where \(R\) is all relevant examples and \(E\) is all the retrieved examples.
+In my experiments \(E\), representing all retrieved examples, is limited to the first five results in the top 5 tests, and similarly first ten in the top 10 tests. By limiting the size of \(E\), manual inspection can be used to check whether a example is actually relevant or not.
+
+Precision is often used in combination with Recall, which is the fraction of relevant examples retrieved. Since we do not know how many relevant examples exist in total for each keyword, we can not measure recall. 
 
 
 \begin{table}[h!]
@@ -125,13 +130,9 @@ The next step is to verify that the section is transformed to an example and ind
 
 If the article's list of categories had been richer, the example would have been included more likely. Although richer category lists for Wikipedia's articles would have solved the problem, it is not something our project can affect. Instead a white list that accommodates the less popular categories is a better solution. The problem is that all the categories have to be manually added to white lists. The White list \textit{Edu} deals with the problem by including all categories, but also examining the most popular and removing the irrelevant categories from the white list. The disadvantage obtained by using \textit{Edu} is that irrelevant categories will be included, but on the other hand, they are not connected to many articles. 
 
-\section{Experiment II: White list}
-
-\subsection{Introduction / why test}
+\subsection{Experiment II: White list}
 
 The result of the error analysis in section \ref{search_experiment} points out the significance of the white lists used for the end result. Based on that, Experiment II will be conducted to explore to what the degree the white lists affect the results returned, and which of them is best to use. The tables used to display the result, will be identical to table \ref{table:precision_test} used in section \ref{search_experiment} with one exception. The tables in this section also include the percentage of hits compared to the number of examples in the index, when each specific white list has been applied. 
-
-\subsection{Performing the tests}
 
 The first step in the experiment is to check what the system returns when there is no white lists used. When no white lists are used, there exist 28 110 examples in the index. Table \ref{table:p_test_no-list} shows the results.
 
@@ -320,5 +321,8 @@ White lists were used to exclude irrelevant examples by focusing on a particular
 
 \input{chapter5Charts.tex}
 
+\section{Querying by examples}
+
+When querying by examples
 
 \cleardoublepage
