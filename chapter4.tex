@@ -159,12 +159,6 @@ The above search only makes use of the title, meanwhile the different queries pe
 
 \section{Search interface}
 
-\begin{figure}[H] 
-\caption{A sequence diagram showing the interactions between the actors when searching for examples}
-\includegraphics[width=\textwidth]{WebQuery}
-\label{fig:web_query}
-\end{figure}
-
 The search interface is responsible for managing queries passed from the user. It serves a web page that allows the user to enter queries for examples. Express\footnote{\url{http://expressjs.com/}} is used as a framework to effortless set up a web application with a HTTP API.
 
 For the web page, \textit{Jade}\footnote{\url{http://jade-lang.com/}} is used as a template engine to build the HTML structure. Using a template engine allows easy reusing of markup code. Also control structures and programming statements can be used directly in the file. Jade offers its own syntax that is faster to write than the standard HTML syntax. For simplicity, the web page is mainly styled by Wikipedia's style sheets, with a few adjustments. When the user wants to query for examples, the web page offers a search box. The search box sends a HTTP request to the web server with the query.
