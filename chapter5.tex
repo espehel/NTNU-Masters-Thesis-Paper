@@ -74,7 +74,7 @@ When a search has been entered, the table expands and displays the examples retu
 \label{fig:wq_example}
 \end{figure}
 
-\section{Querying by keywords}
+\section{Querying by keywords} \label{5:keywords}
 
 \subsection{Experiment I: Search examples} \label{search_experiment}
 In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of the queries by measuring the precision of the results returned from a search with the selected  keywords. Precision is the fraction of returned examples, which is relevant. It is calculated in this way, \(\frac{|R \cap E |}{|E|}\), where \(R\) is all relevant examples and \(E\) is all the retrieved examples.
@@ -323,6 +323,8 @@ White lists were used to exclude irrelevant examples by focusing on a particular
 
 \section{Querying by examples}
 
-When querying by examples
+When querying by examples, relevant examples which can also assist in the learning of the subject, are expected to be returned. To evaluate how the system accomplishes this, we will make us of knowledge from section \ref{5:keywords}. The knowledge will be used to create an optimal environment, by choosing the best performing white list and a keyword with perfect precision. The white list \textit{MathTech} performed best for the top ten results with an average precision of 0.72, and will therefor be the white list chosen. As keyword, \textit{Java} will be used for mainly three reasons. First, it is on of the keywords with a perfect score when \textit{MathTech} was applied as white list. Second, \textit{Java} is a search phrase, but at the same time not the name of a category. Finally, it is very easy to consistently judge whether an example is about java or not, since it often contains java code.
+
+
 
 \cleardoublepage
