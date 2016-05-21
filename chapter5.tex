@@ -66,7 +66,7 @@ Figure \ref{fig:wq_empty} shows the home page of Web query, before a search is p
 \label{fig:wq_results}
 \end{figure}
 
-When a search has been entered, the table expands and displays the examples returned. Figure \ref{fig:wq_results} demonstrates how the interface looks after the search term \textit{sigmoid} has been used. Every examples has a link as its first line, which leads to a page specific for that example. This page can been seen in figure \ref{fig:wq_example}. The page has the main example displayed in the middle, while the columns at each side of it contains a list of related examples. The list contains the name of the example and a link to its own page. A search based on the category sets from the original search and the main example is used to find and order the relevant examples. At the left side, other examples with perfect matching categories are placed, while the rights side contains the ten best results that does not have a perfect match.
+When a search has been entered, the table expands and displays the examples returned. Figure \ref{fig:wq_results} demonstrates how the interface looks after the search term \textit{sigmoid} has been used. Every examples has a link as its first line, which leads to a page specific for that example. This page can been seen in figure \ref{fig:wq_example}. The page has the main example displayed in the middle, while the columns at each side of it contains a list of related examples. The list contains the name of the example and a link to its own page. The right side list contains related examples with a perfect match, while the left side contains top ten of the examples that partly match. A search based on the category sets from the original search and the main example is used to find and order the relevant examples. At the left side, other examples with perfect matching categories are placed, while the rights side contains the ten best results that does not have a perfect match.
 
 \begin{figure}[H] 
 \caption{A screenshot of the search interface when a specific example has been chosen.}
@@ -319,15 +319,79 @@ White lists were used to exclude irrelevant examples by focusing on a particular
 
 \subsection{Charts}
 
-\input{chapter5Charts.tex}
+%\input{chapter5Charts.tex}
 
 \section{Querying by examples}
 
-When querying by examples, relevant examples which can also assist in the learning of the subject, are expected to be returned. To evaluate how the system accomplishes this, we will make us of knowledge from section \ref{5:keywords}. The knowledge will be used to create an optimal environment, by choosing the best performing white list and a keyword with perfect precision. The white list \textit{MathTech} performed best for the top ten results with an average precision of 0.72, and will therefor be the white list chosen. As keyword, \textit{Java} will be used for mainly three reasons. First, it is on of the keywords with a perfect score when \textit{MathTech} was applied as white list. Second, \textit{Java} is a search phrase, but at the same time not the name of a category. Finally, it is very easy to consistently judge whether an example is about java or not, since it often contains java code.
+\subsection{Experiment III: Finding related examples}
 
-When testing there are two results that will be considered. First, how many relevant examples are shown together with the main example. Second, how many of the examples are relevant. The first ten examples will be used to test these two results.
-%finn et annet ord en result.
+When querying by examples, relevant examples that assists in learning of the subject, are expected to be returned. To evaluate how the system accomplishes this, we will make us of knowledge from section \ref{5:keywords}. The knowledge will be used to create an optimal environment, by choosing the best performing white list and a keyword with perfect precision. The white list \textit{MathTech} performed best for the top ten results with an average precision of 0.72, and will therefor be the white list chosen. As keyword, \textit{Java} will be used for mainly three reasons. First, it is on of the keywords with a perfect score when \textit{MathTech} was applied as white list. Second, \textit{java} is a search phrase, but at the same time not the exact name of a category. Finally, it is very easy to consistently judge whether an example is about java or not, since it often contains java code. For an example to be deemed relevant, it will be satisfactory for the example to be an example within the Java domain. 
 
+When testing there are three numbers that will be considered for the assessment of the system's performance. First, how many examples are shown together with the main example. Second, how many of the examples are relevant. In addition, the number of the main example's categories will be included, to explore a possible correlation. The first ten examples will be used in the test. The results will be divided between the right and the left list.
+
+\begin{table}[H]
+\centering
+\begin{tabular} {|| r | r | r | r | r | r ||} 
+\hline
+ & \multicolumn{2}{ c |}{Left list} & \multicolumn{2}{ c |}{Right list} &  \\
+
+Example & Total & Relevant & Total & Relevant & Categories\\ [0.5ex] 
+\hline
+
+1	&	2	&	2	&	10	&	10	&	3	\\
+2	&	2	&	2	&	10	&	10	&	3	\\
+3	&	2	&	2	&	10	&	10	&	6	\\
+4	&	2	&	2	&	10	&	10	&	3	\\
+5	&	4	&	4	&	10	&	10	&	5	\\
+6	&	4	&	4	&	10	&	10	&	5	\\
+7	&	0	&	0	&	10	&	10	&	3	\\
+8	&	27	&	27	&	10	&	10	&	6	\\
+9	&	2	&	2	&	10	&	10	&	6	\\
+10	&	3	&	3	&	10	&	10	&	2	\\
+
+\hline
+\end{tabular}
+\caption{Statistics for the test of querying by examples with \textit{java} as keyword}
+\label{table:qbe_java}
+\end{table}
+
+The first column of table \ref{table:qbe_java} represents an example, with the number being its order among the returned examples after the search. The next column shows total number of examples and how many of them that are relevant, both for the lists at the left and the right side. The last column shows how many categories the example have.
+
+A quick look at the results presented in table \ref{table:qbe_java}, reveals consistently good results. To verify whether the performance of the system is as good as the results tell or if Java is a special case, a second test will be performed. The keyword \textit{nash equilibrium} is chosen, based on the same reason as why \textit{java} was chosen. There is one important difference that might make an impact. Java is a more general subject and therefor has \textit{java} 265 total hits, meanwhile the less specific \textit{nash equilbrium} has 87 total hits. In the second test, all examples discussing or referencing to a Nash Equilibrium related to the example's topic, will be deemed relevant.
+
+\begin{table}[H]
+\centering
+\begin{tabular} {|| r | r | r | r | r | r ||} 
+\hline
+ & \multicolumn{2}{ c |}{Left list} & \multicolumn{2}{ c |}{Right list} &  \\
+
+Example & Total & Relevant & Total & Relevant & Categories\\ [0.5ex] 
+\hline
+
+1	&	6	&	6	&	9	&	3	&	4	\\
+2	&	6	&	6	&	9	&	3	&	4	\\
+3	&	6	&	6	&	9	&	3	&	4	\\
+4	&	6	&	6	&	9	&	3	&	4	\\
+5	&	72	&	29	&	0	&	0	&	1	\\
+6	&	72	&	29	&	0	&	0	&	1	\\
+7	&	72	&	29	&	0	&	0	&	1	\\
+8	&	6	&	6	&	9	&	3	&	4	\\
+9	&	0	&	0	&	10	&	5	&	3	\\
+10	&	6	&	6	&	9	&	3	&	4	\\
+
+\hline
+\end{tabular}
+\caption{Statistics for the test of querying by examples with \textit{java} as keyword}
+\label{table:qbe_ne}
+\end{table}
+
+\subsection{Discussion of results}
+
+After conducting the second test, a big variation in the quality of results occurred compared to the first test. Despite the numbers differing, one pattern emerged in both tests. In table \ref{table:qbe_java} example 1, 2 and 4 have the pattern, and 1, 2, 3, 4, 8 and 10 in \ref{table:qbe_ne}. For these examples, the numbers are completely identical. They are identical because they come from the same article. Many Wikipedia articles have several example sections, which are used to explain the subject. Several examples originating from the same article not only results in them all achieving very similar score after a keyword search, but they will also have exactly the same categories. 
+
+A similar pattern emerges between example 5, 6 and 7 in table \ref{table:qbe_ne}. The difference in this case is that the examples all originate from different articles. The reason they still achieve the same results is because they all have the same set of categories in common, since the algorithm used to find and measure related examples solely uses categories. In this case only one category, \textit{game theory}. Only \textbf{one} category is also what is causing the big difference between the left and the right list. All the examples achieving a perfect match with the selected example, only need to have Game Theory as a category. This leads to related examples either matching perfectly or not at all, with few of the matching examples being related. A solution could either be connecting more categories to the examples or create a better version of the matching algorithm.  
+
+There is some positive patterns that can be noticed to. For instance, all the related examples returned for the keyword \textit{java} is also relevant. One of the things that causes this is already explained, being many examples originating from the same article. Another factor causing the high degree of relevance is the observation that many of the examples is included in a considerable amount of the lists. A big portion of the examples were also a part of the initial search's results. These remarks points towards the system showing a good tendency regarding finding related examples.
 
 
 \cleardoublepage
