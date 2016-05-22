@@ -314,13 +314,22 @@ Figure \ref{fig:zs} displays the results when all the different white lists have
 In table \ref{table:p_test_list4} we note that many of the keywords have very few total hits. In particular, the keywords Java and Prisoners Dilemma returns less than 10 results, making the top 10 test inaccurate. Having so few total hits is reflected in the precision also dropping quite low. In figure \ref{fig:avgPrecision} we can see that the white list \textit{MathTechWiki} separates itself from the rest of the lists with almost 50 percent worse precision. This big loss of precision indicates that the white list excludes to many relevant examples from the index's corpus. Figure \ref{fig:j} demonstrates how the keyword Java overall has extremely good results, but when \textit{MathTechWiki} is applied, the score drops significantly lower.
 
 \paragraph{Excluding irrelevant examples}
-White lists were used to exclude irrelevant examples by focusing on a particular domain. There is though a golden middle ground of how inclusive the white list should be. The white lists \textit{Top200Edu} and \textit{MathTech} seems to have more or less the right amount of inclusiveness. In Figure \ref{fig:avgPrecision}, they have the best average score for the top 5 results, and they are equal with \textit{Edu} regarding top 10. When the keyword \textit{Derivation} was tested, \textit{Top200Edu} and \textit{MathTech} accomplished a perfect score, except for one irrelevant result among top 10 for \textit{Top200Edu}. Figure \ref{fig:d} shows how the score is significantly better than when the other lists were tested. The results returned explains the big difference. A lot of results related to language and the word \textit{derive}, lead to many irrelevant examples. Since \textit{Top200Edu} and \textit{MathTech} are much stricter white lists, those irrelevant examples was not a part of the index's corpus. 
+White lists were used to exclude irrelevant examples by focusing on a particular domain. There is though a golden middle ground of how inclusive the white list should be. The white lists \textit{Top200Edu} and \textit{MathTech} seems to have more or less the right amount of inclusiveness. In Figure \ref{fig:avgPrecision}, they have the best average score for the top 5 results, and they are equal with \textit{Edu} regarding top 10. When the keyword \textit{Derivation} was tested, \textit{Top200Edu} and \textit{MathTech} accomplished a perfect score, except for one irrelevant result among top 10 for \textit{Top200Edu}. Figure \ref{fig:d} shows how the score is significantly better than when the other lists were tested. The results returned explains the big difference. A lot of results related to language and the word \textit{derive}, lead to many irrelevant examples. Since \textit{Top200Edu} and \textit{MathTech} are much stricter white lists, those irrelevant examples was not a part of the index's corpus.
+
+\paragraph{Multiple words in search phrase}
+While discussing the results from keyword \textit{zero sum}, poor handling of the keyword, was a part of the conclusion. The poor handling is experienced by highly unrelated examples being returned after a search. \textit{Zero sum} demonstrates the most extreme side of the issue, but similar behaviour exists for other keywords also. The problem occur because the keyword uses two words. Elasticsearch will then split the keyword into two search terms, and will not prioritize or reward examples who contains the those two words directly next to each other. The rarity of the words also has a big part to play. For instance \textit{nash equilibrium} also contains two words, but both are pretty rare. "Nash" is never used without being accompanied by "equilibrium". Although "equilibrium" exist in some examples which are not related to Nash Equilibrium, they are very few. Some keywords have one rare word and one common, for instance \textit{prisoners dilemma} and \textit{cartesian product}. These keywords achieve a mediocre result, with an average precision around 0.6. When considering the effects rarity of the word causes for keywords containing two words, it makes sense that \textit{zero sum}, which has two common words, have such a low precision. 
+
+Order and proximity of the words are not a new problem in the field of information retrieval. Boosting the score of results based on how close the words appear, and if in right order, is a common technique. It could be done for this system, but it might end up being a to complicated solution, for an pretty straightforward problem. A simpler solution is to surround the words with quotation marks. The quotation marks will tell the index to handle all words between the quotation marks as a single search term. Since users often will search after name of examples or subjects, it will be enough to only accept examples where the terms are directly next to each other when the quotation mark surrounds the keyword.
+
 
 
 \subsection{Charts}
 
-%\input{chapter5Charts.tex}
-
+\input{chapter5Charts.tex} %%DRA UT DE SOM BRUKES LEGG RESTEN I APPENDIX
+sdf
+ds
+fsf
+sd
 \section{Querying by examples}
 
 \subsection{Experiment III: Finding related examples}
@@ -381,7 +390,7 @@ Example & Total & Relevant & Total & Relevant & Categories\\ [0.5ex]
 
 \hline
 \end{tabular}
-\caption{Statistics for the test of querying by examples with \textit{java} as keyword}
+\caption{Statistics for the test of querying by examples with \textit{nash equilibrium} as keyword}
 \label{table:qbe_ne}
 \end{table}
 
