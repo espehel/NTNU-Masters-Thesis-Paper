@@ -31,7 +31,7 @@ Number of examples after filtering & 6593 \\
 \end{table}
 
 
-\section{Finding a good example}
+\section{Describing a good example}
 Finding examples is the overall goal of this work, in order to use the system we have created. Without useful data, the system is worthless. Therefore we want to fill our database with good examples. This project uses Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}. This section will use the main points from section \ref{examples-section} to draw a conclusion.
 
 The analysis was performed based on examples from Wikipedia, but to compare examples for the same subject, examples from other sources were also used. Game Theory is used as an overall domain for the analysis. The following subjects were chosen to find examples about, Prisoners Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondos Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
@@ -80,7 +80,7 @@ When a search has been entered, the table expands and displays the examples retu
 In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of the queries by measuring the precision of the results returned from a search with the selected  keywords. Precision is the fraction of returned examples, which is relevant. It is calculated in this way, \(\frac{|R \cap E |}{|E|}\), where \(R\) is all relevant examples and \(E\) is all the retrieved examples.
 In my experiments \(E\), representing all retrieved examples, is limited to the first five results in the top 5 tests, and similarly first ten in the top 10 tests. By limiting the size of \(E\), manual inspection can be used to check whether a example is actually relevant or not.
 
-Precision is often used in combination with Recall, which is the fraction of relevant examples retrieved. Since we do not know how many relevant examples exist in total for each keyword, we can not measure recall. 
+%Precision is often used in combination with Recall, which is the fraction of relevant examples retrieved. Since we do not know how many relevant examples exist in total for each keyword, we can not measure recall. 
 
 
 \begin{table}[h!]
@@ -116,7 +116,7 @@ Zero Sum & 1017 & 0 & 0 \\
 
 Table \ref{table:precision_test} contains the keywords and the results of the test. The keywords were chosen from the domains mathematics, artificial intelligence and programming. Results returned that simply is not a working example or is an example for another subject is judged as an irrelevant result. Total hits reflects the amount of examples that the program found relevant to any degree. The different keywords have been divided into three different groups. The groups are ordered descending by the degree of how general the keyword is perceived. The horizontal line in the table separates the groups. There is no specific order among the keywords within a group.
 
-At the top of the list the score for five and ten terms are very similar, while towards the bottom where the subjects are more specific, the score for top ten results suffers. Having a relatively small database of examples for specific subjects is assumed to be the explanation.
+At the top of the list the score for five and ten terms are very similar, while towards the bottom where the subjects are more specific, the score for top ten results suffers. Having a relatively small database of examples for specific subjects is assumed to be the explanation.%legg til gruppe 1,2,3
 
 Another interesting remark to note is that the top 5 results are consistently better than the top 10 results. Top 5 being better than top 10, is caused by at least half of the relevant examples which is returned, are found among the first five results. Therefor we can conclude that the ranking of the examples functions as intended. 
 
@@ -136,7 +136,7 @@ The result of the error analysis in section \ref{search_experiment} points out t
 
 The first step in the experiment is to check what the system returns when there is no white lists used. When no white lists are used, there exist 28 110 examples in the index. Table \ref{table:p_test_no-list} shows the results.
 
-\begin{table}[H]
+\begin{table}[h]
 \centering
 \begin{tabular} {|| p{10em} | r | r | r | r ||} 
  \hline
@@ -170,7 +170,7 @@ Zero Sum & 2330 & 8.29 & 0 & 0.1 \\
 In the next step white list \textit{Edu} will be tested. \textit{Edu} contains most of the categories from the orignal category list, with the exception of categories that are popular, but not educational, being removed. A category's popularity is measured in how many examples links to the category. When the examples are filtered through \textit{Edu}, 5 133 examples are discarded from the original 28 110. The results of the test can be found in table \ref{table:p_test_list1}.
 
 %%whitelist 1 : filtrert 5133 av 28110
-\begin{table}[H]
+\begin{table}[h]
 \centering
 \begin{tabular} {|| p{10em} | r | r | r | r ||} 
  \hline
@@ -205,7 +205,7 @@ The third test is conducted on white list \textit{Top200Edu}. \textit{Top200Edu}
 
 
 %%whitelist 2 : filtrert 21746 av 28110
-\begin{table}[H]
+\begin{table}[h]
 \centering
 \begin{tabular} {|| p{10em} | r | r | r | r ||} 
  \hline
@@ -239,7 +239,7 @@ Zero Sum & 1842 & 28.94 & 0 & 0 \\
 In the fourth step, we test white list \textit{MathTech}. \textit{MathTech} is based on \textit{Top200Edu}, but it narrows the domains of the categories deemed relevant to only concern Technology and Mathematics. \textit{MathTech} is a bit smaller than \textit{Top200Edu}, with 157 different categories. 23 073 examples are filtered out, when \textit{MathTech} is used. Table \ref{table:p_test_list3} reflects the results of the test.
 
 %%whitelist 3: filtrert 23073 av 28110
-\begin{table}[H]
+\begin{table}[h]
 \centering
 \begin{tabular} {|| p{10em} | r | r | r | r ||} 
  \hline
@@ -273,7 +273,7 @@ Zero Sum & 917 & 18.21 & 0 & 0 \\
 In the final step we test the most conservative white list, \textit{MathTechWiki}. \textit{MathTechWiki} is based on Wikipedia's category hierarchy, were Mathematics, Logic, Mathematical Sciences, Computing and their sub categories have been included. Applying \textit{MathTechWiki} leads to the removal of 27 107 examples. Table \ref{table:p_test_list4} contains the results of the final test. 
 
 %%whitelist 4: filtrert 27107 av 28110
-\begin{table}[H]
+\begin{table}[h]
 \centering
 \begin{tabular} {|| p{10em} | r | r | r | r ||} 
  \hline
@@ -316,7 +316,7 @@ Zero Sum & 169 & 16.85 & 0.2 & 0.1 \\
 \end{figure}
 
 \paragraph{Overall results}
-Figure \ref{fig:avgPrecision} shows the average precision for each white list. It gives an overview of how the different whit lists performed during Experiment II, making a comparison between them easy. While the score for top 10 is quite even, \textit{Top200Edu} and \textit{MathTech} seperates themselves from the rest for the top 5 measure. This indicates that keeping the most popular 200 categories can work well as a general strategy.
+Figure \ref{fig:avgPrecision} shows the average precision for each white list. It gives an overview of how the different whit lists performed during Experiment II, making a comparison between them easy. While the score for top 10 is quite even, \textit{Top200Edu} and \textit{MathTech} seperates themselves from the rest for the top 5 measure. This indicates that keeping the most popular 200 categories can work well as a general strategy.%forkalr at resten av chartesene ligger i appendix
 
 \begin{figure}[h] 
 \caption{Precision score when the keyword \textit{Zero Sum} is used as a search phrase, with the different white lists applied.}
@@ -324,7 +324,7 @@ Figure \ref{fig:avgPrecision} shows the average precision for each white list. I
 \label{fig:zs}
 \end{figure}
 
-\paragraph{Zero sum}
+\paragraph{Zero sum} %ha et mer egeneralt navn
 Figure \ref{fig:zs} displays the results when all the different white lists have been applied. All the white lists have very low precision, either zero results or only one among the top ten. Although the results are inadequate, they do contradict the claim in section \ref{search_experiment}'s error analysis, which suspected that no Zero Sum examples existed in the collection. Section \ref{search_experiment} drew that conclusion because the main article about Zero sum was not included in the collection. When only \textit{MathTechWiki} were tested, one relevant example was returned. This leads us to believe the abnormality was caused by using a bad combination of white lists, making the other example not appearing among the top ten. The more thorough tests in experiment II, also points to the query not handling the keyword as a search phrase very well. In conclusion, the combination of faulty white list combination and poor handling of the search phrase, are the reasons for the Zero sum's complete lack of relevant results in experiment I.
 
 \begin{figure}[h] 

@@ -2,9 +2,7 @@
 
 \chapter{Implementation}\label{cap_4}
 
-\section{Introduction}
-
-As explained in section \ref{good_example}, the properties of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in table \ref{table:1} and the structure of good examples, a smarter search can be formed. When the user is browsing through examples, the list of related examples can then be arranged in fashion that is for instance based on difficulty of the example. This can give the user a natural feeling of progress when learning about a subject.
+As explained in section \ref{good_example}, the properties of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in table \ref{table:1} and the structure of good examples, a smarter search can be formed. When the user is browsing through examples, the list of related examples can then be arranged in fashion that gives the user a natural feeling of progress when learning about a subject.
 
 By using knowledge discussed in section \ref{good_example} and input from the user, our search interface can compile two lists of related examples. These are the lists will be presented to the user, to make him able to explore further examples. Based on the concept described in section \ref{cd_pipeline}, a pipeline will transform Wikipedia's source data into structured example objects. This chapter will explain in detail how the system starts with unstructured source data from Wikipedia articles, and turn the data into searchable examples.
 
@@ -19,18 +17,19 @@ By using knowledge discussed in section \ref{good_example} and input from the us
 \end{figure}
 
 
-\textit{Wikidump parser} is the first part of the pipeline. It transforms the XML dump of the whole Wikipedia into a database with relevant data from articles. The Wikidump parser is written in JavaScript and executed by a Node.js process. To insert the relevant data from the XML into the database, it parses the XML, then parses the Wiki markup and lastly inserts relevant articles into a database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
+\textit{Wikidump parser} is the first part of the pipeline. It transforms the XML dump of the whole Wikipedia into a database with relevant data from articles. The Wikidump parser is written in JavaScript and executed by a Node.js process. To insert the relevant data from the XML into a database, it parses the XML, then parses the Wiki markup and lastly inserts relevant articles into the SQL database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
 
-The second part of the pipeline is called \textit{Example indexer}. Example indexer fetces data from the SQL database and combines the data into examples, it then builds an index in Elasticsearch with these examples.
+The second part of the pipeline is called \textit{Example indexer}. Example indexer fetches data from article, section and category tables in the SQL database and combines the data into examples. To fill the index with examples related to specific domains, a white list is used to include examples based on their categories before it builds an index in Elasticsearch with these examples.
 
-%beskriv whitelist kort
-
-\textit{Web query} is the last part of the pipeline. When the pipeline is finished with processing of the data, Web query fetches the data as examples from the index. Web query is a web based search interface that queries the index over HTTP and displays the results.
+\textit{Web query} is the last part of the pipeline. When the pipeline is finished with processing the data into examples, Web query can fetch the examples from the index, and display them for the user. Web query is a web based search interface that queries the index over HTTP and displays the results.
 
 Figure \ref{fig:pipeline_arch} displays these three parts of the whole system, where arrows indicates the data flow. The different parts of the system does not communicate with each other directly, but by inserting and fetching data from permanent storage. 
 
 
 \subsection{Wikidump parser}
+
+\subsubsection{Architecture}
+Wikidump parser has a very simple architecture. As shown in table \ref{fig:wikidump_parser}, two main processes is responsible for inserting relevant articles and sections from the XML dump into the SQL database. XMLParser uses a stream to parse the XML and uses an event pattern to notify every time an article has been parsed. Markup Parser then parses the article received from each event. If the article contains an example, Wikidump parser inserts it into the SQL database.
 
 \begin{figure}[h]
 \caption{Architectural overview of Wikidump parser}
@@ -40,7 +39,7 @@ Figure \ref{fig:pipeline_arch} displays these three parts of the whole system, w
 
 \subsubsection{XML parser}
 
-The data dump that is fed into the beginning of the pipeline is on the XML format. Figure \ref{fig:xml} shows how the XML is structured. The file is composed of page elements at the top level with the page tag. Each page element represents an article in Wikipedia. The page has several sub elements, but the most interesting element, is the one with the revision tag. Wikipedia saves several revisions of a page, but in the XML dump used, only the newest revision is included. It is inside this element that we find the article's content in the form of Wiki markup.
+The data dump that is fed into the beginning of the pipeline is on the XML format. Figure \ref{fig:xml} shows how the XML is structured. The file is composed of page elements at the top level with the page tag. Each \textit{page} element represents an article in Wikipedia. The page has several sub elements, but the most interesting element, is the one with the revision tag. Wikipedia saves several revisions of a page, but in the XML dump used, only the newest revision is included. It is inside this element that we find the article's content in the form of Wiki markup. Line number 18 in figure \ref{fig:xml} contains a comment marking where the whole article's markup is found.
 
 \begin{figure}[h]
 \caption{The XML structure used in the XML dump of Wikipedias database}
@@ -48,7 +47,7 @@ The data dump that is fed into the beginning of the pipeline is on the XML forma
 \label{fig:xml}
 \end{figure}
 
-In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of XML. It detects where an article in the XML document starts and where it ends, then proceeds to send the content to \texttt{index.js}. The document is read as a stream, which gives the advantage of only keeping a small bit of the document in memory. The library \textit{sax}\footnote{\url{https://www.npmjs.com/package/sax}} is used to read the document as a stream. Sax then uses events for indicating what in the document it is currently reading. Our project listens to the events for a open tag, close tag and content. By saving the state of which element Sax currently is inside we extract text, title, id and timestamp from the content of an article. When we detect the end of an article element, the data extracted is passed to \texttt{index.js}.
+In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of XML. It detects where an article in the XML document starts and where it ends by looking at the element tags, then proceeds to send the content to \texttt{index.js}. The document is read as a stream, which gives the advantage of only keeping a small bit of the document in memory. The library \textit{sax}\footnote{\url{https://www.npmjs.com/package/sax}} is used to read the document as a stream. Sax then creates events indicating where in the document it is currently reading, and what elements it is entering or exiting. Our project listens to the events for a open tag, close tag and content. By saving the state of which element Sax currently is inside we extract content, title, id and timestamp from the article element. When we detect the end of an article element, the data extracted is passed to \texttt{index.js}.
 
 \subsubsection{Markup parser}
 
@@ -85,17 +84,17 @@ The next step iterates through the list of sections to determine if some of them
 
 Section \ref{custom-pipeline} explains that the source data is fed into the pipeline as a snapshot of Wikipedia at a particular time. The size of the source data is an approximately 50 GB XML-document. Most of the data has no link or relation to examples, making it not interesting for this project. Therefor Markup parser excludes most of it before it is organized in the SQL database. 
 
-Figure \ref{fig:db_diagram} displays the tables of the database and the relations between them. If a relevant article is discovered, it is inserted into the \textit{pages} table. These sections are then stored in the database with their relation to the article. The categories of the article is also kept, because it will be helpful regarding searching among examples in the finished index.  
+Figure \ref{fig:db_diagram} displays the tables of the database and the relations between them. If a relevant article is discovered, it is inserted into the \textit{pages} table in the database. Sections are stored in the database with relation to the article they were extracted from. The categories of the article is also kept, because it will be helpful regarding searching among examples in the finished index.  
 
-The database acts a temporary buffer for the data going into the index. Having a buffer separates the parsing, from the building of the index. Therewith changes made in the parsing, will not affect the rest, so the database acts as a interface between the parser and the indexer. The data is stored on disk, so also the point in time when the programs are executed can happen independently.
+The database acts as a temporary buffer for the data going into the index. Having a buffer separates the parsing, from the building of the index. Therewith changes made in the parsing, will not affect the rest, so the database acts as a interface between the parser and the indexer. The data is stored on disk, so also the point in time when the programs are executed can happen independently.
 
 This is preferred since the parsing is a very time consuming process, using about nine hours completing a full parsing run. Having it structured in SQL with its meta data helps with showing how successful the parsing was. Some of the meta data is also irrelevant for the index, so only keeping it in the database  makes the end result less complex.
 
 
 \subsection{Example indexer and White list} \label{imp_indexer}
-A Java program queries the database for all the sections. The relations and data from the other tables are incorporated into the section. Now the section is an object with all the data needed to independently represent an example.
+A Java program queries the database for all sections. The relations and data from the other tables are incorporated into the section. Now the section is an object with all the data needed to independently represent an example.
 
-Although all the sections extracted from Wikipedia articles are examples, not all are relevant for a search purpose. Therefor the examples can be filtered through a \textit{white list} before they are inserted into the index. Appendix \ref{app_whitelist} contains an example of a white list used to keep desired examples. A total of 4 white lists have been created, to be used in different combinations. The white lists can be found in the Example Indexer resource folder, at \texttt{src/main/resources}. The white lists were created by extracting the complete list of all categories from the SQL database. Next, the categories were sorted by how many articles that had a relation to them. Finally, the list was manually altered into three different versions. A fourth version was created based on Wikipedia's category hierarchy. If one of the categories linked to a specific example also exists in the applied white list, that example will be included in the index's corpus.
+Although all the sections extracted from Wikipedia articles are examples, not all are relevant for a specific search purpose. Therefor the examples can be filtered through a \textit{white list} before they are inserted into the index. By filtering the examples before adding them to the index, we can assure that only examples of interesting domains are added. This can then improve the results returned from the index after a search. Appendix \ref{app_whitelist} contains an example of a white list used to keep desired examples. A total of 4 white lists have been created, to be used in different combinations. The white lists can be found in the Example Indexer resource folder, at \texttt{src/main/resources}. The white lists were created by extracting the complete list of all categories from the SQL database. Next, the categories were sorted by how many articles that had a relation to them. Finally, the list was manually altered into three different versions. A fourth version was created based on Wikipedia's category hierarchy. If one of the categories linked to a specific example also exists in the applied white list, that example will be included in the index's corpus.
 
 The purpose of using white lists was to reduce the amount of examples in the index. The white list can then reflect a chosen domain and include only relevant examples, consequently giving the corpus a specific scope. A more specific scope for the corpus, should improve the quality of the results returned. 
 
@@ -144,9 +143,10 @@ As already mentioned, Elasticsearch is the chosen tool for indexing the examples
 
 During this project, Elasticsearch was run on the same computer as both Example indexer and Web query. Therefor the communication between these programs happens with HTTP request over localhost. Localhost is used when communicating between different processes on same computer. By resolving to the IP address 127.0.0.1, which is a loopback address, only the right port is needed. Consequently, Elasticsearch, Web query and Example indexer, which all are web applications, communicates with each other without an internet connection. During the project, having them all on same computer was the easiest option. For possible future use, hosting the index on a separate server, only the ip address would have to be changed.
 
-Although Elasticsearch mostly handles the customization for us, we have done some. All the data is gathered in one and cluster, running one node, named \texttt{wiki\_cluster}. There is also only one index, \texttt{wikipedia}. To make the index as simple as possible, only one document model exist to represent the examples, which naturally is named \texttt{example}. A query for a specific example will then look like this:\\
+Although Elasticsearch mostly handles the customization for us, we have done some. All the data is gathered in one cluster, running on one node, named \texttt{wiki\_cluster}. There is also only one index, \texttt{wikipedia}. To make the index as simple as possible, only one document model exist to represent the examples, which naturally is named \texttt{example}. A query for a specific example will then look like this:\\
 \texttt{GET http://localhost:9200/wikipedia/example/1}\\
-When query by the web server searches are mostly used, here is an possible example of how to perform that:
+The request above specifies 1 at the end of the line, which makes Elasticsearch return the example with id 1.
+The web server mostly uses queries for its searches, here is an possible example of how to perform a query:
 \begin{Verbatim}[fontsize=\small]
 GET 
 'http://localhost:9200/wikipedia/example/_search' -d '{
@@ -154,7 +154,7 @@ GET
         "term" : { "title" : "Prisoners Dilemma" }
 }
 \end{Verbatim}
-The above search only makes use of the title, meanwhile the different queries performed by the search interface utilizes most of the fields of an example.
+The above search only makes use of the examples title field, while the different queries performed by the search interface utilizes most of the fields of an example.
 
 
 \section{Search interface}
