@@ -17,22 +17,22 @@ By using knowledge discussed in section \ref{good_example} and input from the us
 \end{figure}
 
 
-\textit{Wikidump parser} is the first part of the pipeline. It transforms the XML dump of the whole Wikipedia into a database with relevant data from articles. The Wikidump parser is written in JavaScript and executed by a Node.js process. To insert the relevant data from the XML into a database, it parses the XML, then parses the Wiki markup and lastly inserts relevant articles into the SQL database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
+\textit{Wikidump Parser} is the first part of the pipeline. It transforms the XML dump of the whole Wikipedia into a database with relevant data from articles. The Wikidump Parser is written in JavaScript and executed by a Node.js process. To insert the relevant data from the XML into a database, it parses the XML, then parses the Wiki markup and lastly inserts relevant articles into the SQL database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
 
-The second part of the pipeline is called \textit{Example indexer}. Example indexer fetches data from article, section and category tables in the SQL database and combines the data into examples. To fill the index with examples related to specific domains, a white list is used to include examples based on their categories before it builds an index in Elasticsearch with these examples.
+The second part of the pipeline is called \textit{Example Indexer}. Example Indexer fetches data from article, section and category tables in the SQL database and combines the data into examples. To fill the index with examples related to specific domains, a white list is used to include examples based on their categories before it builds an index in Elasticsearch with these examples.
 
-\textit{Web query} is the last part of the pipeline. When the pipeline is finished with processing the data into examples, Web query can fetch the examples from the index, and display them for the user. Web query is a web based search interface that queries the index over HTTP and displays the results.
+\textit{Example Search} is the last part of the pipeline. When the pipeline is finished with processing the data into examples, Example Search can fetch the examples from the index, and display them for the user. Example Search is a web based search interface that queries the index over HTTP and displays the results.
 
 Figure \ref{fig:pipeline_arch} displays these three parts of the whole system, where arrows indicates the data flow. The different parts of the system does not communicate with each other directly, but by inserting and fetching data from permanent storage. 
 
 
-\subsection{Wikidump parser}
+\subsection{Wikidump Parser}
 
 \subsubsection{Architecture}
-Wikidump parser has a very simple architecture. As shown in table \ref{fig:wikidump_parser}, two main processes is responsible for inserting relevant articles and sections from the XML dump into the SQL database. XMLParser uses a stream to parse the XML and uses an event pattern to notify every time an article has been parsed. Markup Parser then parses the article received from each event. If the article contains an example, Wikidump parser inserts it into the SQL database.
+Wikidump Parser has a very simple architecture. As shown in table \ref{fig:wikidump_parser}, two main processes is responsible for inserting relevant articles and sections from the XML dump into the SQL database. XMLParser uses a stream to parse the XML and uses an event pattern to notify every time an article has been parsed. Markup Parser then parses the article received from each event. If the article contains an example, Wikidump Parser inserts it into the SQL database.
 
 \begin{figure}[h]
-\caption{Architectural overview of Wikidump parser}
+\caption{Architectural overview of Wikidump Parser}
 \includegraphics[width=\textwidth]{WikidumpParser}
 \label{fig:wikidump_parser}
 \end{figure}
@@ -91,7 +91,7 @@ The database acts as a temporary buffer for the data going into the index. Havin
 This is preferred since the parsing is a very time consuming process, using about nine hours completing a full parsing run. Having it structured in SQL with its meta data helps with showing how successful the parsing was. Some of the meta data is also irrelevant for the index, so only keeping it in the database  makes the end result less complex.
 
 
-\subsection{Example indexer and White list} \label{imp_indexer}
+\subsection{Example Indexer and White list} \label{imp_indexer}
 A Java program queries the database for all sections. The relations and data from the other tables are incorporated into the section. Now the section is an object with all the data needed to independently represent an example.
 
 Although all the sections extracted from Wikipedia articles are examples, not all are relevant for a specific search purpose. Therefor the examples can be filtered through a \textit{white list} before they are inserted into the index. By filtering the examples before adding them to the index, we can assure that only examples of interesting domains are added. This can then improve the results returned from the index after a search. Appendix \ref{app_whitelist} contains an example of a white list used to keep desired examples. A total of 4 white lists have been created, to be used in different combinations. The white lists can be found in the Example Indexer resource folder, at \texttt{src/main/resources}. The white lists were created by extracting the complete list of all categories from the SQL database. Next, the categories were sorted by how many articles that had a relation to them. Finally, the list was manually altered into three different versions. A fourth version was created based on Wikipedia's category hierarchy. If one of the categories linked to a specific example also exists in the applied white list, that example will be included in the index's corpus.
@@ -141,7 +141,7 @@ To put each example into the index, they first have to be converted to JSON. A s
 \subsection{Index}
 As already mentioned, Elasticsearch is the chosen tool for indexing the examples. By using its simple RESTful API, examples can be stored as JSON documents, which Elasticsearch then indexes automatically by detecting the examples data structure and type. Hence, we can focus more on the queries used to retrieve examples, instead of building the index. Elasticsearch manages the whole index, and leaves a simply web based interface for communication.
 
-During this project, Elasticsearch was run on the same computer as both Example indexer and Web query. Therefor the communication between these programs happens with HTTP request over localhost. Localhost is used when communicating between different processes on same computer. By resolving to the IP address 127.0.0.1, which is a loopback address, only the right port is needed. Consequently, Elasticsearch, Web query and Example indexer, which all are web applications, communicates with each other without an internet connection. During the project, having them all on same computer was the easiest option. For possible future use, hosting the index on a separate server, only the ip address would have to be changed.
+During this project, Elasticsearch was run on the same computer as both Example Indexer and Example Search. Therefor the communication between these programs happens with HTTP request over localhost. Localhost is used when communicating between different processes on same computer. By resolving to the IP address 127.0.0.1, which is a loopback address, only the right port is needed. Consequently, Elasticsearch, Example Search and Example Indexer, which all are web applications, communicates with each other without an internet connection. During the project, having them all on same computer was the easiest option. For possible future use, hosting the index on a separate server, only the ip address would have to be changed.
 
 Although Elasticsearch mostly handles the customization for us, we have done some. All the data is gathered in one cluster, running on one node, named \texttt{wiki\_cluster}. There is also only one index, \texttt{wikipedia}. To make the index as simple as possible, only one document model exist to represent the examples, which naturally is named \texttt{example}. A query for a specific example will then look like this:\\
 \texttt{GET http://localhost:9200/wikipedia/example/1}\\
@@ -157,13 +157,19 @@ GET
 The above search only makes use of the examples title field, while the different queries performed by the search interface utilizes most of the fields of an example.
 
 
-\section{Search interface}
+\section{Example Search}
 
-The search interface is responsible for managing queries passed from the user. It serves a web page that allows the user to enter queries for examples. Express\footnote{\url{http://expressjs.com/}} is used as a framework to effortless set up a web application with a HTTP API.
+\begin{figure}[H] 
+\caption{A sequence diagram showing the interactions between the actors when searching for examples}
+\includegraphics[width=\textwidth]{WebQuery}
+\label{fig:web_query}
+\end{figure}
+
+Example Search is responsible for managing queries passed from the user. It serves a web page that allows the user to enter queries for examples. Express\footnote{\url{http://expressjs.com/}} is used as a framework to effortless set up a web application with a HTTP API.
 
 For the web page, \textit{Jade}\footnote{\url{http://jade-lang.com/}} is used as a template engine to build the HTML structure. Using a template engine allows easy reusing of markup code. Also control structures and programming statements can be used directly in the file. Jade offers its own syntax that is faster to write than the standard HTML syntax. For simplicity, the web page is mainly styled by Wikipedia's style sheets, with a few adjustments. When the user wants to query for examples, the web page offers a search box. The search box sends a HTTP request to the web server with the query.
 
-When the server receives the HTTP request, Express routes the request to the right function. The routing functions can be found in \texttt{routes/index.js}. 
+For the web page to return examples after a search, a series of requests are made to different actors, figure \ref{fig:web_query} gives a quick overview of the actors and their interaction. The interaction starts when the server receives the HTTP request, Express routes the request to the right function. The routing functions can be found in \texttt{routes/index.js}. 
 When the request is received, a new function in \texttt{elasticsearch/api.js} is called. \texttt{api.js} queries Elasticsearch directly by using the official Elasticsearch JavaScript  library\footnote{\url{https://www.npmjs.com/package/elasticsearch}}. Elastissearch divides the keyword into terms, then it matches the terms with the \textit{inverted index} created from all the examples. Finally Elasticsearch uses TF-IDF to measure the relevance of the examples. The response is sent back, ordered by relevance, to the routing function asynchronously using a callback.
 
 To display the page in the same way that Wikipedia does, the article's link is used to scrape the page from en.wikipedia.org. By scraping the page, we get access to the complete HTML structure of the actual page. From the HTML structure the example section is extracted. A list of all the relevant examples with their corresponding HTML is sent back to the web page in JSON format. 
@@ -187,7 +193,7 @@ If relevance score is important then the second option, \textit{query}, should b
 
 
 \subsection{NPM and Node.js}
-In our project, both the programs Wikidump parser and Web query are written in JavaScript, which is normally executed by browsers. Node.js\cite{node} allows the code to be executed from a terminal instead, which enables JavaScript to be used on servers.  Node.js is an asynchronous event driven framework. By embracing to event loop in this manner, Node.js avoids thread management and blocking of those. Instead callbacks are pushed to the event loop and Node.js runs until there are no more callbacks to perform. This makes Node.js ideal for simpler and less complex systems, and is therefor chosen for this project.
+In our project, both the programs Wikidump Parser and Example Search are written in JavaScript, which is normally executed by browsers. Node.js\cite{node} allows the code to be executed from a terminal instead, which enables JavaScript to be used on servers.  Node.js is an asynchronous event driven framework. By embracing to event loop in this manner, Node.js avoids thread management and blocking of those. Instead callbacks are pushed to the event loop and Node.js runs until there are no more callbacks to perform. This makes Node.js ideal for simpler and less complex systems, and is therefor chosen for this project.
 
 Node.js also comes with a packet manager called Node Packet Manager(NPM). NPM allows any Node.js project, to include libraries and other JavaScript projects published to their \textit{Open Source Registry} \footnote{\url{https://www.npmjs.com/npm/open-source}}. This is done by a simple API call to the NPM executable in the terminal.
 

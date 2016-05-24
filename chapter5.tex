@@ -1,18 +1,36 @@
 %===================================== CHAP 5 =================================
 
-\chapter{Experiments, Results and Discusion} \label{cap_5}
+\chapter{Experiments, Results and Discussion} \label{cap_5}
 
-\section{Introduction}
 
-Chapter 3 discuss the different concepts regarding the pipeline and the examples data managed by it. Chapter 4 explains how the pipeline is implemented. In this chapter we will use the information made available in Chapter 3 and 4 and explore to what degree the research goals have been accomplished. First, for Research Goal 1 we will decide whether the pipeline created is satisfactory or not. Regarding Research Goal 2, we will conclude the analysis conducted in Chapter 3. Next, we will investigate if the database chosen to manage the collection of examples, is satisfying the purpose of Research Goal 3. Finally, a series of tests will be performed to measure the search results displayed by the search interface. A comparison of the results will help determine if Research Goal 4 is fulfilled.
+Chapter 3 discussed the different concepts regarding the pipeline and the examples data managed by it. Chapter 4 explained how the pipeline is implemented. In this chapter we will use the information made available in Chapter 3 and 4 and explore to which degree the research goals have been accomplished.\\
+First, for Research Goal 1 we will decide whether the pipeline created is satisfactory or not. Regarding Research Goal 2, we will conclude the analysis conducted in Chapter 3. Next, we will investigate if the database chosen to manage the collection of examples is satisfying the purpose of Research Goal 3. Finally, a series of tests will be performed to measure the search results displayed by the search interface. A comparison of the results will help determine if Research Goal 4 is fulfilled. \\
+Every section in Chapter 5 will discuss on of the research goals. Table \ref{table:rgSecMapping} gives a quick overview of which research goals are being discussed by the different sections.
 
-\section{Pipeline}
+\begin{table}[h]
+\centering
+\begin{tabular} {|| p{5em} | p{10em} ||} 
+ \hline
+  Goals & Section \\ [0.5ex] 
+ \hline
+1   &   \ref{5:pipeline} \\
+2   &   \ref{5:example} \\
+3   &   \ref{5:exampleCollection} \\
+4   &   \ref{5:interface}, \ref{5:keywords} and \ref{5:queryByExample} \\
+ \hline
+\end{tabular}
+\caption{Mapping of which sections discusses the different research goals.}
+\label{table:rgSecMapping}
+\end{table}
 
-We tested the final pipeline by using the English Wikipedia's database dump from February 4. 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database lasted nine hours. After the last section was added, the database contained 28 110 example sections deemed as relevant sections.
+\section{Resulting Pipeline} \label{5:pipeline}
 
-When the process that extract relevant sections were finished, a new fully independent process was started for the next step. To begin with, the process queries the SQL database for sections. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a white list is used to filter the examples based on their categories. By filtering the examples we can avoid uninteresting categories, for instance examples concerning history. Finally, the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers a HTTP API that other processes can use to query for examples.
+We tested the final pipeline by using the English Wikipedia's database dump from February 4. 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database lasted nine hours. After the last section was added, the database contained 28 110 example sections deemed as relevant sections. The process was run on a mid end MacBook Pro from late 2013 with four cores, each with a processor speed of 2 GHz and 2x4 GB of memory with a speed of 1600 MHz.
 
-\begin{table}[h!]
+When the process that extracts relevant sections were finished, a new fully independent process was started for the next step. First, the process queries the SQL database for sections\footnote{A section is a part of an Wikipedia article.}. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a white list is used to filter the examples based on their categories. By filtering the examples we can avoid irrelevant categories, for instance examples concerning history. Finally, the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers an HTTP API that can be used to query for examples.
+
+
+\begin{table}[H]
 \centering
 \begin{tabular} {|| p{15em} | r ||} 
  \hline
@@ -21,20 +39,21 @@ When the process that extract relevant sections were finished, a new fully indep
 XML file size in Gigabytes & 56.3 \\
 Number of articles & ~5 100 000 \\
 Extraction duration in hours & ~9 \\
-Number of section after extraction & 28110 \\
-Number of examples after filtering & 6593 \\
+CPU speed in GHz & 2.0 \\
+Memory size in GB & 8 \\
 
  \hline
 \end{tabular}
-\caption{Statistics from a run through the pipeline}
+\caption{Results from processing the XML dump through the pipeline}
 \label{table:run_statistics}
 \end{table}
 
 
-\section{Describing a good example}
-Finding examples is the overall goal of this work, in order to use the system we have created. Without useful data, the system is worthless. Therefore we want to fill our database with good examples. This project uses Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}. This section will use the main points from section \ref{examples-section} to draw a conclusion.
+\section{Describing a good example} \label{5:example}
+Finding examples that later can be presented to the user is the overall goal of our work. To make the system we have created perform well, we want to fill the database with useful data in the form of good examples. This project uses Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}. This section will use the main points from section \ref{examples-section} to draw a conclusion.
 
-The analysis was performed based on examples from Wikipedia, but to compare examples for the same subject, examples from other sources were also used. Game Theory is used as an overall domain for the analysis. The following subjects were chosen to find examples about, Prisoners Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondos Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
+The analysis was performed based on examples from Wikipedia, but to compare examples for the same topic, examples from a normal Google search were also used. Game Theory is used as an overall domain for the analysis. The examples were chosen to walk through the unimplemented system. The analysis let us discover how the examples would affect the system, and depending on the system's input, the structure of the examples could be fitted to the system's needs.
+The topics were chosen to reveal strengths and weaknesses of our approach. The following topics were chosen to find examples: Prisoners Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondos Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
 
 Based on these subjects, a list of properties that examples might possess was compiled, table \ref{table:1} contains these properties with a short description of each. The properties listed in table \ref{table:1} are all favourable, but we experienced that when an example contains to many of them, the content of the example becomes very complex. A complex example is not necessarily a bad thing. Although a more complex example requires more prerequisite knowledge from the reader, which may exclude some readers. The extent of use for each property is also a considerable factor for determining complexity. Although more properties often make the content of the example more complicated, some are always needed. A simple example will have a hard time explaining the more complicated aspects of a subject. Therefor an example should fall in between a golden mean of complexity. This golden mean is hard to define, but ought to be quite large. There is some techniques though, that lets an example explain more complicated subjects, without increasing complexity. Pictures or equations that is methodically referenced to from a descriptive text, is one way. Also the combination of the properties analogies, walk-through and iterations improve examples without making them more complex. 
 
@@ -42,22 +61,38 @@ The analysis in section \ref{examples-section} gave a better understanding of ex
 The improvement can result in the collection of examples having a higher quality and also lead to a better user experience. 
 
 
-\section{Collection of examples}
-Reaserch Goal 3 aims to obtain a collection of examples that we can populate a database with. The database accepts all kinds of examples, consequently the examples are represented in a generic way. We are using Wikipedia as source for all the examples, therefor we have to strip away a large amount of the information from the articles used. 
+\section{Collection of examples} \label{5:exampleCollection}
+Research Goal 3 aims to obtain a collection of examples that we can populate a database with. The database accepts all kinds of examples, consequently the examples are represented in a generic way. We are using Wikipedia as source for all the examples, therefor we have to strip away a large amount of the information from the articles used. 
 
-After an article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection. With Wikipedia having no limits for its domains, white lists are used to narrow the examples down into only relevant domains for our project.
+After an article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection. With Wikipedia having no limits for its domains, white lists are used to narrow the examples down into only relevant domains for our project. During implementation white list \textit{Top200Edu} and \textit{MathTechWiki} were used.
 
-After the processing, the collection now contains relevant elements, with a structure that represents a general example. This collection can then be indexed by Elasticsearch, which is the database containing all examples. Other examples from different sources can separately be included to Elasticsearch's example index, as long as the examples are structured correctly according to the mapping described in section \ref{imp_indexer}.
+After the processing, the collection now contains relevant elements, with a structure that represents a general example. This collection can then be indexed by Elasticsearch, which is the database containing all examples. Other examples from different sources can separately be included to Elasticsearch's example index, as long as the examples are structured correctly according to the mapping described in section \ref{imp_indexer}. Table \ref{table_indexStats} shows how many examples that were extracted from Wikipedia and how many examples that ended up in the final index.
 
-\section{Search interface}
+
+\begin{table}[H]
+\centering
+\begin{tabular} {|| p{15em} | r ||} 
+ \hline
+  & Value \\ [0.5ex] 
+ \hline
+Number of section after extraction & 28110 \\
+Number of examples after filtering & 6593 \\
+ \hline
+\end{tabular}
+\caption{Statistics from the index after original implementation.}
+\label{table:indexStats}
+\end{table}
+
+\section{Search interface} \label{5:interface}
 
 \begin{figure}[H] 
-\caption{A screenshot of the search interface before a search i performed.}
-\includegraphics[width=\textwidth]{wq_empty}
+\caption{A screenshot of the search interface before a search is performed.}
+\centering
+\includegraphics[scale=0.5]{wq_empty}
 \label{fig:wq_empty}
 \end{figure}
 
-Figure \ref{fig:wq_empty} shows the home page of Web query, before a search is performed. The design is very minimalistic with main focus on highlighting functionality. When a search is performed the now empty table will be filled with results. The columns \textit{score} and \textit{Categories} is there mainly to help evaluate and debug the system by using the returned results, and would not be necessary in a finished version. Meanwhile \textit{Title} displays the name of the Wikipedia article and \textit{Content} contains the actual example.
+Figure \ref{fig:wq_empty} shows the home page of Example Search, before a search is performed. The design is very minimalistic with main focus on highlighting functionality. When a search is performed the now empty table will be filled with results. The columns \textit{score} and \textit{Categories} is there mainly to help evaluate and debug the system by using the returned results, and would not be necessary in a finished version. Meanwhile \textit{Title} displays the name of the Wikipedia article and \textit{Content} contains the actual example.
 
 
 \begin{figure}[H] 
@@ -351,7 +386,7 @@ While discussing the results from keyword \textit{zero sum}, poor handling of th
 Order and proximity of the words are not a new problem in the field of information retrieval. Boosting the score of results based on how close the words appear, and if in right order, is a common technique. It could be done for this system, but it might end up being a to complicated solution, for an pretty straightforward problem. A simpler solution is to surround the words with quotation marks. The quotation marks will tell the index to handle all words between the quotation marks as a single search term. Since users often will search after name of examples or subjects, it will be enough to only accept examples where the terms are directly next to each other when the quotation mark surrounds the keyword.
 
 
-\section{Querying by examples}
+\section{Querying by examples} \label{5:queryByExample}
 
 \subsection{Experiment III: Finding related examples}
 
