@@ -53,16 +53,16 @@ Memory size in GB & 8 \\
 Finding examples that later can be presented to the user is the overall goal of our work. To make the system we have created perform well, we want to fill the database with useful data in the form of good examples. This project uses Wikipedia as a source to automatically identify and extract examples. To make the best out of the examples extracted, we performed an analysis on what differentiates a good example from a bad one. A more detailed account of the analysis can be found in section \ref{examples-section}. This section will use the main points from section \ref{examples-section} to draw a conclusion.
 
 The analysis was performed based on examples from Wikipedia, but to compare examples for the same topic, examples from a normal Google search were also used. Game Theory is used as an overall domain for the analysis. The examples were chosen to walk through the unimplemented system. The analysis let us discover how the examples would affect the system, and depending on the system's input, the structure of the examples could be fitted to the system's needs.
-The topics were chosen to reveal strengths and weaknesses of our approach. The following topics were chosen to find examples: Prisoners Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondos Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
+The topics were chosen to reveal strengths and weaknesses of our approach. The following topics were chosen to find examples: Prisoner's Dilemma, Nash Equilibrium, Pareto Optimality, Zero sum, Parrondo's Paradox. Appendix \ref{app_example} contains samples of two examples chosen for the subject Pareto Optimality. 
 
-Based on these subjects, a list of properties that examples might possess was compiled, table \ref{table:1} contains these properties with a short description of each. The properties listed in table \ref{table:1} are all favourable, but we experienced that when an example contains to many of them, the content of the example becomes very complex. A complex example is not necessarily a bad thing. Although a more complex example requires more prerequisite knowledge from the reader, which may exclude some readers. The extent of use for each property is also a considerable factor for determining complexity. Although more properties often make the content of the example more complicated, some are always needed. A simple example will have a hard time explaining the more complicated aspects of a subject. Therefor an example should fall in between a golden mean of complexity. This golden mean is hard to define, but ought to be quite large. There is some techniques though, that lets an example explain more complicated subjects, without increasing complexity. Pictures or equations that is methodically referenced to from a descriptive text, is one way. Also the combination of the properties analogies, walk-through and iterations improve examples without making them more complex. 
+Based on these subjects, a list of properties that examples might possess was compiled, table \ref{table:1} contains these properties with a short description of each. The properties listed in table \ref{table:1} are all favourable, but we experienced that when an example contains too many of them, the content of the example becomes very complex. A complex example is not necessarily a bad thing. Although a more complex example requires more prerequisite knowledge from the reader, which may exclude some readers. The extent of use for each property is also a considerable factor for determining complexity. Although more properties often make the content of the example more complicated, some are always needed. A simple example will have a hard time explaining the more complicated aspects of a subject. Therefore an example should fall in between a golden mean of complexity. This golden mean is hard to define, but ought to be quite large. There is some techniques though, that lets an example explain more complicated subjects, without increasing complexity. Pictures or equations that is methodically referenced to from a descriptive text, is one way. Also the combination of the properties analogies, walk-through and iterations improve examples without making them more complex. 
 
 The analysis in section \ref{examples-section} gave a better understanding of examples. Consequently rating and ordering of examples can be improved based on the analysis. 
 The improvement can result in the collection of examples having a higher quality and also lead to a better user experience. 
 
 
 \section{Collection of examples} \label{5:exampleCollection}
-Research Goal 3 aims to obtain a collection of examples that we can populate a database with. The database accepts all kinds of examples, consequently the examples are represented in a generic way. We are using Wikipedia as source for all the examples, therefor we have to strip away a large amount of the information from the articles used. 
+Research Goal 3 aims to obtain a collection of examples that we can populate a database with. The database accepts all kinds of examples, consequently the examples are represented in a generic way. We are using Wikipedia as source for all the examples, therefore we have to strip away a large amount of the information from the articles used. 
 
 After an article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection. With Wikipedia having no limits for its domains, whitelists are used to narrow the examples down into only relevant domains for our project. During implementation whitelist \textit{Top200Edu} and \textit{MathTechWiki} were used.
 
@@ -114,7 +114,7 @@ This page can been seen in figure \ref{fig:wq_example}. The page has the main ex
 \section{Querying by keywords} \label{5:keywords}
 
 \subsection{Experiment I: Search examples} \label{search_experiment}
-In this project we have filled a database with examples, indexed those examples and created a interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of the queries by measuring the precision of the results returned from a search with the selected  keywords. Precision is the fraction of returned examples, which is relevant. It is calculated as follows:
+In this project we have filled a database with examples, indexed those examples and created an interface that we can use for searching them. In order to perform searches, we have created queries that Elasticsearch executes. To test how well these queries perform we have created a list of keywords. We test the accuracy of the queries by measuring the precision of the results returned from a search with the selected  keywords. Precision is the fraction of returned examples, which is relevant. It is calculated as follows:
 \[\frac{|R \cap E |}{|E|}\]
 In the equation above \(R\) is the set of all relevant examples and \(E\) is the set of all the retrieved examples.
 In our experiments \(E\), representing all retrieved examples, is limited to the first five results in the top 5 tests, and similarly first ten in the top 10 tests. By limiting the size of \(E\), manual inspection can be used to check whether a example is actually relevant, which would also place it in the set \(R\).
@@ -142,10 +142,10 @@ Bayes Network & 345 & 1 & 0.9 \\
 Derivation & 67 & 1 & 0.8 \\
 \hline
 Chain Rule & 530 & 1 & 0.6 \\
-Prisoners Dilemma & 39 & 1 & 0.6 \\
+Prisoner's Dilemma & 39 & 1 & 0.6 \\
 Nash Equilibrium & 101 & 1 & 0.8 \\
 Cartesian Product & 789 & 0.8 & 0.6 \\
-Parrondos Paradox & 49 & 0.6 & 0.4 \\
+Parrondo's Paradox & 49 & 0.6 & 0.4 \\
 Zero Sum & 1017 & 0 & 0 \\
 
  \hline
@@ -166,7 +166,7 @@ Figure \ref{fig:ex1AvgPrec} shows how the three different groupings score in the
 
 The score in the top group for five and ten terms are very similar. In contrast the bottom group where the subjects are more specific, the score for top ten results suffers. Having a relatively small database of examples for specific topics is assumed to be the explanation. A richer selection of examples for the different topics could increase the precision for the bottom group. 
 
-Another interesting remark to note is that the top 5 results are consistently better than the top 10 results. Top 5 being better than top 10, is caused by at least half of the relevant examples which is returned, are found among the first five results. Therefor we can conclude that the ranking of the examples functions as intended. 
+Another interesting remark to note is that the top 5 results are consistently better than the top 10 results. Top 5 being better than top 10, is caused by at least half of the relevant examples which is returned, are found among the first five results. Therefore we can conclude that the ranking of the examples functions as intended. 
 
 There exist one substantial irregularity in table \ref{table:precision_test} though, the keyword \textit{Zero Sum} achieves a score of zero on both measures, meaning all of the ten first results returned is deemed irrelevant. No relevant results among the first ten could indicate an error in the system, either in the search itself, or that there is no example to find at all. 
 
@@ -174,9 +174,9 @@ While performing the experiment, the error occurred when searching with the keyw
 
 To find the potential error we start at the beginning of the pipeline, to explore whether the example is retrieved from the XML dump. We find the answer in the SQL database. First we find a row in the \texttt{pages} table with the name \textit{zero sum game}. Next, using the primary key of this row, we can find all related rows in the table \texttt{page\_sections}. A query on the column \texttt{page\_id} in \texttt{page\_sections} returns one result. This result is the same section found in Wikipedia's article, thus we can conclude that Wikidump parser successfully inserts the section into the SQL database.
 
-The next step is to verify that the section is transformed to an example and indexed by Elasticsearch. The examples in Elasticsearch shares the same id as the sections primary key in the SQL database. Querying Elasticsearch by id returns no results, therefor we know that the zero sum example never reaches Elasticsearch. Between the SQL database and Elasticsearch a whitelist filters the examples. If the zero-sum game article does not contain a category that exists in the whitelist, the example will be discarded. The article contains the categories \textit{Non-cooperative games} and \textit{International relations theory}. Matching the article's categories with the complete category list reveals that there exist only 4 occurrences of articles with Non-cooperative games as category and 7 with International relations theory, which is a low number. Whitelist \textit{Top200Edu} and \textit{MathTechWiki} were used for the filtering, section \ref{imp_indexer} explains whitelist's implementation and their function in our project. \textit{Top200Edu} includes only the top 200 relevant articles and \textit{MathTechWiki} use only the top level categories in the Wikipedia's category hierarchy. In conclusion, the article's categories is not included in any of the whitelists, and therefor the example is not indexed.
+The next step is to verify that the section is transformed to an example and indexed by Elasticsearch. The examples in Elasticsearch shares the same id as the sections primary key in the SQL database. Querying Elasticsearch by id returns no results, therefore we know that the zero sum example never reaches Elasticsearch. Between the SQL database and Elasticsearch a whitelist filters the examples. If the zero-sum game article does not contain a category that exists in the whitelist, the example will be discarded. The article contains the categories \textit{Non-cooperative games} and \textit{International relations theory}. Matching the article's categories with the complete category list reveals that there exist only 4 occurrences of articles with Non-cooperative games as category and 7 with International relations theory, which is a low number. Whitelist \textit{Top200Edu} and \textit{MathTechWiki} were used for the filtering, section \ref{imp_indexer} explains whitelist's implementation and their function in our project. \textit{Top200Edu} includes only the top 200 relevant articles and \textit{MathTechWiki} use only the top level categories in the Wikipedia's category hierarchy. In conclusion, the article's categories is not included in any of the whitelists, and therefore the example is not indexed.
 
-If the article's list of categories had been richer, the example would have been included more likely. Although richer category lists for Wikipedia's articles would have solved the problem, it is not something our project can affect. Instead a whitelist that accommodates the less popular categories is a better solution. The problem is that all the categories have to be manually added to whitelists. The Whitelist \textit{Edu} deals with the problem by including all categories, but also examining the most popular and removing the irrelevant categories from the whitelist. The disadvantage obtained by using \textit{Edu} is that irrelevant categories will be included, but on the other hand, they are not connected to many articles. 
+If the article's list of categories had been richer, the example would have been included more likely. Although richer category lists for Wikipedia's articles would have solved the problem, it is not something our project can affect. Instead a whitelist that accommodates the less popular categories is a better solution. The problem is that all the categories have to be manually added to whitelists. The Whitelist \textit{Edu} deals with the problem by including all categories, but also examining the most popular and removing the irrelevant categories from the whitelist. The disadvantage obtained by using \textit{Edu} is that irrelevant categories will be included, but on the other hand, they are not connected too many articles. 
 
 \subsection{Experiment II: Whitelist}
 
@@ -204,10 +204,10 @@ Bayes Network & 1370 & 4.87 & 0.8 & 0.9 \\
 Derivation & 178 & 0.63 & 0.6 & 0.5 \\
 \hline
 Chain Rule & 1760 & 6.26 & 0.8 & 0.6 \\
-Prisoners Dilemma & 141 & 0.50 & 0.8 & 0.5 \\
+Prisoner's Dilemma & 141 & 0.50 & 0.8 & 0.5 \\
 Nash Equilibrium & 350 & 1.25 & 1 & 1 \\
 Cartesian Product & 2119 & 7.54 & 0.6 & 0.7 \\
-Parrondos Paradox & 159 & 0.57 &  0.2 & 0.2 \\
+Parrondo's Paradox & 159 & 0.57 &  0.2 & 0.2 \\
 Zero Sum & 2330 & 8.29 & 0 & 0.1 \\
 
  \hline
@@ -217,7 +217,7 @@ Zero Sum & 2330 & 8.29 & 0 & 0.1 \\
 \end{table}
 \clearpage
 
-In the next step whitelist \textit{Edu} will be tested. \textit{Edu} contains most of the categories from the orignal category list, with the exception of categories that are popular, but not educational, being removed. A category's popularity is measured in how many examples links to the category. When the examples are filtered through \textit{Edu}, 5 133 examples are discarded from the original 28 110. The results of the test can be found in table \ref{table:p_test_list1}.
+In the next step whitelist \textit{Edu} will be tested. \textit{Edu} contains most of the categories from the original category list, with the exception of categories that are popular, but not educational, being removed. A category's popularity is measured in how many examples links to the category. When the examples are filtered through \textit{Edu}, 5 133 examples are discarded from the original 28 110. The results of the test can be found in table \ref{table:p_test_list1}.
 
 %%whitelist 1 : filtrert 5133 av 28110
 \begin{table}[h]
@@ -240,10 +240,10 @@ Bayes Network & 1171 & 5.10 & 0.8 & 0.9 \\
 Derivation & 145 & 0.63 & 0.4 & 0.5 \\
 \hline
 Chain Rule & 1374 & 5.98 & 0.8 & 0.6 \\
-Prisoners Dilemma & 115 & 0.50 & 0.8 & 0.5 \\
+Prisoner's Dilemma & 115 & 0.50 & 0.8 & 0.5 \\
 Nash Equilibrium & 60 & 0.26 & 1 & 1 \\
 Cartesian Product & 1739 & 7.57 & 0.6 & 0.6 \\
-Parrondos Paradox & 128 & 0.56 & 0.2 & 0.2 \\
+Parrondo's Paradox & 128 & 0.56 & 0.2 & 0.2 \\
 Zero Sum & 1842 & 8.02 & 0 & 0.1 \\
 
  \hline
@@ -278,10 +278,10 @@ Bayes Network & 315 & 4.96 & 1 & 0.9 \\
 Derivation & 62 & 0.97 & 1 & 0.9 \\
 \hline
 Chain Rule & 515 & 8.09 & 1 & 0.6 \\
-Prisoners Dilemma & 38 & 0.60 & 0.8 & 0.5 \\
+Prisoner's Dilemma & 38 & 0.60 & 0.8 & 0.5 \\
 Nash Equilibrium & 100 & 1.57 & 1 & 1 \\
 Cartesian Product & 748 & 11.75 & 0.6 & 0.6 \\
-Parrondos Paradox & 46 & 0.72 & 0.4 & 0.4 \\
+Parrondo's Paradox & 46 & 0.72 & 0.4 & 0.4 \\
 Zero Sum & 1842 & 28.94 & 0 & 0 \\
 
  \hline
@@ -314,10 +314,10 @@ Bayes Network & 262 & 5.20 & 1 & 0.9 \\
 Derivation & 56 & 1.11 & 1 & 1 \\
 \hline
 Chain Rule & 402 & 7.98 & 1 & 0.6 \\
-Prisoners Dilemma & 33 & 0.66 & 0.8 & 0.5 \\
+Prisoner's Dilemma & 33 & 0.66 & 0.8 & 0.5 \\
 Nash Equilibrium & 87 & 1.73 & 1 & 1 \\
 Cartesian Product & 606 & 12.03 & 0.6 & 0.6 \\
-Parrondos Paradox & 37 & 0.73 & 0.4 & 0.4 \\
+Parrondo's Paradox & 37 & 0.73 & 0.4 & 0.4 \\
 Zero Sum & 917 & 18.21 & 0 & 0 \\
 
  \hline
@@ -350,10 +350,10 @@ Bayes Network & 102 & 10.17 & 0.8 & 0.6 \\
 Derivation & 22 & 2.19 & 0.6 & 0.4 \\
 \hline
 Chain Rule & 120 & 11.96 & 0.2 & 0.1 \\
-Prisoners Dilemma & 8 & 0.80 & 0.4 & 2/8 \\
+Prisoner's Dilemma & 8 & 0.80 & 0.4 & 2/8 \\
 Nash Equilibrium & 17 & 1.69 & 1 & 0.9 \\
 Cartesian Product & 126 & 12.56 & 0 & 0.1 \\
-Parrondos Paradox & 18 & 1.79 & 0 & 0 \\
+Parrondo's Paradox & 18 & 1.79 & 0 & 0 \\
 Zero Sum & 169 & 16.85 & 0.2 & 0.1 \\
 
  \hline
@@ -393,7 +393,7 @@ Figure \ref{fig:zs} displays the results when all the different whitelists have 
 \end{figure}
 
 \paragraph{Few returned documents}
-In table \ref{table:p_test_list4} we note that many of the keywords have very few total hits. In particular, the keywords \textit{java} and \textit{prisoners dilemma} returns less than 10 results, making the top 10 test inaccurate. Having so few total hits is reflected in the precision also dropping quite low. In figure \ref{fig:avgPrecision} we can see that the whitelist \textit{MathTechWiki} separates itself from the rest of the lists with almost 50 percent worse precision. This big loss of precision indicates that the whitelist excludes to many relevant examples from the index's corpus. Figure \ref{fig:j} demonstrates how the keyword \textit{java} overall has extremely good results, but when \textit{MathTechWiki} is applied, the score drops significantly lower.
+In table \ref{table:p_test_list4} we note that many of the keywords have very few total hits. In particular, the keywords \textit{java} and \textit{prisoner's dilemma} returns less than 10 results, making the top 10 test inaccurate. Having so few total hits is reflected in the precision also dropping quite low. In figure \ref{fig:avgPrecision} we can see that the whitelist \textit{MathTechWiki} separates itself from the rest of the lists with almost 50 percent worse precision. This big loss of precision indicates that the whitelist excludes too many relevant examples from the index's corpus. Figure \ref{fig:j} demonstrates how the keyword \textit{java} overall has extremely good results, but when \textit{MathTechWiki} is applied, the score drops significantly lower.
 
 \begin{figure}[h] 
 \caption{Precision score when the keyword \textit{Derivation} is used as a search phrase, with the different whitelists applied.}
@@ -402,10 +402,10 @@ In table \ref{table:p_test_list4} we note that many of the keywords have very fe
 \end{figure}
 
 \paragraph{Excluding irrelevant examples}
-Whitelists were used to exclude irrelevant examples by focusing on a particular domain. There is though a golden middle ground of how inclusive the whitelist should be. The whitelists \textit{Top200Edu} and \textit{MathTech} seems to have more or less the right amount of inclusiveness. In Figure \ref{fig:avgPrecision}, they have the best average score for the top 5 results, and they are equal with \textit{Edu} regarding top 10. When the keyword \textit{derivation} was tested, \textit{Top200Edu} and \textit{MathTech} accomplished a perfect score, except for one irrelevant result among top 10 for \textit{Top200Edu}. Figure \ref{fig:d} shows how the score is significantly better than when the other lists were tested. The results returned explains the big difference. A lot of results related to language and the word \textit{derive}, lead to many irrelevant examples. Since \textit{Top200Edu} and \textit{MathTech} are much stricter whitelists, those irrelevant examples was not a part of the index's corpus.
+Whitelists were used to exclude irrelevant examples by focusing on a particular domain. There is though a golden middle ground of how inclusive the whitelist should be. The whitelists \textit{Top200Edu} and \textit{MathTech} seems to have more or less the right amount of inclusiveness. In Figure \ref{fig:avgPrecision}, they have the best average score for the top 5 results, and they are equal with \textit{Edu} regarding top 10. When the keyword \textit{derivation} was tested, \textit{Top200Edu} and \textit{MathTech} accomplished a perfect score, except for one irrelevant result among top 10 for \textit{Top200Edu}. Figure \ref{fig:d} shows how the score is significantly better than when the other lists were tested. The results returned explains the big difference. A lot of results related to language and the word \textit{derive}, lead too many irrelevant examples. Since \textit{Top200Edu} and \textit{MathTech} are much stricter whitelists, those irrelevant examples was not a part of the index's corpus.
 
 \paragraph{Multiple words in search phrase}
-While discussing the results from keyword \textit{zero sum}, poor handling of the keyword, was a part of the conclusion. The poor handling is experienced by highly unrelated examples being returned after a search. \textit{Zero sum} demonstrates the most extreme side of the issue, but similar behaviour exists for other keywords also. The problem occur because the keyword uses two words. Elasticsearch will then split the keyword into two search terms, and will not prioritize or reward examples who contains the those two words directly next to each other. The rarity of the words also has a big part to play. For instance \textit{nash equilibrium} also contains two words, but both are pretty rare. "Nash" is never used without being accompanied by "equilibrium". Although "equilibrium" exist in some examples which are not related to Nash Equilibrium, they are very few. Some keywords have one rare word and one common, for instance \textit{prisoners dilemma} and \textit{cartesian product}. These keywords achieve a mediocre result, with an average precision around 0.6. When considering the effects rarity of the word causes for keywords containing two words, it makes sense that \textit{zero sum}, which has two common words, have such a low precision. 
+While discussing the results from keyword \textit{zero sum}, poor handling of the keyword, was a part of the conclusion. The poor handling is experienced by highly unrelated examples being returned after a search. \textit{Zero sum} demonstrates the most extreme side of the issue, but similar behaviour exists for other keywords also. The problem occur because the keyword uses two words. Elasticsearch will then split the keyword into two search terms, and will not prioritize or reward examples who contains the those two words directly next to each other. The rarity of the words also has a big part to play. For instance \textit{nash equilibrium} also contains two words, but both are pretty rare. "Nash" is never used without being accompanied by "equilibrium". Although "equilibrium" exist in some examples which are not related to Nash Equilibrium, they are very few. Some keywords have one rare word and one common, for instance \textit{prisoner's dilemma} and \textit{cartesian product}. These keywords achieve a mediocre result, with an average precision around 0.6. When considering the effects rarity of the word causes for keywords containing two words, it makes sense that \textit{zero sum}, which has two common words, have such a low precision. 
 
 Order and proximity of the words are not a new problem in the field of information retrieval. Boosting the score of results based on how close the words appear, and if in right order, is a common technique. It could be done for this system, but it might end up being a to complicated solution, for an pretty straightforward problem. A simpler solution is to surround the words with quotation marks. The quotation marks will tell the index to handle all words between the quotation marks as a single search term. Since users often will search after name of examples or subjects, it will be enough to only accept examples where the terms are directly next to each other when the quotation mark surrounds the keyword.
 
@@ -417,7 +417,7 @@ In Experiment II, the union of two whitelists were used, \textit{Top200Edu} and 
 
 \subsection{Experiment III: Finding related examples}
 
-When querying by examples, relevant examples that assists in learning of the subject, are expected to be returned. To evaluate how the system accomplishes this, we will make us of observations from section \ref{5:keywords}. The observations will be used to create an optimal environment, by choosing the best performing whitelist and a keyword with perfect precision. The whitelist \textit{MathTech} performed best for the top ten results with an average precision of 0.72, and will therefor be the whitelist chosen. As keyword, \textit{Java} will be used for mainly three reasons. First, it is on of the keywords with a perfect score when \textit{MathTech} was applied as whitelist. Second, \textit{java} is a search phrase, but at the same time not the exact name of a category. Finally, it is very easy to consistently judge whether an example is about java or not, since it often contains java code. For an example to be deemed relevant, it will be satisfactory for the example to be an example within the Java domain. 
+When querying by examples, relevant examples that assists in learning of the subject, are expected to be returned. To evaluate how the system accomplishes this, we will make us of observations from section \ref{5:keywords}. The observations will be used to create an optimal environment, by choosing the best performing whitelist and a keyword with perfect precision. The whitelist \textit{MathTech} performed best for the top ten results with an average precision of 0.72, and will therefore be the whitelist chosen. As keyword, \textit{Java} will be used for mainly three reasons. First, it is one of the keywords with a perfect score when \textit{MathTech} was applied as whitelist. Second, \textit{java} is a search phrase, but at the same time not the exact name of a category. Finally, it is very easy to consistently judge whether an example is about java or not, since it often contains java code. For an example to be deemed relevant, it will be satisfactory for the example to be an example within the Java domain. 
 
 When testing there are three numbers that will be considered for the assessment of the system's performance. First, how many examples are shown together with the main example. Second, how many of the examples are relevant. In addition, the number of the main example's categories will be included, to explore a possible correlation. The first ten examples will be used in the test. The results will be divided between the right and the left list.
 
@@ -450,7 +450,7 @@ Example & Total & Relevant & Total & Relevant & Categories\\ [0.5ex]
 
 The first column of table \ref{table:qbe_java} represents an example, with the number being its order among the returned examples after the search. The next column shows total number of examples and how many of them that are relevant, both for the lists at the left and the right side. The last column shows how many categories the example have.
 
-A quick look at the results presented in table \ref{table:qbe_java}, reveals consistently good results. To verify whether the performance of the system is as good as the results tell or if Java is a special case, a second test will be performed. The keyword \textit{nash equilibrium} is chosen, based on the same reason as why \textit{java} was chosen. There is one important difference that might make an impact. Java is a more general subject and therefor has \textit{java} 265 total hits, meanwhile the more specific \textit{nash equilbrium} has 87 total hits. In the second test, all examples discussing or referencing to a Nash Equilibrium related to the example's topic, will be deemed relevant.
+A quick look at the results presented in table \ref{table:qbe_java}, reveals consistently good results. To verify whether the performance of the system is as good as the results tell or if Java is a special case, a second test will be performed. The keyword \textit{nash equilibrium} is chosen, based on the same reason as why \textit{java} was chosen. There is one important difference that might make an impact. Java is a more general subject and therefore has \textit{java} 265 total hits, meanwhile the more specific \textit{nash equilibrium} has 87 total hits. In the second test, all examples discussing or referencing to a Nash Equilibrium related to the example's topic, will be deemed relevant.
 
 \begin{table}[H]
 \centering
@@ -485,7 +485,7 @@ After conducting the second test, a big variation in the quality of results occu
 
 A similar pattern emerges between example 5, 6 and 7 in table \ref{table:qbe_ne}. The difference in this case is that the examples all originate from different articles. The reason they still achieve the same results is because they all have the same set of categories in common, since the algorithm used to find and measure related examples solely uses categories. In this case only one category, \textit{game theory}. Only \textbf{one} category is also what is causing the big difference between the left and the right list. All the examples achieving a perfect match with the selected example, only need to have Game Theory as a category. This leads to related examples either having a total match or none match at all, with few of the examples having a total match being related. A solution could either be connecting more categories to the examples or create a better version of the matching algorithm.  
 
-There is some positive patterns that can be noticed to. For instance, all the related examples returned for the keyword \textit{java} is also relevant. One of the things that causes this is already explained, being many examples originating from the same article. Another factor causing the high degree of relevance is the observation that many of the examples is included in a considerable amount of the lists. A big portion of the examples were also a part of the initial search's results. These remarks points towards the system showing a good tendency regarding finding related examples.
+There is some positive patterns that can be noticed to. For instance, all the related examples returned for the keyword \textit{java} is also relevant. One of the things that causes this is already explained, being many examples originating from the same article. Another factor causing the high degree of relevance is the observation that many of the examples is included in a considerable amount of the lists. A big portion of the examples were also a part of the initial search results. These remarks points towards the system showing a good tendency regarding finding related examples.
 
 
 \cleardoublepage
