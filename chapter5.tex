@@ -27,7 +27,7 @@ Every section in Chapter 5 will discuss on of the research goals. Table \ref{tab
 
 We tested the final pipeline by using the English Wikipedia's database dump from February 4. 2016. With a size of 56.3 GB, the XML file contains over five million articles. The process of extracting the relevant data and inserting it into the SQL database lasted nine hours. After the last section was added, the database contained 28 110 example sections deemed as relevant sections. The process was run on a mid end MacBook Pro from late 2013 with four cores, each with a processor speed of 2 GHz and 2x4 GB of memory with a speed of 1600 MHz.
 
-When the process that extracts relevant sections were finished, a new fully independent process was started for the next step. First, the process queries the SQL database for sections\footnote{A section is a part of an Wikipedia article.}. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a white list is used to filter the examples based on their categories. By filtering the examples we can avoid irrelevant categories, for instance examples concerning history. Finally, the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers an HTTP API that can be used to query for examples.
+When the process that extracts relevant sections were finished, a new fully independent process was started for the next step. First, the process queries the SQL database for sections\footnote{A section is a part of an Wikipedia article.}. By using the relations from the sections stored in the SQL database, the process builds examples. Next, a whitelist is used to filter the examples based on their categories. By filtering the examples we can avoid irrelevant categories, for instance examples concerning history. Finally, the collection of examples left are used to build an index with Elasticsearch. The Elasticsearch index offers an HTTP API that can be used to query for examples.
 
 
 \begin{table}[H]
@@ -64,7 +64,7 @@ The improvement can result in the collection of examples having a higher quality
 \section{Collection of examples} \label{5:exampleCollection}
 Research Goal 3 aims to obtain a collection of examples that we can populate a database with. The database accepts all kinds of examples, consequently the examples are represented in a generic way. We are using Wikipedia as source for all the examples, therefor we have to strip away a large amount of the information from the articles used. 
 
-After an article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection. With Wikipedia having no limits for its domains, white lists are used to narrow the examples down into only relevant domains for our project. During implementation white list \textit{Top200Edu} and \textit{MathTechWiki} were used.
+After an article is extracted from the XML document, data is stored in a relational database. To form an example, data is fetched from the tables by using the relations defined in the SQL database. In addition to the content, categories and references associated with the example are included. These properties are needed for an example in our system, so we later can perform queries on the collection. With Wikipedia having no limits for its domains, whitelists are used to narrow the examples down into only relevant domains for our project. During implementation whitelist \textit{Top200Edu} and \textit{MathTechWiki} were used.
 
 After the processing, the collection now contains relevant elements, with a structure that represents a general example. This collection can then be indexed by Elasticsearch, which is the database containing all examples. Other examples from different sources can separately be included to Elasticsearch's example index, as long as the examples are structured correctly according to the mapping described in section \ref{imp_indexer}. Table \ref{table_indexStats} shows how many examples that were extracted from Wikipedia and how many examples that ended up in the final index.
 
@@ -156,7 +156,15 @@ Zero Sum & 1017 & 0 & 0 \\
 
 Table \ref{table:precision_test} contains the keywords and the results of the test. The keywords were chosen from the domains mathematics, artificial intelligence and programming. Those retrieved examples that are faulty\footnote{Faulty examples can be caused by a bug in the pipeline or XML dump out of sync with the live Wikipedia page} or are examples for another subject are judged as an irrelevant result. Total hits reflects the amount of examples that the program found relevant to any degree. The different keywords have been divided into three different groups. The groups are ordered descending by the degree of how general the keyword is perceived. The horizontal line in the table separates the groups. There is no specific order among the keywords within a group.
 
-The score in topmost group for five and ten terms are very similar. In contrast the bottommost group where the subjects are more specific, the score for top ten results suffers. Having a relatively small database of examples for specific subjects is assumed to be the explanation.
+\begin{figure}[H] 
+\caption{Average precision for the three different groups}
+\includegraphics[width=\textwidth]{charts/ex1AvgPrec}
+\label{fig:ex1AvgPrec}
+\end{figure}
+
+Figure \ref{fig:ex1AvgPrec} shows how the three different groupings score in the test. The top and middle group has a very good score, both for top 5 and top 10, while the bottom group score a bit lower. The average score of top 5 and top 10 for all three groups is \(0.8\), which entails that only 2 out of 10 examples are not relevant. This indicates that the system does a good job retrieving relevant examples.
+
+The score in the top group for five and ten terms are very similar. In contrast the bottom group where the subjects are more specific, the score for top ten results suffers. Having a relatively small database of examples for specific topics is assumed to be the explanation. A richer selection of examples for the different topics could increase the precision for the bottom group. 
 
 Another interesting remark to note is that the top 5 results are consistently better than the top 10 results. Top 5 being better than top 10, is caused by at least half of the relevant examples which is returned, are found among the first five results. Therefor we can conclude that the ranking of the examples functions as intended. 
 
@@ -166,15 +174,15 @@ While performing the experiment, the error occurred when searching with the keyw
 
 To find the potential error we start at the beginning of the pipeline, to explore whether the example is retrieved from the XML dump. We find the answer in the SQL database. First we find a row in the \texttt{pages} table with the name \textit{zero sum game}. Next, using the primary key of this row, we can find all related rows in the table \texttt{page\_sections}. A query on the column \texttt{page\_id} in \texttt{page\_sections} returns one result. This result is the same section found in Wikipedia's article, thus we can conclude that Wikidump parser successfully inserts the section into the SQL database.
 
-The next step is to verify that the section is transformed to an example and indexed by Elasticsearch. The examples in Elasticsearch shares the same id as the sections primary key in the SQL database. Querying Elasticsearch by id returns no results, therefor we know that the zero sum example never reaches Elasticsearch. Between the SQL database and Elasticsearch a white list filters the examples. If the zero-sum game article does not contain a category that exists in the white list, the example will be discarded. The article contains the categories \textit{Non-cooperative games} and \textit{International relations theory}. Matching the article's categories with the complete category list reveals that there exist only 4 occurrences of articles with Non-cooperative games as category and 7 with International relations theory, which is a low number. White list \textit{Top200Edu} and \textit{MathTechWiki} were used for the filtering, section \ref{imp_indexer} explains white list's implementation and their function in our project. \textit{Top200Edu} includes only the top 200 relevant articles and \textit{MathTechWiki} use only the top level categories in the Wikipedia's category hierarchy. In conclusion, the article's categories is not included in any of the white lists, and therefor the example is not indexed.
+The next step is to verify that the section is transformed to an example and indexed by Elasticsearch. The examples in Elasticsearch shares the same id as the sections primary key in the SQL database. Querying Elasticsearch by id returns no results, therefor we know that the zero sum example never reaches Elasticsearch. Between the SQL database and Elasticsearch a whitelist filters the examples. If the zero-sum game article does not contain a category that exists in the whitelist, the example will be discarded. The article contains the categories \textit{Non-cooperative games} and \textit{International relations theory}. Matching the article's categories with the complete category list reveals that there exist only 4 occurrences of articles with Non-cooperative games as category and 7 with International relations theory, which is a low number. Whitelist \textit{Top200Edu} and \textit{MathTechWiki} were used for the filtering, section \ref{imp_indexer} explains whitelist's implementation and their function in our project. \textit{Top200Edu} includes only the top 200 relevant articles and \textit{MathTechWiki} use only the top level categories in the Wikipedia's category hierarchy. In conclusion, the article's categories is not included in any of the whitelists, and therefor the example is not indexed.
 
-If the article's list of categories had been richer, the example would have been included more likely. Although richer category lists for Wikipedia's articles would have solved the problem, it is not something our project can affect. Instead a white list that accommodates the less popular categories is a better solution. The problem is that all the categories have to be manually added to white lists. The White list \textit{Edu} deals with the problem by including all categories, but also examining the most popular and removing the irrelevant categories from the white list. The disadvantage obtained by using \textit{Edu} is that irrelevant categories will be included, but on the other hand, they are not connected to many articles. 
+If the article's list of categories had been richer, the example would have been included more likely. Although richer category lists for Wikipedia's articles would have solved the problem, it is not something our project can affect. Instead a whitelist that accommodates the less popular categories is a better solution. The problem is that all the categories have to be manually added to whitelists. The Whitelist \textit{Edu} deals with the problem by including all categories, but also examining the most popular and removing the irrelevant categories from the whitelist. The disadvantage obtained by using \textit{Edu} is that irrelevant categories will be included, but on the other hand, they are not connected to many articles. 
 
-\subsection{Experiment II: White list}
+\subsection{Experiment II: Whitelist}
 
-The result of the error analysis in section \ref{search_experiment} points out the significance of the white lists used for the end result. Based on that, Experiment II will be conducted to explore to what the degree the white lists affect the results returned, and which of them is best to use. The tables used to display the result, will be identical to table \ref{table:precision_test} used in section \ref{search_experiment} with one exception. The tables in this section also include the percentage of hits compared to the number of examples in the index, when each specific white list has been applied. 
+The result of the error analysis in section \ref{search_experiment} points out the significance of the whitelists used for the end result. Based on that, Experiment II will be conducted to explore to what the degree the whitelists affect the results returned, and which of them is best to use. The tables used to display the result, will be identical to table \ref{table:precision_test} used in section \ref{search_experiment} with one exception. The tables in this section also include the percentage of hits compared to the number of examples in the index, when each specific whitelist has been applied. 
 
-The first step in the experiment is to check what the system returns when there is no white lists used. When no white lists are used, there exist 28 110 examples in the index. Table \ref{table:p_test_no-list} shows the results.
+The first step in the experiment is to check what the system returns when there is no whitelists used. When no whitelists are used, there exist 28 110 examples in the index. Table \ref{table:p_test_no-list} shows the results.
 
 \begin{table}[h]
 \centering
@@ -209,7 +217,7 @@ Zero Sum & 2330 & 8.29 & 0 & 0.1 \\
 \end{table}
 \clearpage
 
-In the next step white list \textit{Edu} will be tested. \textit{Edu} contains most of the categories from the orignal category list, with the exception of categories that are popular, but not educational, being removed. A category's popularity is measured in how many examples links to the category. When the examples are filtered through \textit{Edu}, 5 133 examples are discarded from the original 28 110. The results of the test can be found in table \ref{table:p_test_list1}.
+In the next step whitelist \textit{Edu} will be tested. \textit{Edu} contains most of the categories from the orignal category list, with the exception of categories that are popular, but not educational, being removed. A category's popularity is measured in how many examples links to the category. When the examples are filtered through \textit{Edu}, 5 133 examples are discarded from the original 28 110. The results of the test can be found in table \ref{table:p_test_list1}.
 
 %%whitelist 1 : filtrert 5133 av 28110
 \begin{table}[h]
@@ -240,13 +248,13 @@ Zero Sum & 1842 & 8.02 & 0 & 0.1 \\
 
  \hline
 \end{tabular}
-\caption{The precision of the queries tested when white list \textit{Edu} is used to filter the collection beforehand}
+\caption{The precision of the queries tested when whitelist \textit{Edu} is used to filter the collection beforehand}
 \label{table:p_test_list1}
 \end{table}
 \clearpage
 
 
-The third test is conducted on white list \textit{Top200Edu}. \textit{Top200Edu} is similar to \textit{Edu} in terms of what type of categories are removed from the original list, with one big difference. \textit{Top200Edu} only keeps the 200 most popular categories, which means the educational categories which are not popular enough, are not included. Using \textit{Top200Edu} results in 21 746 examples being excluded from the index. Table \ref{table:p_test_list2} displays the results.
+The third test is conducted on whitelist \textit{Top200Edu}. \textit{Top200Edu} is similar to \textit{Edu} in terms of what type of categories are removed from the original list, with one big difference. \textit{Top200Edu} only keeps the 200 most popular categories, which means the educational categories which are not popular enough, are not included. Using \textit{Top200Edu} results in 21 746 examples being excluded from the index. Table \ref{table:p_test_list2} displays the results.
 
 
 %%whitelist 2 : filtrert 21746 av 28110
@@ -278,12 +286,12 @@ Zero Sum & 1842 & 28.94 & 0 & 0 \\
 
  \hline
 \end{tabular}
-\caption{The precision of the queries tested when white list \textit{Top200Edu} is used to filter the collection beforehand}
+\caption{The precision of the queries tested when whitelist \textit{Top200Edu} is used to filter the collection beforehand}
 \label{table:p_test_list2}
 \end{table}
 \clearpage
 
-In the fourth step, we test white list \textit{MathTech}. \textit{MathTech} is based on \textit{Top200Edu}, but it narrows the domains of the categories deemed relevant to only concern Technology and Mathematics. \textit{MathTech} is a bit smaller than \textit{Top200Edu}, with 157 different categories. 23 073 examples are filtered out, when \textit{MathTech} is used. Table \ref{table:p_test_list3} reflects the results of the test.
+In the fourth step, we test whitelist \textit{MathTech}. \textit{MathTech} is based on \textit{Top200Edu}, but it narrows the domains of the categories deemed relevant to only concern Technology and Mathematics. \textit{MathTech} is a bit smaller than \textit{Top200Edu}, with 157 different categories. 23 073 examples are filtered out, when \textit{MathTech} is used. Table \ref{table:p_test_list3} reflects the results of the test.
 
 %%whitelist 3: filtrert 23073 av 28110
 \begin{table}[h]
@@ -314,12 +322,12 @@ Zero Sum & 917 & 18.21 & 0 & 0 \\
 
  \hline
 \end{tabular}
-\caption{The precision of the queries tested when white list \textit{MathTech} is used to filter the collection beforehand}
+\caption{The precision of the queries tested when whitelist \textit{MathTech} is used to filter the collection beforehand}
 \label{table:p_test_list3}
 \end{table}
 \clearpage
 
-In the final step we test the most conservative white list, \textit{MathTechWiki}. \textit{MathTechWiki} is based on Wikipedia's category hierarchy, were Mathematics, Logic, Mathematical Sciences, Computing and their sub categories have been included. Applying \textit{MathTechWiki} leads to the removal of 27 107 examples. Table \ref{table:p_test_list4} contains the results of the final test. 
+In the final step we test the most conservative whitelist, \textit{MathTechWiki}. \textit{MathTechWiki} is based on Wikipedia's category hierarchy, were Mathematics, Logic, Mathematical Sciences, Computing and their sub categories have been included. Applying \textit{MathTechWiki} leads to the removal of 27 107 examples. Table \ref{table:p_test_list4} contains the results of the final test. 
 
 %%whitelist 4: filtrert 27107 av 28110
 \begin{table}[h]
@@ -350,7 +358,7 @@ Zero Sum & 169 & 16.85 & 0.2 & 0.1 \\
 
  \hline
 \end{tabular}
-\caption{The precision of the queries tested when white list \textit{MathTechWiki} is used to filter the collection beforehand}
+\caption{The precision of the queries tested when whitelist \textit{MathTechWiki} is used to filter the collection beforehand}
 \label{table:p_test_list4}
 \end{table}
 \clearpage
@@ -361,52 +369,55 @@ Zero Sum & 169 & 16.85 & 0.2 & 0.1 \\
 
 
 
-Figure \ref{fig:avgPrecision} shows the average precision for each white list. It gives an overview of how the different whit lists performed during Experiment II, making a comparison between them easy. While the score for top 10 has a very low deviation, \textit{Top200Edu} and \textit{MathTech} separates themselves from the rest for the top 5 measure. This indicates that keeping the most popular 200 categories can work well as a general strategy. The rest of this section will discuss different observations made during and after the experiment. To discuss the observations charts showing the results of different queries will be referenced, see appendix \ref{a:ex2} for charts related to keywords not mentioned in this section.
+Figure \ref{fig:avgPrecision} shows the average precision for each whitelist. It gives an overview of how the different whit lists performed during Experiment II, making a comparison between them easy. While the score for top 10 has a very low deviation, \textit{Top200Edu} and \textit{MathTech} separates themselves from the rest for the top 5 measure. This indicates that keeping the most popular 200 categories can work well as a general strategy. The rest of this section will discuss different observations made during and after the experiment. To discuss the observations charts showing the results of different queries will be referenced, see appendix \ref{a:ex2} for charts related to keywords not mentioned in this section.
 
 \begin{figure}[H] 
-\caption{Average precision for all white lists}
+\caption{Average precision for all whitelists}
 \includegraphics[width=\textwidth]{charts/avgPrecision}
 \label{fig:avgPrecision}
 \end{figure}
 
 \begin{figure}[h] 
-\caption{Precision score when the keyword \textit{Zero Sum} is used as a search phrase, with the different white lists applied.}
+\caption{Precision score when the keyword \textit{Zero Sum} is used as a search phrase, with the different whitelists applied.}
 \includegraphics[width=\textwidth]{charts/zs}
 \label{fig:zs}
 \end{figure}
 
 \paragraph{Lack of relevant results}
-Figure \ref{fig:zs} displays the results when all the different white lists have been applied when the keyword \textit{zero sum} has been used as search phrase. All the white lists have very low precision, either zero results or only one among the top ten. Although the results are inadequate, they do contradict the claim in section \ref{search_experiment}'s error analysis, which suspected that no Zero Sum examples existed in the collection. Section \ref{search_experiment} drew that conclusion because the main article about Zero sum was not included in the collection. When only \textit{MathTechWiki} were tested, one relevant example was returned. This leads us to believe the abnormality was caused by using a bad combination of white lists, making the other example not appearing among the top ten. The more thorough tests in experiment II, also points to the query not handling the keyword as a search phrase very well. In conclusion, the combination of faulty white list union and poor handling of the search phrase, are the reasons for the Zero sum's complete lack of relevant results in experiment I.
+Figure \ref{fig:zs} displays the results when all the different whitelists have been applied when the keyword \textit{zero sum} has been used as search phrase. All the whitelists have very low precision, either zero results or only one among the top ten. Although the results are inadequate, they do contradict the claim in section \ref{search_experiment}'s error analysis, which suspected that no Zero Sum examples existed in the collection. Section \ref{search_experiment} drew that conclusion because the main article about Zero sum was not included in the collection. When only \textit{MathTechWiki} were tested, one relevant example was returned. This leads us to believe the abnormality was caused by using a bad combination of whitelists, making the other example not appearing among the top ten. The more thorough tests in experiment II, also points to the query not handling the keyword as a search phrase very well. In conclusion, the combination of faulty whitelist union and poor handling of the search phrase, are the reasons for the Zero sum's complete lack of relevant results in Experiment I.
 
 \begin{figure}[h] 
-\caption{Precision score when the keyword \textit{Java} is used as a search phrase, with the different white lists applied.}
+\caption{Precision score when the keyword \textit{Java} is used as a search phrase, with the different whitelists applied.}
 \includegraphics[width=\textwidth]{charts/j}
 \label{fig:j}
 \end{figure}
 
 \paragraph{Few returned documents}
-In table \ref{table:p_test_list4} we note that many of the keywords have very few total hits. In particular, the keywords \textit{java} and \textit{prisoners dilemma} returns less than 10 results, making the top 10 test inaccurate. Having so few total hits is reflected in the precision also dropping quite low. In figure \ref{fig:avgPrecision} we can see that the white list \textit{MathTechWiki} separates itself from the rest of the lists with almost 50 percent worse precision. This big loss of precision indicates that the white list excludes to many relevant examples from the index's corpus. Figure \ref{fig:j} demonstrates how the keyword \textit{java} overall has extremely good results, but when \textit{MathTechWiki} is applied, the score drops significantly lower.
+In table \ref{table:p_test_list4} we note that many of the keywords have very few total hits. In particular, the keywords \textit{java} and \textit{prisoners dilemma} returns less than 10 results, making the top 10 test inaccurate. Having so few total hits is reflected in the precision also dropping quite low. In figure \ref{fig:avgPrecision} we can see that the whitelist \textit{MathTechWiki} separates itself from the rest of the lists with almost 50 percent worse precision. This big loss of precision indicates that the whitelist excludes to many relevant examples from the index's corpus. Figure \ref{fig:j} demonstrates how the keyword \textit{java} overall has extremely good results, but when \textit{MathTechWiki} is applied, the score drops significantly lower.
 
 \begin{figure}[h] 
-\caption{Precision score when the keyword \textit{Derivation} is used as a search phrase, with the different white lists applied.}
+\caption{Precision score when the keyword \textit{Derivation} is used as a search phrase, with the different whitelists applied.}
 \includegraphics[width=\textwidth]{charts/d}
 \label{fig:d}
 \end{figure}
 
 \paragraph{Excluding irrelevant examples}
-White lists were used to exclude irrelevant examples by focusing on a particular domain. There is though a golden middle ground of how inclusive the white list should be. The white lists \textit{Top200Edu} and \textit{MathTech} seems to have more or less the right amount of inclusiveness. In Figure \ref{fig:avgPrecision}, they have the best average score for the top 5 results, and they are equal with \textit{Edu} regarding top 10. When the keyword \textit{derivation} was tested, \textit{Top200Edu} and \textit{MathTech} accomplished a perfect score, except for one irrelevant result among top 10 for \textit{Top200Edu}. Figure \ref{fig:d} shows how the score is significantly better than when the other lists were tested. The results returned explains the big difference. A lot of results related to language and the word \textit{derive}, lead to many irrelevant examples. Since \textit{Top200Edu} and \textit{MathTech} are much stricter white lists, those irrelevant examples was not a part of the index's corpus.
+Whitelists were used to exclude irrelevant examples by focusing on a particular domain. There is though a golden middle ground of how inclusive the whitelist should be. The whitelists \textit{Top200Edu} and \textit{MathTech} seems to have more or less the right amount of inclusiveness. In Figure \ref{fig:avgPrecision}, they have the best average score for the top 5 results, and they are equal with \textit{Edu} regarding top 10. When the keyword \textit{derivation} was tested, \textit{Top200Edu} and \textit{MathTech} accomplished a perfect score, except for one irrelevant result among top 10 for \textit{Top200Edu}. Figure \ref{fig:d} shows how the score is significantly better than when the other lists were tested. The results returned explains the big difference. A lot of results related to language and the word \textit{derive}, lead to many irrelevant examples. Since \textit{Top200Edu} and \textit{MathTech} are much stricter whitelists, those irrelevant examples was not a part of the index's corpus.
 
 \paragraph{Multiple words in search phrase}
 While discussing the results from keyword \textit{zero sum}, poor handling of the keyword, was a part of the conclusion. The poor handling is experienced by highly unrelated examples being returned after a search. \textit{Zero sum} demonstrates the most extreme side of the issue, but similar behaviour exists for other keywords also. The problem occur because the keyword uses two words. Elasticsearch will then split the keyword into two search terms, and will not prioritize or reward examples who contains the those two words directly next to each other. The rarity of the words also has a big part to play. For instance \textit{nash equilibrium} also contains two words, but both are pretty rare. "Nash" is never used without being accompanied by "equilibrium". Although "equilibrium" exist in some examples which are not related to Nash Equilibrium, they are very few. Some keywords have one rare word and one common, for instance \textit{prisoners dilemma} and \textit{cartesian product}. These keywords achieve a mediocre result, with an average precision around 0.6. When considering the effects rarity of the word causes for keywords containing two words, it makes sense that \textit{zero sum}, which has two common words, have such a low precision. 
 
 Order and proximity of the words are not a new problem in the field of information retrieval. Boosting the score of results based on how close the words appear, and if in right order, is a common technique. It could be done for this system, but it might end up being a to complicated solution, for an pretty straightforward problem. A simpler solution is to surround the words with quotation marks. The quotation marks will tell the index to handle all words between the quotation marks as a single search term. Since users often will search after name of examples or subjects, it will be enough to only accept examples where the terms are directly next to each other when the quotation mark surrounds the keyword.
 
+\paragraph{Union of whitelists}
+In Experiment II, the union of two whitelists were used, \textit{Top200Edu} and \textit{MathTechWiki}. This union gave the average score of \(0.8\), none of the whitelists in Experiment II matched this score, \textit{MathTech} was closest with \(0.76\). Although this whitelist union gave better results than any independent whitelist, it showed weaknesses for other cases, in particular the case of no results for \textit{zero sum}, and \textit{algebra} achieving a perfect precision for \textit{MathTech}. With that in mind, a new union of whitelists should be formed, that also could handle edge cases, either by finding a new combination or creating new whitelists.
+
 
 \section{Querying by examples} \label{5:queryByExample}
 
 \subsection{Experiment III: Finding related examples}
 
-When querying by examples, relevant examples that assists in learning of the subject, are expected to be returned. To evaluate how the system accomplishes this, we will make us of observations from section \ref{5:keywords}. The observations will be used to create an optimal environment, by choosing the best performing white list and a keyword with perfect precision. The white list \textit{MathTech} performed best for the top ten results with an average precision of 0.72, and will therefor be the white list chosen. As keyword, \textit{Java} will be used for mainly three reasons. First, it is on of the keywords with a perfect score when \textit{MathTech} was applied as white list. Second, \textit{java} is a search phrase, but at the same time not the exact name of a category. Finally, it is very easy to consistently judge whether an example is about java or not, since it often contains java code. For an example to be deemed relevant, it will be satisfactory for the example to be an example within the Java domain. 
+When querying by examples, relevant examples that assists in learning of the subject, are expected to be returned. To evaluate how the system accomplishes this, we will make us of observations from section \ref{5:keywords}. The observations will be used to create an optimal environment, by choosing the best performing whitelist and a keyword with perfect precision. The whitelist \textit{MathTech} performed best for the top ten results with an average precision of 0.72, and will therefor be the whitelist chosen. As keyword, \textit{Java} will be used for mainly three reasons. First, it is on of the keywords with a perfect score when \textit{MathTech} was applied as whitelist. Second, \textit{java} is a search phrase, but at the same time not the exact name of a category. Finally, it is very easy to consistently judge whether an example is about java or not, since it often contains java code. For an example to be deemed relevant, it will be satisfactory for the example to be an example within the Java domain. 
 
 When testing there are three numbers that will be considered for the assessment of the system's performance. First, how many examples are shown together with the main example. Second, how many of the examples are relevant. In addition, the number of the main example's categories will be included, to explore a possible correlation. The first ten examples will be used in the test. The results will be divided between the right and the left list.
 
