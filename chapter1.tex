@@ -22,13 +22,14 @@ To accomplish this, the thesis will look closer into the examples themselves. We
 
 \section{Research Goals}
 
-%vurdere å ha en overall goal?
+The overall goal of our work is to build a platform where users can find examples, which will aid them in learning. To help aim the work towards the thesis' overall goal, four research questions have been defined. Completion of these goals will ensure good quality of the implemented system.
+
 
 \paragraph{1 - Set up a pipeline}
 The first goal of this study will be to setup a software pipeline in the most beneficial way. The pipeline should extract examples from Wikipedia. The output of the pipeline should be a searchable database of the examples.
 
 \paragraph{2 - Define a good example by using their structure and content}
-To be able to create a high quality database consisting of examples, a deeper understanding of the examples themselves is needed. Therefore the second research goal in this study will focus on the nature of the examples. The study will look into how the examples are structured, what properties are preferable in certain circumstances and what the content of an examples should be in regards to its domain. 
+To be able to create a high quality database consisting of examples, a deeper understanding of the examples themselves is needed. Therefore the second research goal in this study will focus on the nature of the examples. The study will look into how the examples are structured, what properties are preferable in certain circumstances and what the content of an example should be in regards to its domain. 
 
 \paragraph{3 - Create and populate a database of examples}
 \begin{itemize}
@@ -37,7 +38,7 @@ To be able to create a high quality database consisting of examples, a deeper un
 \end{itemize}
 
 
-\paragraph{4 - Search examples }
+\paragraph{4 - Implement a user interface for searching examples }
 \begin{itemize}
     \item Showing how the created database of examples can be used to be queried and present the relevant example information to the user. This includes different search queries facilitating different objectives that can be served by the example database.
     \item An interface is needed to make the user able to execute the queries. The interface also has to present the result of the queries to the user.
@@ -45,7 +46,7 @@ To be able to create a high quality database consisting of examples, a deeper un
 
 
 \section{Structure of thesis}
-This thesis will describe the process of creating a searchable database consisting of examples. In order to accomplish the end results, four research goals have been formulated. The project starts with a large dump of source data from Wikipedia, for this data to be fully used, it first has to be filtered and structured by using a pipeline (Research Goal 1). To better understand examples, and thus improving search results, the paper will also look into what defines a good example (Research Goal 2). The end result of the pipeline is a database populated with examples. The database has to store the examples in a way that makes them easy to retrieve (Research Goal 3). Finally, a user interface is needed to search for examples from the database. The user interface will make us of queries already defined for retrieving relevant examples. A search interface is needed for the user, so keywords can be added to the predefined queries.
+This thesis will describe the process of creating a searchable database consisting of examples. In order to accomplish the end results, four research goals have been formulated. The project starts with a large dump of source data from Wikipedia, for this data to be fully used, it first has to be filtered and structured by using a pipeline (Research Goal 1). To better understand examples, and thus improving search results, we will also look into what defines a good example (Research Goal 2). The end result of the pipeline is a database populated with examples. The database has to store the examples in a way that makes them easy to retrieve (Research Goal 3). Finally, a user interface is needed to search for examples from the database. Queries with keywords as user input will be used to retrieve relevant examples.
 
 Chapter 2 will explore the related work in field of information retrieval and extraction. In particular, it will look for data extraction from wiki sites, and data retrieval of semi-structured text. In addition, the chapter will also explore an alternative approach, SMILA, and look at some techniques used in this project.
 
@@ -53,7 +54,7 @@ Chapter 3 will elaborate on the conceptual design of the project. The main reaso
 
 Chapter 4 explains the implementation of the system. The chapter will start by stepping through the pipeline, explaining each sub process used to refine the data. Meanwhile it will elaborate on the role of different files in the project, what libraries used to help and storage systems used. The search interface created for fetching the examples will be described, including its interaction towards rest of the system. Finally a more detailed explanation will be given for the main tools used by the system.
 
-Chapter 5 will discusses whether and how the Research Goals are accomplished. It will try to answer for each one of them in order, either by elaborating in how the goal is achieved already by the system or the paper, or by conducting experiments to verify that the system produces the intended results.
+Chapter 5 will discusses whether and how the Research Goals are accomplished. It will try to answer for each one of them in order, either by elaborating in how the goal is achieved already by the system or in the thesis, or by conducting experiments to verify that the system produces the intended results.
 
 Chapter 6...
 

@@ -2,26 +2,29 @@
 
 \chapter{Implementation}\label{cap_4}
 
+%%den introen her er helt på jordet
+
 As explained in section \ref{good_example}, the properties of a good example may change based on the person making use of it. For the index built in this project it is important to acknowledge this. By using the properties listed in table \ref{table:1} and the structure of good examples, a smarter search can be formed. When the user is browsing through examples, the list of related examples can then be arranged in fashion that gives the user a natural feeling of progress when learning about a subject.
 
-By using knowledge discussed in section \ref{good_example} and input from the user, our search interface can compile two lists of related examples. These are the lists will be presented to the user, to make him able to explore further examples. Based on the concept described in section \ref{cd_pipeline}, a pipeline will transform Wikipedia's source data into structured example objects. This chapter will explain in detail how the system starts with unstructured source data from Wikipedia articles, and turn the data into searchable examples.
+By using knowledge discussed in section \ref{good_example} and input from the user, our search interface can find related examples based on a selected example from the results' of the users initial search. These related examples will be presented to the user, to make him able to explore further examples. Based on the concept described in section \ref{cd_pipeline}, a pipeline will transform Wikipedia's source data into structured example objects. This chapter will explain in detail how the system starts with unstructured source data from Wikipedia articles, and turn the data into searchable examples.
 
 \section{Pipeline}
 
 \subsection{Overview}
 
-\begin{figure}[h]
-\caption{Architectural overview of the pipeline}
-\includegraphics[width=\textwidth]{ArchitectureOverview}
-\label{fig:pipeline_arch}
-\end{figure}
-
 
 \textit{Wikidump Parser} is the first part of the pipeline. It transforms the XML dump of the whole Wikipedia into a database with relevant data from articles. The Wikidump Parser is written in JavaScript and executed by a Node.js process. To insert the relevant data from the XML into a database, it parses the XML, then parses the Wiki markup and lastly inserts relevant articles into the SQL database. These separate processes are managed by a master process executed from the main file \texttt{index.js}.
+
 
 The second part of the pipeline is called \textit{Example Indexer}. Example Indexer fetches data from article, section and category tables in the SQL database and combines the data into examples. To fill the index with examples related to specific domains, a whitelist is used to include examples based on their categories before it builds an index in Elasticsearch with these examples.
 
 \textit{Example Search} is the last part of the pipeline. When the pipeline is finished with processing the data into examples, Example Search can fetch the examples from the index, and display them for the user. Example Search is a web based search interface that queries the index over HTTP and displays the results.
+
+\begin{figure}[H]
+\caption{Architectural overview of the pipeline}
+\includegraphics[width=\textwidth]{ArchitectureOverview}
+\label{fig:pipeline_arch}
+\end{figure}
 
 Figure \ref{fig:pipeline_arch} displays these three parts of the whole system, where arrows indicates the data flow. The different parts of the system does not communicate with each other directly, but by inserting and fetching data from permanent storage. 
 
@@ -47,9 +50,13 @@ The data dump that is fed into the beginning of the pipeline is on the XML forma
 \label{fig:xml}
 \end{figure}
 
-In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of XML. It detects where an article in the XML document starts and where it ends by looking at the element tags, then proceeds to send the content to \texttt{index.js}. The document is read as a stream, which gives the advantage of only keeping a small bit of the document in memory. The library \textit{sax}\footnote{\url{https://www.npmjs.com/package/sax}} is used to read the document as a stream. Sax then creates events indicating where in the document it is currently reading, and what elements it is entering or exiting. Our project listens to the events for a open tag, close tag and content. By saving the state of which element Sax currently is inside we extract content, title, id and timestamp from the article element. When we detect the end of an article element, the data extracted is passed to \texttt{index.js}.
+In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of XML. It detects where an article in the XML document starts and where it ends by looking at the element tags, then proceeds to send the content to \texttt{index.js}. The document is read as a stream, which gives the advantage of only keeping a small bit of the document in memory. The library \textit{sax}\footnote{\url{https://www.npmjs.com/package/sax}} is used to read the document as a stream. Sax then creates events indicating where in the document it is currently reading, and what elements it is entering or exiting. Our project listens to the events for an open tag, close tag and content. By saving the state of which element Sax currently is inside we extract content, title, id and timestamp from the article element. When we detect the end of an article element, the data extracted is passed to \texttt{index.js}.
 
 \subsubsection{Markup parser}
+
+
+
+When extracting data from Wikipedia articles, the article's markup is parsed. The markup is called \textit{wiki markup}, figure \ref{fig:wiki_markup} demonstrates how the markup might look like for an article. When looking at the XML in figure \ref{fig:xml}, the entire wiki markup for an article is found at \texttt{line 18}.
 
 \begin{figure}[h]
 \caption{A short outline from an article's wiki markup, with important aspects highlighted and marked. }
@@ -57,26 +64,20 @@ In our project the JavaScript class \texttt{XMLParser.js} handles the parsing of
 \label{fig:wiki_markup}
 \end{figure}
 
-When extracting data from Wikipedia articles, the article's markup is parsed. The markup is called \textit{wiki markup}, figure \ref{fig:wiki_markup} demonstrates how the markup might look like for an article. When looking at the XML in figure \ref{fig:xml}, the entire wiki markup for an article is found at \texttt{line 18}.
+Figure \ref{fig:wiki_markup} points out some important aspects of the markup language. For a complete guide, Wikipedia has its own help page\footnote{Help:wiki markup - \url{https://en.wikipedia.org/wiki/Help:Wiki_markup}}. Mark \texttt{A} shows how to refer to an image or other graphic. The first piece of information is about where to find it in Wikipedia's database, while the rest is for the visual presentation of the image. Mark \texttt{B} is the most important markup when dividing the article into sections. The equal signs at each side indicates a header for a section. The number of equal signs range from one to six. One is the Article title, two is section, three is subsection and so on. By using the hierarchy, we can both separate out sections from each other and find each sections parent section.
 
-Figure \ref{fig:wiki_markup} points out some important aspects of the markup language, for a complete guide, Wikipedia has its own help page\footnote{Help:wiki markup - \url{https://en.wikipedia.org/wiki/Help:Wiki_markup}}. Mark \texttt{A} shows how to refer to an image or other graphic. The first piece of information is about where to find it in Wikipedia's database, while the rest is for the visual presentation of the image. Mark \texttt{B} is the most important markup when dividing the article into sections. The equal signs at each side indicates a header for a section. The number of equal signs range from one to six. One is the Article title, two is section, three is subsection and so on. By using the hierarchy, we can both separate out sections from each other and find each sections parent section.
-
-The markup by Mark \texttt{C} is used for special formatting between the tags. In the case of figure \ref{fig:wiki_markup}, mathematical expressions are shown. Code is another format that is often included in examples, it is tagged in the following way; \texttt{<source lang="java">}, where the value of \texttt{lang} is the programming language. Mark \texttt{D} shows how one Wikipedia article refers to another. When parsing the sections, all these references are stored. These references are later used for finding relations and relevance between two articles. The words right of the pipe is the reference name, while the ones on the left is name of the article that are linked to. 
+The markup by Mark \texttt{C} is used for special formatting between the tags. In the case of figure \ref{fig:wiki_markup}, mathematical expressions are shown. Code is another format that is often included in examples, it is tagged in the following way; \texttt{<source lang="java">}, where the value of \texttt{lang} is the programming language. Mark \texttt{D} shows how one Wikipedia article refers to another. When parsing the sections, all these references are stored. These references are later used for finding relations and relevance between two articles. The words right of the pipe is the reference name, while the ones on the left are the names of the articles that are linked to. 
 
 
-Each article sent to \texttt{index.js} from \texttt{XMLParser.js} is assessed on whether it contains examples or not. Articles who does not contain any examples, are discarded completely from the final collection. In order to assess the articles, the markup is parsed into objects. This is the task of \texttt{MarkupParser.js}. The parser uses several steps to extract the desired information from the markup. The first steps parses the entire article's markup. The result of the first step is objects for each section, including the introduction. The sections contain a header, what level they belong to in the section hierarchy and the content of the section. 
+Each article sent to \texttt{index.js} from \texttt{XMLParser.js} is assessed on whether it contains examples or not. Articles not containing any examples, are discarded completely from the final collection. In order to assess the articles, the markup is parsed into objects. This is the task of \texttt{MarkupParser.js}. The parser uses several steps to extract the desired information from the markup. The first steps parses the entire article's markup. The result of the first step is objects for each section, including the introduction. The sections contain a header, what level they belong to in the section hierarchy and the content of the section. 
 
-The next step iterates through the list of sections to determine if some of them is an example. Sections which are not an example is discarded. If no examples are found, the whole article is discarded at this point. References to other articles and categories are then extracted from the markup. The data is finally inserted into the database pictured in figure \ref{fig:db_diagram}.
+The next step iterates through the list of sections to determine if some of them is an example. Sections that are not an example is discarded. If no examples are found, the whole article is discarded at this point. References to other articles and categories are then extracted from the markup. The data is finally inserted into the database pictured in figure \ref{fig:db_diagram}.
 
 
 
 \subsection{SQL Database}
 
-\begin{figure}[h] 
-\caption{A simple overview of the database tables and their attributes}
-\includegraphics[width=\textwidth]{db_diagram}
-\label{fig:db_diagram}
-\end{figure}
+
 
 %% TODO forklare tabellene bedre. Hva de forskjellige termene er i den faktiske wikipedia
 
@@ -84,9 +85,15 @@ The next step iterates through the list of sections to determine if some of them
 
 Section \ref{custom-pipeline} explains that the source data is fed into the pipeline as a snapshot of Wikipedia at a particular time. The size of the source data is an approximately 50 GB XML-document. Most of the data has no link or relation to examples, making it not interesting for this project. Therefore Markup parser excludes most of it before it is organized in the SQL database. 
 
-Figure \ref{fig:db_diagram} displays the tables of the database and the relations between them. If a relevant article is discovered, it is inserted into the \textit{pages} table in the database. Sections are stored in the database with relation to the article they were extracted from. The categories of the article is also kept, because it will be helpful regarding searching among examples in the finished index.  
+\begin{figure}[h] 
+\caption{A simple overview of the database tables and their attributes}
+\includegraphics[width=\textwidth]{db_diagram}
+\label{fig:db_diagram}
+\end{figure}
 
-The database acts as a temporary buffer for the data going into the index. Having a buffer separates the parsing, from the building of the index. Therewith changes made in the parsing, will not affect the rest, so the database acts as a interface between the parser and the indexer. The data is stored on disk, so also the point in time when the programs are executed can happen independently.
+Figure \ref{fig:db_diagram} displays the tables of the database and the relations between them. If a relevant article is discovered, it is inserted into the \textit{pages} table in the database. Sections are stored in the database with relation to the article they were extracted from. The categories of the article is also kept, because it will be helpful when searching among examples in the finished index.  
+
+The database acts as a temporary buffer for the data going into the index. Having a buffer separates the parsing, from the building of the index. Therewith changes made in the parsing, will not affect the rest, so the database acts as an interface between the parser and the indexer. The data is stored on disk, so also the point in time when the programs are executed can happen independently.
 
 This is preferred since the parsing is a very time consuming process, using about nine hours completing a full parsing run. Having it structured in SQL with its metadata helps with showing how successful the parsing was. Some of the metadata is also irrelevant for the index, so only keeping it in the database  makes the end result less complex.
 
@@ -96,14 +103,14 @@ A Java program queries the database for all sections. The relations and data fro
 
 Although all the sections extracted from Wikipedia articles are examples, not all are relevant for a specific search purpose. Therefore the examples can be filtered through a \textit{whitelist} before they are inserted into the index. By filtering the examples before adding them to the index, we can assure that only examples of interesting domains are added. This can then improve the results returned from the index after a search. Appendix \ref{app_whitelist} contains an example of a whitelist used to keep desired examples. A total of 4 whitelists have been created, to be used in different combinations. The whitelists can be found in the Example Indexer resource folder, at \texttt{src/main/resources}. The whitelists were created by extracting the complete list of all categories from the SQL database. Next, the categories were sorted by how many articles that had a relation to them. Finally, the list was manually altered into three different versions. A fourth version was created based on Wikipedia's category hierarchy. If one of the categories linked to a specific example also exists in the applied whitelist, that example will be included in the index's corpus.
 
-The purpose of using whitelists was to reduce the amount of examples in the index. The whitelist can then reflect a chosen domain and include only relevant examples, consequently giving the corpus a specific scope. A more specific scope for the corpus, should improve the quality of the results returned. 
+The purpose of using whitelists was to reduce the amount of examples in the index. The whitelist can then reflect a chosen domain by including only examples related to predetermined domains, consequently giving the corpus a specific scope. A more specific scope for the corpus, should improve the quality of the results returned. 
 
 \begin{figure}[h] 
 \caption{A venn diagram showing how whitelists act as subsets of all categories}
 \includegraphics[width=\textwidth]{whiteListVenn}
 \label{fig:whiteListVenn}
 \end{figure}
-The four different whitelists were given the names \textit{Edu}, \textit{Top200Edu}, \textit{MathTech} and \textit{MathTechWiki}. The names reflects the set of categories included for each whitelist. \textit{Edu} and \textit{Top200Edu} contains the categories which are most popular and also educational. \textit{Edu} contains all educational topics, while \textit{Top200Edu} is restricted to the top 200 categories. \textit{MathTech} narrows the selection further by only including categories related to mathematics and technology. The last list, \textit{MathTechWiki}, is based on the main categories from Wikipedia's main category overview\footnote{\url{https://en.wikipedia.org/wiki/Portal:Contents/Categories} (Last visited 7. Mars 2016)}. Mathemathics, Logic, Mathematical Sciences, Computing and all of their immediate sub-categories are included. Figure \ref{fig:whiteListVenn} demonstrates how one whitelist are a subset of another category list. 
+The four different whitelists were given the names \textit{Edu}, \textit{Top200Edu}, \textit{MathTech} and \textit{MathTechWiki}. The names reflect the set of categories included for each whitelist. \textit{Edu} and \textit{Top200Edu} contains the categories which are most popular and also educational. \textit{Edu} contains all educational topics, while \textit{Top200Edu} is restricted to the top 200 categories. \textit{MathTech} narrows the selection further by only including categories related to mathematics and technology. The last list, \textit{MathTechWiki}, is based on the main categories from Wikipedia's main category overview\footnote{\url{https://en.wikipedia.org/wiki/Portal:Contents/Categories} (Last visited 7. Mars 2016)}. Mathemathics, Logic, Mathematical Sciences, Computing and all of their immediate sub-categories are included. Figure \ref{fig:whiteListVenn} demonstrates how one whitelist is a subset of another category list. 
 
 \begin{table}[h!]
 \centering
@@ -127,7 +134,7 @@ Table \ref{table:whitelist_stats} display the statistics after each whitelist ha
 When building our index, \textit{Top200Edu} and \textit{MathTechWiki} are being used, which keeps examples related to the most popular and important categories. Examples only related to less popular categories or irrelevant ones, are as a result discarded.
 
 
-Before the examples are inserted into the index, the index is created with the Elasticsearch java API\footnote{\url{https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html}}. Our project uses the default settings, so only the cluster named is needed to be defined beforehand, the rest happens automatically by Elasticsearch. Lastly a mapping for the example object is passed to Elasticsearch. Figure \ref{fig:es_mapping} shows the mapping passed. It defines all the fields with its types. The mapping sets \textit{categories} to \texttt{not\_analyzed}, so it will match the exact category names.
+Before the examples are inserted into the index, the index is created with the Elasticsearch java API\footnote{\url{https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html}}. Our project uses the default settings, so only the cluster name is needed to be defined beforehand, the rest happens automatically by Elasticsearch. Lastly a mapping for the example object is passed to Elasticsearch. Figure \ref{fig:es_mapping} shows the mapping passed. It defines all the fields with its types. The mapping sets \textit{categories} to \texttt{not\_analyzed}, so it will match the exact category names.
 
 \begin{figure}[H] 
 \caption{Mapping used to define an example in Elasticsearch}
@@ -136,14 +143,14 @@ Before the examples are inserted into the index, the index is created with the E
 \label{fig:es_mapping}
 \end{figure}
 
-To put each example into the index, they first have to be converted to JSON. A simple methods maps all fields over to their equivalent attributes. Attributes in JSON is key-value pairs, so a key name and the field's value is used. The Java API sends each example to Elasticsearch as a document on the JSON format, which then indexes it.
+The examples needs to be converted into JSON  format first in order to put them into the index. A simple method maps all fields over to their equivalent attributes. Attributes in JSON are key-value pairs, key name and the field's value. The Java API sends each example to Elasticsearch as a document on the JSON format, which then indexes it.
 
 \subsection{Index}
-As already mentioned, Elasticsearch is the chosen tool for indexing the examples. By using its simple RESTful API, examples can be stored as JSON documents, which Elasticsearch then indexes automatically by detecting the examples data structure and type. Hence, we can focus more on the queries used to retrieve examples, instead of building the index. Elasticsearch manages the whole index, and leaves a simply web based interface for communication.
+As already mentioned, Elasticsearch is the chosen tool for indexing the examples. By using its simple RESTful API, examples can be stored as JSON documents, which Elasticsearch then indexes automatically by detecting the examples data structure and type. Hence, we can focus more on the queries used to retrieve examples, instead of building the index. Elasticsearch manages the whole index, and leaves a simple web based interface for communication.
 
 During this project, Elasticsearch was run on the same computer as both Example Indexer and Example Search. Therefore the communication between these programs happens with HTTP request over localhost. Localhost is used when communicating between different processes on same computer. By resolving to the IP address 127.0.0.1, which is a loopback address, only the right port is needed. Consequently, Elasticsearch, Example Search and Example Indexer, which all are web applications, communicates with each other without an internet connection. During the project, having them all on same computer was the easiest option. For possible future use, hosting the index on a separate server, only the ip address would have to be changed.
 
-Although Elasticsearch mostly handles the customization for us, we have done some. All the data is gathered in one cluster, running on one node, named \texttt{wiki\_cluster}. There is also only one index, \texttt{wikipedia}. To make the index as simple as possible, only one document model exist to represent the examples, which naturally is named \texttt{example}. A query for a specific example will then look like this:\\
+Although Elasticsearch mostly handles the customization for us, we have chosen the cluster and node setup. All the data is gathered in one cluster, running on one node, named \texttt{wiki\_cluster}. There is also only one index, \texttt{wikipedia}. To make the index as simple as possible, only one document model exist to represent the examples, which naturally is named \texttt{example}. A query for a specific example will then look like this:\\
 \texttt{GET http://localhost:9200/wikipedia/example/1}\\
 The request above specifies 1 at the end of the line, which makes Elasticsearch return the example with id 1.
 The web server mostly uses queries for its searches, here is a possible example of how to perform a query:
@@ -177,16 +184,16 @@ To display the page in the same way that Wikipedia does, the article's link is u
 The web page uses AJAX\footnote{AJAX - Asynchronous JavaScript and XML} to handle the response from the server and displaying the results in a table. In the table a link for each example is created. This links leads to a view where only that example is displayed. In addition, related examples are shown. The related examples are found by sending a new request to the web server. The web server forms a new query to Elasticsearch. By using the selected example and results from the previous search, the web server tries to return the most related examples. First an algorithm detects the most popular category based on the first search. Then the most popular category is used to retrieve all examples that is related to it. Finally, a formula is used to measure how related the examples actually are. The formula used to sort the relatedness of examples based on categories are: \(\frac{|M|}{|C|}\) where M is matching categories one related example has with the selected example and C is all the categories for the selected example.
 With the selected example and its related examples returned to the web page, the user can browse between examples by using the links created for each example.
 
-\section{Tools used}
+\section{Tools}
 
 \subsection{Elasticsearch} \label{elasticsearch}
 
 Elasticsearch is a tool used in this project for indexing the examples. Elasticsearch is built on top of Apache Lucene\footnote{\url{https://lucene.apache.org}}, which is a information retrieval library, written in Java. Internally in Elasticsearch, data is stored as structured JSON\footnote{JSON - JavaScript Object Notation} documents. The API\footnote{API - Application Programming Interface} for communicating with Elasticsearch is a RESTful\footnote{REST - Representational State Transfer} API using JSON over HTTP. The API can be used for configuring Elasticsearch, building the index and querying it. 
 %%Ta med i erfaring seksjon om dette at siden alt dette bruker json og webserveren bruker javascript via node, er alt veldig enkelt og konsistent.
 
-Elasticsearch is built for scalability. Being scalable means that handle growth of the dataset and interactions on it. Elasticsearch scales by having a cluster of many nodes. If the system needs to scale, new nodes can easily be added, and Elasticsearch will distribute resources to the newly added nodes. Different nodes can exist on different servers. However this project does not need or take advantage of this scaling, and will only run on one node.
+Elasticsearch is built for scalability. Being scalable means handling growth of both  the dataset and interactions on it. Elasticsearch scales by having a cluster of many nodes. If the system needs to scale, new nodes can easily be added, and Elasticsearch will distribute resources to the newly added nodes. Different nodes can exist on different servers. However this project does not need or take advantage of this scaling, and will only run on one node.
 
-There are two ways how a search can be implemented in Elasticsearch, \textit{filter} and \textit{query}. The \textit{filter} is utilizing \textit{terms} to decide whether a document should be returned or not. Searching with a \textit{term} is very similar to how one would use SQL. 
+There are two ways of implementing a search in Elasticsearch, \textit{filter} and \textit{query}. The \textit{filter} is utilizing \textit{terms} to decide whether a document should be returned or not. Searching with a \textit{term} is very similar to how one would use SQL. 
 Searches can for instance consist of text strings, numbers, ranges or dates, and Elasticsearch will return everything that matches. It also allows for boolean operators and nesting of these. Using a \textit{filter} is very quick and should be used if the relevance of the documents is insignificant.
 
 If relevance score is important then the second option, \textit{query}, should be chosen. If a \textit{query} is combined with a \textit{term}, Elasticsearch is looking for the exact value in its index. A score is then returned based on the documents TF-IDF relevance to the term. If a \textit{match} is used instead, an analysis will be performed, creating a list of terms from the query, and then executing low-level queries for each of the terms. The results are combined to produce the final relevance score. These two methods can also be combined or extended with other methods to customize the search further.
