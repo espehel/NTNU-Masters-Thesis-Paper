@@ -489,5 +489,35 @@ A similar pattern emerges between example 5, 6 and 7 in table \ref{table:qbe_ne}
 
 There is some positive patterns that can be noticed to. For instance, all the related examples returned for the keyword \textit{java} is also relevant. One of the things that causes this is already explained, being many examples originating from the same article. Another factor causing the high degree of relevance is the observation that many of the examples is included in a considerable amount of the lists. A big portion of the examples were also a part of the initial search results. These remarks point towards the system showing a good tendency regarding finding related examples.
 
+\section{Testing the system's recall}
+
+To further explore the systems ability of retrieving relevant examples, we will test the system's recall. While precision is a measure of exactness, recall can be seen as a measure of completeness. Recall is calculates as follows:
+\[\frac{|R \cap E |}{|R|}\]
+In the equation above \(R\) is the set of all relevant examples and \(E\) is the set of all the retrieved examples. To properly measure recall all the examples have been manually inspected, to which examples are relevant or not relevant for the search. The three keywords \textit{java}, \textit{algebra} and \textit{nash equilibrium} was chosen.
+
+\subsection{Experiment IV: Recall from a manually inspected set}
+
+Before performing the test, a small subset of 66 examples was chosen from the database. Each example has been evaluated beforehand regarding its relevance to the three keywords. Table \ref{table:recall_test} show the results of the test. The column \textit{Total hits} contains the number of all examples retrieved by that search. \textit{Relevant hits} contains how many relevant examples the search returned, while \textit{Total relevant examples} has the number of how many relevant examples there exist in the example set used.
+
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular} {|| p{10em} | r | r | r ||} 
+ \hline
+ Keyword & Total hits & Relevant hits & Total relevant examples \\ [0.5ex] 
+ \hline
+ 
+Algebra & 26 & 20 & 20 \\
+Java & 24 & 18 & 18 \\
+Nash Equilibrium & 16 & 15 & 15 \\
+
+ \hline
+\end{tabular}
+\caption{Results of how well the system recalls example from a manually inspected set}
+\label{table:recall_test}
+\end{table}
+
+\subsection{Discussion of results}
 
 \cleardoublepage
