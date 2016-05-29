@@ -497,7 +497,7 @@ In the equation above \(R\) is the set of all relevant examples and \(E\) is the
 
 \subsection{Experiment IV: Recall from a manually inspected set}
 
-Before performing the test, a small subset of 66 examples was chosen from the database. Each example has been evaluated beforehand regarding its relevance to the three keywords. Table \ref{table:recall_test} show the results of the test. The column \textit{Total hits} contains the number of all examples retrieved by that search. \textit{Relevant hits} contains how many relevant examples the search returned, while \textit{Total relevant examples} has the number of how many relevant examples there exist in the example set used.
+Before performing the test, a small subset of 66 examples was chosen from the database. Each example has been evaluated beforehand regarding its relevance to the three keywords. Table \ref{table:recall_test} shows the result of the test. The column \textit{Total hits} contains the number of all examples retrieved by that search. \textit{Relevant hits} contains how many relevant examples the search returned, while \textit{Total relevant examples} has the number of how many relevant examples there exist in the entire example set for that specific keyword.
 
 
 \begin{table}[h]
@@ -519,5 +519,9 @@ Nash Equilibrium & 16 & 15 & 15 \\
 \end{table}
 
 \subsection{Discussion of results}
+
+In the experiment all three keywords achieved perfect recall, which means that all relevant examples for each specific keyword was returned. Based on these results it, the system seems to handle recall well. Although the measure of recall achieves a perfect score, it does not mean it is handled perfectly. In any collection of documents, it is possible to achieve perfect recall by simply returning all documents in the collection, consequently lowering the precision. The column in table \ref{table:recall_test} \textit{Total hits} shows that returning all documents in the database is not the case for our system. However, it is still possible that the perfect recall of our system lowers the precision. 
+
+A lower precision than necessary can be a problem for our system since it act similar to a web search. In a web search users search by keywords and rarely look at results beyond the first page, hence precision becomes very important. The earlier experiments revealed that our system's precision is satisfactory, but by making the search even stricter, the precision might increase even more with an acceptable loss of recall.
 
 \cleardoublepage
