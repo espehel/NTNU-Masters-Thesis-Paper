@@ -2,7 +2,10 @@
 
 \chapter{Literature Review and Background} \label{cap_2}
 
-\section{Related work}
+This chapter consists of two parts, Related work and Methods. Section \ref{2:rw} attempts to place our work among already existing work in the field of information retrieval and information extraction. The subsections will explore work done by other researchers, and discuss whether aspects of their work can be applied to our work. Section \ref{2:m} will briefly explain two key methods used in our project, and why they are used.
+
+
+\section{Related work} \label{2:rw}
 
 \subsection{Semi-structured text}
 When extracting information from a textual document, it is important to know how structured the text is. There are two extremes that the document most likely falls between, \textit{structured data} and \textit{free text}  \cite{semi-struc-text} also called unstructured data. Structured data is using data models for organizing and standardizing data elements, also including their relations. The other extreme, free text, is unstructured as a newspaper article. Wikipedia's articles exists somewhere between these two extremes. We define a Wikipedia article as semi-structured text. We define it as semi-structured because the articles from Wikipedia are created using a comprehensive markup language. The articles are also stored in the form of this markup language. Because of that we can extract the information from the article's markup and not from the page presented to the readers at the Wikipedia page. 
@@ -28,12 +31,6 @@ Making heavy use of categories is a straight forward method to discover relation
 
 \subsection{SMILA} \label{smila}
 
-
-
-%%fix sånn abbrevation for SMILA
-
-%%når jeg snakker om mine erfaringer med smila gjør jeg det i implementation.
-
 In the early stages of our project, an existing tool called SMILA \cite{smila} was explored. SMILA is a system with its first release in 2010, it is used to search and access unstructured information. SMILA crawls the web to extract information and then indexes and stores that information. It has a REST API to control the system and for searching the index. The SMILA architecture is also based on the pipeline architecture containing the following processes; jobs, crawling, storage, indexing and querying. Since 2010, 6 new versions has been released adding more features to SMILA. With SMILA being very complex, it gains asynchronicity as its biggest benefit from the pipeline architecture. The SMILA pipeline also allows custom made pipelets to be inserted into the pipeline. A pipelet is a sub process inside a pipeline. By creating pipelets, the behaviour of SMILA could be tailored into extracting relevant information from Wikipedia.
 
 \begin{figure}[h]
@@ -45,7 +42,7 @@ The releases for SMILA has been dwindling the last three years with only 1 relea
 Nevertheless the utility that the SMILA system offers could be taken advantage of in this project. Either by utilizing SMILA itself, or look at how SMILA retrieves data from the web, processes it and produces a data set as a result.
 
 
-\section{Techniques / Methodology}
+\section{Methods} \label{2:m}
 
 \subsection{Pipeline} \label{pipeline}
 

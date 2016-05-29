@@ -1,10 +1,8 @@
 %===================================== CHAP 3 =================================
 
-%\chapter{Method}
 \chapter{Conceptual design}\label{cap_3}
-%\chapter{Approach and methodology}
 
-
+This chapter will explain how the system will extract examples, add them to the database and make them searchable for an end user, on a conceptual level. It will start by briefly explaining the overall approach, before going more into details regarding the pipeline, and how the examples produced by the pipeline are managed for search purposes. The chapter will finish with an analysis of examples, to help us better understand them, which in turn can improve the performance of the system when it is implemented.
 
 \section{Overall Approach}
 
@@ -36,15 +34,15 @@ Elasticsearch was chosen as the tool for building the index. Section \ref{elasti
 
 
 \section{Search examples}
-%describe this somewhere
+
+\subsection{General idea}
+When the source data consisting of Wikipedia pages has been processed through the pipeline described in section \ref{cd_pipeline}, the final result is an index built up of examples. Having just an index is not very useful without an easy way of interacting with it though. Therefore a user friendly, web based search interface has been created. Figure \ref{fig:ui} displays the interaction between the user and Elasticsearch with the two methods for querying, which are by using keywords or a selected example.
+
 \begin{figure}[h]
 \caption{A simple overview of the user's interaction with the examples}
 \includegraphics[width=\textwidth]{UserInteraction}
 \label{fig:ui}
 \end{figure}
-
-\subsection{General idea}
-When the source data consisting of Wikipedia pages has been processed through the pipeline described in section \ref{cd_pipeline}, the final result is an index built up of examples. Having just an index is not very useful without an easy way of interacting with it though. Therefore a user friendly, web based search interface has been created. Figure \ref{fig:ui} displays the interaction between the user and Elasticsearch with the two methods for querying, which are by using keywords or a selected example.
 
 The main objective of the interface is to assist the user in finding relevant examples and to present these examples to the user in a helpful manner. To present the examples, the interface use HTML and CSS from the live version of Wikipedia from its web server. To find relevant examples, the interface helps the user in two ways. The first one is simply using keywords entered in a search field by the user. The second is when the user has already selected an example that is relevant, the search interface will then use this example to find similar examples.
 
@@ -102,7 +100,6 @@ The structure of an example is mostly defined by how it utilizes the properties 
 Instead the combination of the values these properties contain are significant, especially the property describing the domain, as some domains could generally benefit from a different composition of properties than others. This leads to a more narrow approach domain-wise, when looking into different examples.
 When trying to identify the structure of a good example, there have been selected a few topics within the Game Theory domain. Then for a certain topic, for instance \textit{Pareto Efficiency}, two or three examples have been compared to each other.
 
-%%hvordan burde jeg referer til eksemplene?
 For the topic \textit{Pareto efficiency} two examples were examined. Pareto efficiency is about reaching a state of allocation of resources where it is not possible to make one part better of without making another part worse. The first example is named \textit{Examples and exercises on Pareto efficiency}. This example builds up its explanation step by step with several iterations. Each iteration is a bit more complex than the previous. This enables the example to cover the topic with a certain depth. The second example is named \textit{Robinson Crusoe example}. This example is very long and detailed. In addition to a large amount of text, it also uses equations to a substantial degree. Initially the first example seems better, it definitely makes it easier to grasp the concept of \textit{Pareto efficiency}. The second example focuses more on the mathematical part, and there will most likely exist some persons who prefer this. See appendix \ref{app_example} for both examples.
 
 
