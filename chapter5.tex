@@ -489,9 +489,9 @@ There is some positive patterns that can be noticed to. For instance, all the re
 
 \section{Testing the system's recall}
 
-To further explore the systems ability of retrieving relevant examples, we will test the system's recall. While precision is a measure of exactness, recall can be seen as a measure of completeness. Recall is calculates as follows:
+To further explore the systems ability of retrieving relevant examples, we will test the system's recall. While precision is a measure of exactness, recall can be seen as a measure of completeness. Recall is calculated as follows:
 \[\frac{|R \cap E |}{|R|}\]
-In the equation above \(R\) is the set of all relevant examples and \(E\) is the set of all the retrieved examples. If no relevant examples are returned the recall is 0, and if all the relevant examples are retrieved the recall is 1. To properly measure recall all the examples have been manually inspected, to which examples are relevant or not relevant for the search. The three keywords \textit{java}, \textit{algebra} and \textit{nash equilibrium} was chosen.
+In the equation above \(R\) is the set of all relevant examples and \(E\) is the set of all the retrieved examples. If no relevant examples are returned the recall is 0, and if all the relevant examples are retrieved the recall is 1. To properly measure recall all the examples have been manually inspected, to decide which examples are relevant or not relevant for a search with a specific keyword. The three keywords \textit{java}, \textit{algebra} and \textit{nash equilibrium} was chosen.
 
 \subsection{Experiment IV: Recall from a manually inspected set}
 
@@ -512,14 +512,14 @@ Nash Equilibrium & 16 & 15 & 15 \\
 
  \hline
 \end{tabular}
-\caption{Results of how well the system recalls example from a manually inspected set}
+\caption{Results of how well the system recalls example from a manually inspected set.}
 \label{table:recall_test}
 \end{table}
 
 \subsection{Discussion of results}
 
-In the experiment all three keywords achieved a recall of 1, the highest possible score for recall, which means that all relevant examples for each specific keyword was returned. Based on these results it, the system seems to handle recall well. Although the measure of recall achieves a score of 1, it does not mean it is handled optimally. In any collection of documents, it is possible to achieve a recall of 1 by simply returning all documents in the collection, consequently lowering the precision. The precision will be lower because of the trade-off relationship between precision and recall, increasing one will often lead to decreasing the other. The column in table \ref{table:recall_test} \textit{Total hits} shows that returning all documents in the database is not the case for our system. However, it is still possible that the perfect recall of our system lowers the precision. 
+In the experiment all three keywords achieved a recall of 1, the highest possible score for recall, which means that all relevant examples for each specific keyword was returned. Based purely on these results, the system seems to handle recall well. Although the measure of recall achieves a score of 1, it does not mean it is handled optimally. In any collection of documents, it is possible to achieve a recall of 1 by simply returning all documents in the collection, but as a consequence the precision will be significantly lower. The precision will be lower because of the trade-off relationship between precision and recall, increasing one will often lead to decreasing the other. The column in table \ref{table:recall_test} \textit{Total hits} shows that returning all documents in the database is not the case for our system. However, it is still possible that the recall of 1 in our system lowers the precision. 
 
-A lower precision than necessary can be a problem for our system since it act similar to a web search. In a web search users search by keywords and rarely look at results beyond the first page, hence precision becomes very important. The earlier experiments revealed that our system's precision is satisfactory, but by making the search even stricter, the precision might increase even more with an acceptable loss of recall.
+A lower precision than necessary can be a problem for our system since it acts similar to a web search. In a web search users search by keywords and rarely look at results beyond the first page, hence precision becomes very important. The earlier experiments revealed that our system's precision is satisfactory, but by making the search even stricter, the precision might increase even more with an acceptable loss of recall.
 
 \cleardoublepage
